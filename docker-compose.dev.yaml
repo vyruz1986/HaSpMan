@@ -1,0 +1,11 @@
+version: "3.1"
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    environment:
+      SA_PASSWORD: Dev-db-Password
+      ACCEPT_EULA: "Y"
+    volumes:
+      - ./.dev/mssql/data:/var/opt/mssql/data
+    ports:
+      - 5201:1433
