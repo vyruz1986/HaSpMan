@@ -10,7 +10,7 @@ namespace HaSpMan.Persistence
          : base(options)
       {
       }
-      public DbSet<Member> Members { get; set; }
+      public DbSet<Member> Members { get; set; } = null!;
 
       protected override void OnModelCreating(ModelBuilder builder)
       {

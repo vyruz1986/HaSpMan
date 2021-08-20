@@ -31,11 +31,11 @@ namespace HaSpMan.Test.Domain
          };
          var testMemberAddress = new Address
          (
-            city: testPerson.Address.City,
-            country: testPerson.Address.Country,
-            houseNumber: testPerson.Address.HouseNumber,
-            street: testPerson.Address.Street,
-            zipCode: testPerson.Address.ZipCode
+            testPerson.Address.Street,
+            testPerson.Address.City,
+            testPerson.Address.Country,
+            testPerson.Address.ZipCode,
+            testPerson.Address.HouseNumber
          );
          var testMember = new Member(
             testPerson.FirstName,
@@ -77,11 +77,11 @@ namespace HaSpMan.Test.Domain
       private Address GetAddress()
       {
          return new Address(
-            street: _f.Person.Address.Street,
-            city: _f.Person.Address.City,
-            country: _f.Address.Country(),
-            zipCode: _f.Person.Address.ZipCode,
-            houseNumber: _f.Random.AlphaNumeric(3)
+            _f.Person.Address.Street,
+            _f.Person.Address.City,
+            _f.Address.Country(),
+            _f.Person.Address.ZipCode,
+            _f.Random.AlphaNumeric(3)
          );
       }
    }

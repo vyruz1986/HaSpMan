@@ -35,8 +35,9 @@ namespace HaSpMan.Domain
          PhoneNumber = phoneNumber;
       }
 
-      protected Member() { } // Make EFCore happy
-
+#pragma warning disable 8618
+      private Member() { } // Make EFCore happy
+#pragma warning restore 8618
       public string FirstName { get; private set; }
       public string LastName { get; private set; }
       public string Email { get; private set; }
