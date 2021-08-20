@@ -1,8 +1,8 @@
 using System;
 using Bogus;
 using Domain;
-using Domain.ValueObjects;
 using FluentAssertions;
+using Types;
 using Xunit;
 
 namespace Test.Domain
