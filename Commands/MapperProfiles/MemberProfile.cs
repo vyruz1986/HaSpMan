@@ -8,7 +8,8 @@ namespace Commands.MapperProfiles
     {
         public MemberProfile()
         {
-            CreateMap<AddMemberCommand, Member>();
+            CreateMap<AddMemberCommand, Member>()
+                .ForMember(m => m.Id, o => o.Ignore());
         }
     }
 }
