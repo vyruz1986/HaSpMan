@@ -2,18 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Attach",
-      "type": "coreclr",
-      "request": "attach"
-    },
-    {
       // Use IntelliSense to find out which attributes exist for C# debugging
       // Use hover for the description of the existing attributes
       // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-      "name": ".NET Core Launch (web)",
+      "name": "Launch web project",
       "type": "coreclr",
       "request": "launch",
-      "preLaunchTask": "build",
+      "preLaunchTask": "prepdevenv",
       // If you have changed target frameworks, make sure to update the program path.
       "program": "${workspaceFolder}/HaSpMan.Web/bin/Debug/net5.0/HaSpMan.Web.dll",
       "args": [],
