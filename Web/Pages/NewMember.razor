@@ -8,7 +8,7 @@
 
 <h1>Add new member</h1>
 
-<EditForm Model="@_newMember" OnValidSubmit="@AddMember">
+<EditForm Model="@_newMember" OnValidSubmit="@AddMember" OnInvalidSubmit="@ShowError">
    <DataAnnotationsValidator />
 
    <MudGrid>
@@ -31,17 +31,17 @@
          <MudTextField T="string" Label="Street" @bind-Value="_newMember.Street" For="@(() => _newMember.Street)" />
       </MudItem>
       <MudItem xs="6">
-         <MudTextField T="string" Label="House number" @bind-Value="_newMember.City" For="@(() => _newMember.City)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="City" @bind-Value="_newMember.Country" For="@(() => _newMember.Country)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="Country" @bind-Value="_newMember.ZipCode" For="@(() => _newMember.ZipCode)" />
+         <MudTextField T="string" Label="House number" @bind-Value="_newMember.City" For="@(() => _newMember.HouseNumber)" />
       </MudItem>
       <MudItem xs="6">
-         <MudTextField T="string" Label="Postal code" @bind-Value="_newMember.HouseNumber"
+         <MudTextField T="string" Label="Postal code" @bind-Value="_newMember.ZipCode"
             For="@(() => _newMember.HouseNumber)" />
+      </MudItem>
+      <MudItem xs="12">
+         <MudTextField T="string" Label="City" @bind-Value="_newMember.Country" For="@(() => _newMember.City)" />
+      </MudItem>
+      <MudItem xs="12">
+         <MudTextField T="string" Label="Country" @bind-Value="_newMember.ZipCode" For="@(() => _newMember.Country)" />
       </MudItem>
       <MudItem xs="12" Class="d-flex justify-center">
          <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large"
@@ -58,5 +58,12 @@
    {
       var command = _mapper.Map<AddMemberCommand>(_newMember);
       var response = await _mediator.Send(command);
+   }
+   private void ShowError()
+   {
+
+      Snackbar.Clear();
+      Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+      Snackbar.Add("Please correct all errors on the form", Severity.Error);
    }
 }
