@@ -5,6 +5,7 @@
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
+@inject NavigationManager NavManager
 
 <h1>Add new member</h1>
 
@@ -31,17 +32,18 @@
          <MudTextField T="string" Label="Street" @bind-Value="_newMember.Street" For="@(() => _newMember.Street)" />
       </MudItem>
       <MudItem xs="6">
-         <MudTextField T="string" Label="House number" @bind-Value="_newMember.City" For="@(() => _newMember.HouseNumber)" />
+         <MudTextField T="string" Label="House number" @bind-Value="_newMember.HouseNumber"
+            For="@(() => _newMember.HouseNumber)" />
       </MudItem>
       <MudItem xs="6">
          <MudTextField T="string" Label="Postal code" @bind-Value="_newMember.ZipCode"
-            For="@(() => _newMember.HouseNumber)" />
+            For="@(() => _newMember.ZipCode)" />
       </MudItem>
       <MudItem xs="12">
-         <MudTextField T="string" Label="City" @bind-Value="_newMember.Country" For="@(() => _newMember.City)" />
+         <MudTextField T="string" Label="City" @bind-Value="_newMember.City" For="@(() => _newMember.City)" />
       </MudItem>
       <MudItem xs="12">
-         <MudTextField T="string" Label="Country" @bind-Value="_newMember.ZipCode" For="@(() => _newMember.Country)" />
+         <MudTextField T="string" Label="Country" @bind-Value="_newMember.Country" For="@(() => _newMember.Country)" />
       </MudItem>
       <MudItem xs="12" Class="d-flex justify-center">
          <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large"
@@ -51,19 +53,19 @@
 </EditForm>
 
 @code {
-
    private Models.NewMember _newMember = new();
 
    private async Task AddMember()
    {
       var command = _mapper.Map<AddMemberCommand>(_newMember);
       var response = await _mediator.Send(command);
+      Snackbar.Clear();
+      Snackbar.Add($"Member {_newMember.FirstName} {_newMember.LastName} added successfully!", Severity.Success);
+      NavManager.NavigateTo("/members");
    }
    private void ShowError()
    {
-
       Snackbar.Clear();
-      Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
       Snackbar.Add("Please correct all errors on the form", Severity.Error);
    }
 }

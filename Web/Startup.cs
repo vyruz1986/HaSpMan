@@ -11,6 +11,7 @@ using Commands.MapperProfiles;
 using MediatR;
 using Commands;
 using MudBlazor.Services;
+using MudBlazor;
 
 namespace Web
 {
@@ -36,7 +37,11 @@ namespace Web
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddAutoMapper(typeof(MemberProfile).Assembly, typeof(MapperProfiles.MemberProfile).Assembly);
             services.AddMediatR(typeof(AddMemberCommand));
-            services.AddMudServices();
+            services.AddMudServices(cfg =>
+            {
+                cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
+                cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
