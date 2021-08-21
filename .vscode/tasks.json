@@ -13,7 +13,7 @@
       ],
       "problemMatcher": "$msCompile",
       "options": {
-        "cwd": "${workspaceFolder}/HaSpMan.Web",
+        "cwd": "${workspaceFolder}/Web",
         "env": {
           "ASPNETCORE_ENVIRONMENT": "Development"
         }

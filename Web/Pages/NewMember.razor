@@ -1,0 +1,35 @@
+@page "/members/new"
+@using Commands
+@using MediatR
+@using AutoMapper
+@inject IMediator _mediator
+@inject IMapper _mapper
+
+<h1>Add new member</h1>
+
+<EditForm Model="@_newMember" OnValidSubmit="@AddMember">
+   <DataAnnotationsValidator />
+   <ValidationSummary />
+
+   <InputText id="firstName" @bind-Value="_newMember.FirstName" />
+   <InputText id="lastName" @bind-Value="_newMember.LastName" />
+   <InputText id="email" @bind-Value="_newMember.Email" />
+   <InputText id="phoneNumber" @bind-Value="_newMember.PhoneNumber" />
+   <InputText id="street" @bind-Value="_newMember.Street" />
+   <InputText id="city" @bind-Value="_newMember.City" />
+   <InputText id="country" @bind-Value="_newMember.Country" />
+   <InputText id="zipCode" @bind-Value="_newMember.ZipCode" />
+   <InputText id="houseNumber" @bind-Value="_newMember.HouseNumber" />
+   <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+
+   private Models.NewMember _newMember = new();
+
+   private async Task AddMember()
+   {
+      var command = _mapper.Map<AddMemberCommand>(_newMember);
+      var response = await _mediator.Send(command);
+   }
+}

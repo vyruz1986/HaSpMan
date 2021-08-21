@@ -1,0 +1,54 @@
+﻿@page "/members"
+
+@using Domain
+@using Web.Data
+@using Domain.Interfaces
+@inject IMemberRepository MemberRepository
+
+<h1>Members</h1>
+
+<p>
+   <a href="/members/new">Add member</a>
+</p>
+
+@if (members == null)
+{
+   <p><em>Loading...</em></p>
+}
+else
+{
+   <table class="table">
+      <thead>
+         <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Phone</th>
+         </tr>
+      </thead>
+      <tbody>
+         @foreach (var member in members)
+         {
+            <tr>
+               <td>@member.FirstName @member.LastName</td>
+               <td>
+                  @member.Address.Street @member.Address.HouseNumber<br>
+                  @member.Address.ZipCode @member.Address.City<br>
+                  @member.Address.Country
+               </td>
+               <td>@member.Email</td>
+               <td>@member.PhoneNumber</td>
+            </tr>
+         }
+      </tbody>
+   </table>
+}
+
+@code {
+   private IEnumerable<Member>? members;
+
+   protected override async Task OnInitializedAsync()
+   {
+      members = await MemberRepository.GetAllAsync();
+   }
+}
