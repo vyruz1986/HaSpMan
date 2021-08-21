@@ -10,6 +10,7 @@ using Persistence.Extensions;
 using Commands.MapperProfiles;
 using MediatR;
 using Commands;
+using MudBlazor.Services;
 
 namespace Web
 {
@@ -35,6 +36,7 @@ namespace Web
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddAutoMapper(typeof(MemberProfile).Assembly, typeof(MapperProfiles.MemberProfile).Assembly);
             services.AddMediatR(typeof(AddMemberCommand));
+            services.AddMudServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
