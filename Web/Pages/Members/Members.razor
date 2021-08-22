@@ -1,10 +1,7 @@
 ﻿@page "/members"
 
-@using Domain
 @using Queries
 @using MediatR
-@using System.Linq.Expressions
-@using Microsoft.EntityFrameworkCore
 
 @inject IMediator _mediator
 
@@ -17,7 +14,7 @@
       <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
       <MudSpacer />
-      <a href="/members/new">Add member</a>
+      <MudButton Link="/members/new" Color="Color.Primary" DisableElevation="true" Variant="Variant.Filled" Size="Size.Small" Class="ma-2">Add member</MudButton>
    </ToolBarContent>
    <HeaderContent>
       <MudTh>
