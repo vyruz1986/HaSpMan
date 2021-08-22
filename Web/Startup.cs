@@ -7,11 +7,11 @@ using Web.Data;
 using Domain.Interfaces;
 using Persistence.Repositories;
 using Persistence.Extensions;
-using Commands.MapperProfiles;
 using MediatR;
 using Commands;
 using MudBlazor.Services;
 using MudBlazor;
+using Queries;
 
 namespace Web
 {
@@ -35,8 +35,8 @@ namespace Web
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddAutoMapper(typeof(MemberProfile).Assembly, typeof(MapperProfiles.MemberProfile).Assembly);
-            services.AddMediatR(typeof(AddMemberCommand));
+            services.AddAutoMapper(typeof(Commands.MapperProfiles.MemberProfile), typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
+            services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
             services.AddMudServices(cfg =>
             {
                 cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
