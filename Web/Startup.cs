@@ -12,6 +12,7 @@ using Commands;
 using MudBlazor.Services;
 using MudBlazor;
 using Queries;
+using Web.Extensions;
 
 namespace Web
 {
@@ -29,6 +30,9 @@ namespace Web
         public void ConfigureServices(IServiceCollection services)
         {
             var dbConnectionString = Configuration.GetConnectionString("HaSpMan");
+
+            services.AddCustomAuthentication(Configuration);
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHaSpManContext(dbConnectionString);
@@ -62,6 +66,8 @@ namespace Web
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

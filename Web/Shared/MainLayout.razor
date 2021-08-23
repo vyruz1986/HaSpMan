@@ -1,5 +1,6 @@
 @using System.Reflection
 @inherits LayoutComponentBase
+@inject NavigationManager NavManager
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -11,7 +12,20 @@
             OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">HaSpMan @_version</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+            <AuthorizeView>
+                <Authorized>
+                    <MudMenuItem>
+                        <MudLink Href="Account/Logout">Logout</MudLink>
+                    </MudMenuItem>
+                </Authorized>
+                <NotAuthorized>
+                    <MudMenuItem>
+                        <MudLink Href="Account/Login">Login</MudLink>
+                    </MudMenuItem>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudMenu>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -33,6 +47,11 @@
             var fullSemVerField = gitVersionInformationType?.GetField("FullSemVer");
             return fullSemVerField?.GetValue(null)?.ToString() ?? "0.0.0";
         }
+    }
+
+    private void Logout()
+    {
+        NavManager.NavigateTo("/Account/Logout");
     }
 
     void DrawerToggle()

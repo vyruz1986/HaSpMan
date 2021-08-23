@@ -9,3 +9,20 @@ services:
       - ./.dev/mssql/data:/var/opt/mssql/data
     ports:
       - 5201:1433
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    depends_on:
+      - db
+    environment:
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: mssql
+      DB_ADDR: db
+      DB_DATABASE: HaSpMan
+      DB_USER: sa
+      DB_PASSWORD: Dev-db-Password
+      TZ: Europe/Brussels
+    ports:
+      - 5202:8080
