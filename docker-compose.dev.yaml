@@ -24,5 +24,8 @@ services:
       DB_USER: sa
       DB_PASSWORD: Dev-db-Password
       TZ: Europe/Brussels
+      KEYCLOAK_IMPORT: /tmp/DevRealm.json
     ports:
       - 5202:8080
+    volumes:
+      - ./Infrastructure/Keycloak/DevRealm.json:/tmp/DevRealm.json

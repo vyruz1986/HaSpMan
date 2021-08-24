@@ -5,7 +5,6 @@ namespace Web.Configuration
         public const string SectionName = "Oidc";
         public string? Authority { get; set; }
         public string? Audience { get; set; }
-        public string[]? ValidIssuers { get; set; }
         public string? ClientSecret { get; set; }
     }
 }
