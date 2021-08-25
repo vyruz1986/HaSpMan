@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Web.Data;
 using Domain.Interfaces;
 using Persistence.Repositories;
 using Persistence.Extensions;
@@ -37,7 +36,6 @@ namespace Web
             services.AddServerSideBlazor();
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddAutoMapper(typeof(Commands.MapperProfiles.MemberProfile), typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
             services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
