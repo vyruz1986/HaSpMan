@@ -12,6 +12,7 @@ using MudBlazor.Services;
 using MudBlazor;
 using Queries;
 using Web.Extensions;
+using Commands.Services;
 
 namespace Web
 {
@@ -37,13 +38,16 @@ namespace Web
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddAutoMapper(typeof(Commands.MapperProfiles.MemberProfile), typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
+            services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
             services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
             services.AddMudServices(cfg =>
             {
                 cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
                 cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
             });
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserAccessor, UserAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

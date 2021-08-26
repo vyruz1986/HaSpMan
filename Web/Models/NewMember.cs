@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models
@@ -40,5 +41,11 @@ namespace Web.Models
         [Required]
         [StringLength(5)]
         public string? HouseNumber { get; set; }
+
+        [Required]
+        public double MembershipFee { get; set; }
+
+        [Required]
+        public DateTime? MembershipExpiryDate { get; set; }
     }
 }
