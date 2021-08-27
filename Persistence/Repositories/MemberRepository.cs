@@ -16,7 +16,6 @@ namespace Persistence.Repositories
         public MemberRepository(HaSpManContext context)
         {
             _context = context;
-
         }
         public void Add(Member member)
         {

@@ -27,7 +27,7 @@ namespace Domain
                 throw new ArgumentException("Cannot be null or empty", nameof(lastName));
 
             if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(phoneNumber))
-                throw new ArgumentException("Either email or ponenumber needs to be provided for a new member.");
+                throw new ArgumentException("Either email or phone number needs to be provided for a new member.");
 
             if (string.IsNullOrWhiteSpace(address.City))
                 throw new ArgumentException("Cannot be null or empty", nameof(address.City));
@@ -88,6 +88,9 @@ namespace Domain
             if (email == Email)
                 return;
 
+            if (string.IsNullOrWhiteSpace(email) && string.IsNullOrWhiteSpace(PhoneNumber))
+                throw new ArgumentException("Email can not be cleared while phone number is empty", nameof(email));
+
             Email = email;
 
             AuditEvents.AddEvent($"Changed email to {Email}", performedBy);
@@ -97,6 +100,9 @@ namespace Domain
         {
             if (phoneNumber == PhoneNumber)
                 return;
+
+            if (string.IsNullOrWhiteSpace(phoneNumber) && string.IsNullOrWhiteSpace(Email))
+                throw new ArgumentException("Phone number can not be cleared while email is empty", nameof(phoneNumber));
 
             PhoneNumber = phoneNumber;
 
@@ -113,7 +119,7 @@ namespace Domain
             AuditEvents.AddEvent($"Changed address to {Address}", performedBy);
         }
 
-        public void ChangeMembershipExpiryDate(DateTimeOffset expiryDate, string performedBy)
+        public void ChangeMembershipExpiryDate(DateTimeOffset? expiryDate, string performedBy)
         {
             if (expiryDate == MembershipExpiryDate)
                 return;

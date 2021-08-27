@@ -1,5 +1,6 @@
-using System.Linq;
 using System.Security.Claims;
+
+using Commands.Constants;
 
 namespace Commands.Extensions
 {
@@ -7,8 +8,7 @@ namespace Commands.Extensions
     {
         public static string? GetName(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(ClaimTypes.NameIdentifier);
-
+            return user.FindFirstValue(CustomClaims.Name);
         }
     }
 }

@@ -10,9 +10,9 @@ using MediatR;
 using Commands;
 using MudBlazor.Services;
 using MudBlazor;
-using Queries;
 using Web.Extensions;
 using Commands.Services;
+using Queries.Members;
 
 namespace Web
 {

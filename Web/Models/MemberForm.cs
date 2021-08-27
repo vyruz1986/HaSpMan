@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models
 {
-    public class NewMember
+    public class MemberForm
     {
         [Required]
         [StringLength(50)]
