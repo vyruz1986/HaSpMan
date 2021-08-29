@@ -27,7 +27,13 @@ namespace Web.MapperProfiles
                 .ForMember(m => m.MembershipExpiryDate, o => o.MapFrom(src => ToDateTime(src.MembershipExpiryDate)))
                 .IncludeMembers(m => m.Address);
 
-            CreateMap<Address, MemberForm>();
+            CreateMap<Address, MemberForm>()
+                .ForMember(m => m.FirstName, o => o.Ignore())
+                .ForMember(m => m.LastName, o => o.Ignore())
+                .ForMember(m => m.MembershipExpiryDate, o => o.Ignore())
+                .ForMember(m => m.MembershipFee, o => o.Ignore())
+                .ForMember(m => m.PhoneNumber, o => o.Ignore())
+                .ForMember(m => m.Email, o => o.Ignore());
         }
         private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
         {
