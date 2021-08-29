@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Web.Data;
 using Domain.Interfaces;
 using Persistence.Repositories;
 using Persistence.Extensions;
@@ -11,8 +10,9 @@ using MediatR;
 using Commands;
 using MudBlazor.Services;
 using MudBlazor;
-using Queries;
 using Web.Extensions;
+using Commands.Services;
+using Queries.Members;
 
 namespace Web
 {
@@ -37,15 +37,17 @@ namespace Web
             services.AddServerSideBlazor();
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddAutoMapper(typeof(Commands.MapperProfiles.MemberProfile), typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
+            services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
             services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
             services.AddMudServices(cfg =>
             {
                 cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
                 cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
             });
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserAccessor, UserAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

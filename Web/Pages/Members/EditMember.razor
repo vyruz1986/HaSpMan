@@ -1,0 +1,64 @@
+@page "/members/{MemberId:guid}/edit"
+@using Commands
+@using MediatR
+@using AutoMapper
+@using Queries.Members
+@inject IMediator _mediator
+@inject IMapper _mapper
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<h1>Edit member</h1>
+
+<EditForm Model="@member" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowError">
+    <DataAnnotationsValidator />
+
+    <MemberForm Member="@member" />
+
+    <MudItem xs="12" Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+            ButtonType="ButtonType.Submit">Save member</MudButton>
+    </MudItem>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Guid MemberId { get; set; }
+    public Models.MemberForm member = new();
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GetMemberByIdQuery(MemberId);
+        var memberDetail = await _mediator.Send(query);
+        member = _mapper.Map<Models.MemberForm>(memberDetail);
+    }
+
+    private async Task SubmitMember()
+    {
+        var command = new EditMemberCommand(
+        Id: MemberId,
+        FirstName: member.FirstName!,
+        LastName: member.LastName!,
+        Address: new(
+        Street: member.Street!,
+        City: member.City!,
+        Country: member.Country!,
+        ZipCode: member.ZipCode!,
+        HouseNumber: member.HouseNumber!
+        ),
+        Email: member.Email!,
+        PhoneNumber: member.PhoneNumber!,
+        MembershipFee: member.MembershipFee,
+        MembershipExpiryDate: member.MembershipExpiryDate == null ? null : new
+        DateTimeOffset(member.MembershipExpiryDate!.Value)
+        );
+        var response = await _mediator.Send(command);
+        Snackbar.Clear();
+        Snackbar.Add($"Member {member.FirstName} {member.LastName} edited successfully!", Severity.Success);
+        NavManager.NavigateTo("/members");
+    }
+    private void ShowError()
+    {
+        Snackbar.Clear();
+        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+}

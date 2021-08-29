@@ -16,8 +16,9 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 using Queries.Enums;
+using Queries.Members.ViewModels;
 
-namespace Queries
+namespace Queries.Members.Handlers
 {
     public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
     {

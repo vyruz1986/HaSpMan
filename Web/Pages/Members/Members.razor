@@ -1,8 +1,9 @@
 ﻿@page "/members"
 @attribute [Authorize]
 
-@using Queries
 @using MediatR
+@using Queries.Members
+@using Queries.Members.ViewModels
 
 @inject IMediator _mediator
 
@@ -31,12 +32,21 @@
       <MudTh>
          <MudTableSortLabel SortLabel="phoneNumber" T="MemberSummary">Phone</MudTableSortLabel>
       </MudTh>
+      <MudTh>
+         Action
+      </MudTh>
    </HeaderContent>
    <RowTemplate>
       <MudTd DataLabel="Name">@context.Name</MudTd>
       <MudTd DataLabel="Address">@context.Address</MudTd>
       <MudTd DataLabel="Email">@context.Email</MudTd>
       <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+      <MudTd>
+         <MudTooltip Text="Delete">
+            <MudIconButton Link="@($"/members/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
+               aria-label="edit"></MudIconButton>
+         </MudTooltip>
+      </MudTd>
    </RowTemplate>
    <NoRecordsContent>
       <MudText>No matching records found</MudText>

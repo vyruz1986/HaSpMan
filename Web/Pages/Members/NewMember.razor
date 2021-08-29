@@ -12,48 +12,16 @@
 <EditForm Model="@_newMember" OnValidSubmit="@AddMember" OnInvalidSubmit="@ShowError">
    <DataAnnotationsValidator />
 
-   <MudGrid>
-      <MudItem xs="6">
-         <MudTextField T="string" Label="First name" @bind-Value="_newMember.FirstName"
-            For="@(() => _newMember.FirstName)" />
-      </MudItem>
-      <MudItem xs="6">
-         <MudTextField T="string" Label="Last name" @bind-Value="_newMember.LastName"
-            For="@(() => _newMember.LastName)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="Email" @bind-Value="_newMember.Email" For="@(() => _newMember.Email)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="Phone number" @bind-Value="_newMember.PhoneNumber"
-            For="@(() => _newMember.PhoneNumber)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="Street" @bind-Value="_newMember.Street" For="@(() => _newMember.Street)" />
-      </MudItem>
-      <MudItem xs="6">
-         <MudTextField T="string" Label="House number" @bind-Value="_newMember.HouseNumber"
-            For="@(() => _newMember.HouseNumber)" />
-      </MudItem>
-      <MudItem xs="6">
-         <MudTextField T="string" Label="Postal code" @bind-Value="_newMember.ZipCode"
-            For="@(() => _newMember.ZipCode)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="City" @bind-Value="_newMember.City" For="@(() => _newMember.City)" />
-      </MudItem>
-      <MudItem xs="12">
-         <MudTextField T="string" Label="Country" @bind-Value="_newMember.Country" For="@(() => _newMember.Country)" />
-      </MudItem>
-      <MudItem xs="12" Class="d-flex justify-center">
-         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large"
-            Class="mt-8" ButtonType="ButtonType.Submit">Add member</MudButton>
-      </MudItem>
-   </MudGrid>
+   <MemberForm Member="@_newMember" />
+
+   <MudItem xs="12" Class="d-flex justify-center">
+      <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+         ButtonType="ButtonType.Submit">Add member</MudButton>
+   </MudItem>
 </EditForm>
 
 @code {
-   private Models.NewMember _newMember = new();
+   private Models.MemberForm _newMember = new();
 
    private async Task AddMember()
    {
