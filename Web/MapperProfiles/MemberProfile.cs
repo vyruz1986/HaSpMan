@@ -24,10 +24,18 @@ namespace Web.MapperProfiles
             CreateMap<MemberForm, Address>();
 
             CreateMap<MemberDetail, MemberForm>()
-                .ForMember(m => m.MembershipExpiryDate, o => o.MapFrom(src => src.MembershipExpiryDate.DateTime))
+                .ForMember(m => m.MembershipExpiryDate, o => o.MapFrom(src => ToDateTime(src.MembershipExpiryDate)))
                 .IncludeMembers(m => m.Address);
 
             CreateMap<Address, MemberForm>();
         }
+        private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
+        {
+            if (dateTimeOffset == null)
+                return null;
+
+            return dateTimeOffset!.Value.DateTime;
+        }
     }
+
 }

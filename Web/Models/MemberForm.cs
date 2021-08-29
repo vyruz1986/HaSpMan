@@ -45,7 +45,6 @@ namespace Web.Models
         [Required]
         public double MembershipFee { get; set; }
 
-        [Required]
         public DateTime? MembershipExpiryDate { get; set; }
     }
 }

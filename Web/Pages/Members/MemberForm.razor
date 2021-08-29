@@ -1,43 +1,49 @@
 <MudGrid>
-   <MudItem xs="6">
-      <MudTextField T="string" Label="First name" @bind-Value="Member.FirstName" For="@(() => Member.FirstName)" />
-   </MudItem>
-   <MudItem xs="6">
-      <MudTextField T="string" Label="Last name" @bind-Value="Member.LastName" For="@(() => Member.LastName)" />
-   </MudItem>
-   <MudItem xs="12">
-      <MudTextField T="string" Label="Email" @bind-Value="Member.Email" For="@(() => Member.Email)" />
-   </MudItem>
-   <MudItem xs="12">
-      <MudTextField T="string" Label="Phone number" @bind-Value="Member.PhoneNumber"
-         For="@(() => Member.PhoneNumber)" />
-   </MudItem>
-   <MudItem xs="12">
-      <MudTextField T="string" Label="Street" @bind-Value="Member.Street" For="@(() => Member.Street)" />
-   </MudItem>
-   <MudItem xs="6">
-      <MudTextField T="string" Label="House number" @bind-Value="Member.HouseNumber"
-         For="@(() => Member.HouseNumber)" />
-   </MudItem>
-   <MudItem xs="6">
-      <MudTextField T="string" Label="Postal code" @bind-Value="Member.ZipCode" For="@(() => Member.ZipCode)" />
-   </MudItem>
-   <MudItem xs="12">
-      <MudTextField T="string" Label="City" @bind-Value="Member.City" For="@(() => Member.City)" />
-   </MudItem>
-   <MudItem xs="12">
-      <MudTextField T="string" Label="Country" @bind-Value="Member.Country" For="@(() => Member.Country)" />
-   </MudItem>
-   <MudItem xs="12" sm="6" md="4">
-      <MudDatePicker Label="Membership expiration date" @bind-Date="Member.MembershipExpiryDate" />
-   </MudItem>
-   <MudItem xs="12" sm="6">
+    <MudItem xs="6">
+        <MudTextField T="string" Label="First name" @bind-Value="Member.FirstName" For="@(() => Member.FirstName)" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="string" Label="Last name" @bind-Value="Member.LastName" For="@(() => Member.LastName)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Email" @bind-Value="Member.Email" For="@(() => Member.Email)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Phone number" @bind-Value="Member.PhoneNumber"
+            For="@(() => Member.PhoneNumber)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Street" @bind-Value="Member.Street" For="@(() => Member.Street)" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="string" Label="House number" @bind-Value="Member.HouseNumber"
+            For="@(() => Member.HouseNumber)" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="string" Label="Postal code" @bind-Value="Member.ZipCode" For="@(() => Member.ZipCode)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="City" @bind-Value="Member.City" For="@(() => Member.City)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Country" @bind-Value="Member.Country" For="@(() => Member.Country)" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudDatePicker @ref="_picker" Label="Membership expiration date" @bind-Date="Member.MembershipExpiryDate"
+            AutoClose="true">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+            </PickerActions>
+        </MudDatePicker>
+    </MudItem>
+    <MudItem xs="12" sm="6">
       <MudNumericField Label="Monthly membership fee" @bind-Value="Member.MembershipFee" Format="F1" />
-   </MudItem>
+    </MudItem>
 </MudGrid>
 
 @code {
-   [Parameter]
-   public Models.MemberForm Member { get; set; } = new();
+    [Parameter]
+    public Models.MemberForm Member { get; set; } = new();
 
+    MudDatePicker _picker = new();
 }

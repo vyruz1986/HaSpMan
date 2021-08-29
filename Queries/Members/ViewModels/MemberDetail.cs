@@ -10,6 +10,6 @@ namespace Queries.Members.ViewModels
         string Email,
         string PhoneNumber,
         double MembershipFee,
-        DateTimeOffset MembershipExpiryDate
+        DateTimeOffset? MembershipExpiryDate
     );
 }
