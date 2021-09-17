@@ -1,18 +1,28 @@
+
+using Commands;
+using Commands.Services;
+
+using Domain.Interfaces;
+
+using FluentValidation;
+
+using MediatR;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Domain.Interfaces;
-using Persistence.Repositories;
-using Persistence.Extensions;
-using MediatR;
-using Commands;
-using MudBlazor.Services;
+
 using MudBlazor;
-using Web.Extensions;
-using Commands.Services;
+using MudBlazor.Services;
+
+using Persistence.Extensions;
+using Persistence.Repositories;
+
 using Queries.Members;
+
+using Web.Extensions;
 
 namespace Web
 {
@@ -39,7 +49,19 @@ namespace Web
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
-            services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
+
+            // Add query and command assemblies to mediatr
+            var queryAssembly = typeof(SearchMembersQuery).Assembly;
+            var commandAssembly = typeof(AddMemberCommand).Assembly;
+            services.AddMediatR(new[] { queryAssembly, commandAssembly });
+
+            // For all the validators, register them with dependency injection as scoped
+            AssemblyScanner.FindValidatorsInAssembly(commandAssembly)
+                .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
+
+            // Add the custome pipeline validation to DI
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
             services.AddMudServices(cfg =>
             {
                 cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
