@@ -55,6 +55,7 @@ jobs:
         with:
           versionSpec: "5.x"
       - name: Determine Version
+        id: gitversion
         uses: gittools/actions/gitversion/execute@v0.9.7
       - name: Extract metadata (tags, labels) for Docker
         id: meta
