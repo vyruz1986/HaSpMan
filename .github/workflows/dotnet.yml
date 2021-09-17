@@ -34,7 +34,10 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/master'
+    needs: test
+    if: |
+      github.ref == 'refs/heads/master' &&
+      success()
     permissions:
       contents: read
       packages: write
