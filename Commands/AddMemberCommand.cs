@@ -32,7 +32,8 @@ namespace Commands
 
             RuleFor(x => x.Email)
                .NotEmpty()
-               .MaximumLength(100);
+               .MaximumLength(100)
+               .EmailAddress();
 
             RuleFor(x => x.PhoneNumber)
                .NotEmpty()
