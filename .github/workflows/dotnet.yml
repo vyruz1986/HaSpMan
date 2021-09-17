@@ -2,7 +2,7 @@ name: .NET
 
 on:
   push:
-    branches: [master, add-docker-build]
+    branches: [master]
   pull_request:
     branches: [master]
 
