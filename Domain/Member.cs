@@ -66,9 +66,9 @@ namespace Domain
         public string Email { get; private set; }
         public string PhoneNumber { get; private set; }
         public Address Address { get; private set; }
-        public DateTimeOffset? MembershipExpiryDate { get; set; }
-        public double MembershipFee { get; set; }
-        public ICollection<AuditEvent> AuditEvents { get; set; }
+        public DateTimeOffset? MembershipExpiryDate { get; private set; }
+        public double MembershipFee { get; private set; }
+        public ICollection<AuditEvent> AuditEvents { get; private set; }
 
         public string Name => $"{FirstName} {LastName}";
 
