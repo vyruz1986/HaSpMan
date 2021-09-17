@@ -28,3 +28,14 @@ jobs:
           name: .NET Tests
           path: "**/test-results.trx"
           reporter: dotnet-trx
+
+  publish:
+    runs-on: ubuntu-latest
+    # if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          tags: brixel/haspman:latest
