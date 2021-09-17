@@ -59,7 +59,6 @@ namespace Web
             AssemblyScanner.FindValidatorsInAssembly(commandAssembly)
                 .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
-
             // Add the custome pipeline validation to DI
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
