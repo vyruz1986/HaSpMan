@@ -10,6 +10,7 @@ using MediatR;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -42,6 +43,12 @@ namespace Web
             var dbConnectionString = Configuration.GetConnectionString("HaSpMan");
 
             services.AddCustomAuthentication(Configuration);
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
