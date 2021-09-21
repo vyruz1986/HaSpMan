@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain
 {
-
-    
-
     public abstract class Transaction       
     {
         private Transaction(Party from, Party to, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)        {
@@ -37,10 +31,45 @@ namespace Domain
         }
 
 
-        public Transaction CreateDebitAcquisitionGoodsAndServices(Party @from, Party to, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        public Transaction CreateDebitAcquisitionGoodsAndServices(Party from, Party to, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
-            return new DebitAcquisitionGoodsAndServicesTransaction(@from, to, amount, receivedDateTime, description, sequence, attachments);
+            return new DebitAcquisitionGoodsAndServicesTransaction(from, to, amount, receivedDateTime, description, sequence, attachments);
         }
+
+        public Transaction CreateDebitAcquisitionConsumables(Party from, Party to, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        {
+            return new DebitAcquisitionConsumables(from, to, amount, receivedDateTime, description, sequence,
+                attachments);
+        }
+
+        public Transaction CreateDebitBankCostsTransaction(Party from, Party to, decimal amount,
+            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        {
+            return new DebitBankCostsTransaction(from, to, amount, receivedDateTime, description, sequence,
+                attachments);
+        }
+
+        public Transaction CreateCreditMemberFeeTransaction(Party from, Party to, decimal amount,
+            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        {
+            return new CreditMemberFeeTransaction(from, to, amount, receivedDateTime, description, sequence,
+                attachments);
+        }
+
+        public Transaction CreateCreditWorkshopFeeTransaction(Party from, Party to, decimal amount,
+            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        {
+            return new CreditWorkshopFeeTransaction(from, to, amount, receivedDateTime, description, sequence,
+                attachments);
+        }
+
+        public Transaction CreateCreditDonationTransaction(Party from, Party to, decimal amount,
+            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        {
+            return new CreditDonationTransaction(from, to, amount, receivedDateTime, description, sequence,
+                attachments);
+        }
+
         public Guid Id { get;  }
         public DateTime ReceivedDateTime { get; }
         public decimal Amount { get; }
@@ -105,6 +134,7 @@ namespace Domain
             public string Name { get; }
         }
 
+        #region Specific transactions
         private class DebitFixedCostsTransaction : Transaction
         {
             public DebitFixedCostsTransaction(Party from, Party to, decimal amount, DateTime receivedDateTime,
@@ -167,6 +197,8 @@ namespace Domain
 
             }
         }
+
+#endregion
     }
 
 }
