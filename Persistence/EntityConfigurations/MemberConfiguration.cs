@@ -31,7 +31,7 @@ namespace Persistence.EntityConfigurations
                 cfg.Property(p => p.City).HasColumnType("varchar").HasMaxLength(50);
                 cfg.Property(p => p.Country).HasColumnType("varchar").HasMaxLength(50);
                 cfg.Property(p => p.ZipCode).HasColumnType("varchar").HasMaxLength(10);
-                cfg.Property(p => p.HouseNumber).HasColumnType("varchar").HasMaxLength(5);
+                cfg.Property(p => p.HouseNumber).HasColumnType("varchar").HasMaxLength(15);
             };
         }
 

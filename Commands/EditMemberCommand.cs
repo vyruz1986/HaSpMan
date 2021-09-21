@@ -65,7 +65,7 @@ namespace Commands
 
                 RuleFor(x => x.HouseNumber)
                    .NotEmpty()
-                   .MaximumLength(5);
+                   .MaximumLength(15);
             }
         }
     }
