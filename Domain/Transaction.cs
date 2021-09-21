@@ -41,11 +41,6 @@ namespace Domain
         {
             return new DebitAcquisitionGoodsAndServicesTransaction(@from, to, amount, receivedDateTime, description, sequence, attachments);
         }
-
-        public Transaction CreateDebitAcquisitionGoodsAndServices(Party @from, Party to, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
-        {
-            return new DebitAcquisitionGoodsAndServicesTransaction(@from, to, amount, receivedDateTime, description, sequence, attachments);
-        }
         public Guid Id { get;  }
         public DateTime ReceivedDateTime { get; }
         public decimal Amount { get; }
