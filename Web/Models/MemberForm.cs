@@ -40,7 +40,7 @@ namespace Web.Models
         public string? ZipCode { get; set; }
 
         [Required]
-        [StringLength(5)]
+        [StringLength(15)]
         public string? HouseNumber { get; set; }
 
         [Required]
