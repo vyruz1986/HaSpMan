@@ -1,8 +1,9 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Web.Models
 {
-    public class NewMember
+    public class MemberForm
     {
         [Required]
         [StringLength(50)]
@@ -15,6 +16,7 @@ namespace Web.Models
 
         [Required]
         [StringLength(100)]
+        [EmailAddress]
         public string? Email { get; set; }
 
         [Required]
@@ -38,7 +40,12 @@ namespace Web.Models
         public string? ZipCode { get; set; }
 
         [Required]
-        [StringLength(5)]
+        [StringLength(15)]
         public string? HouseNumber { get; set; }
+
+        [Required]
+        public double MembershipFee { get; set; }
+
+        public DateTime? MembershipExpiryDate { get; set; }
     }
 }

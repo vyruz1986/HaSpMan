@@ -1,13 +1,9 @@
-﻿using System;
-using System.Linq.Expressions;
-
-using Domain;
-
-using MediatR;
+﻿using MediatR;
 
 using Queries.Enums;
+using Queries.Members.ViewModels;
 
-namespace Queries
+namespace Queries.Members
 {
     public record SearchMembersQuery(
         string SearchString,

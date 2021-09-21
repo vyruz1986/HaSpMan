@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using FluentValidation;
 
@@ -8,19 +8,20 @@ using Types;
 
 namespace Commands
 {
-    public record AddMemberCommand(
-      string FirstName,
-      string LastName,
-      Address Address,
-      string Email,
-      string PhoneNumber,
-      double MembershipFee,
-      DateTimeOffset MembershipExpiryDate
-    ) : IRequest<Guid>;
+    public record EditMemberCommand(
+       Guid Id,
+       string FirstName,
+       string LastName,
+       Address Address,
+       string Email,
+       string PhoneNumber,
+       double MembershipFee,
+       DateTimeOffset? MembershipExpiryDate
+    ) : IRequest;
 
-    public class AddMemberCommandValidator : AbstractValidator<AddMemberCommand>
+    public class EditMemberCommandValidator : AbstractValidator<EditMemberCommand>
     {
-        public AddMemberCommandValidator()
+        public EditMemberCommandValidator()
         {
             RuleFor(x => x.FirstName)
                .NotEmpty()
@@ -32,20 +33,19 @@ namespace Commands
 
             RuleFor(x => x.Email)
                .NotEmpty()
-               .MaximumLength(100)
-               .EmailAddress();
+               .MaximumLength(100);
 
             RuleFor(x => x.PhoneNumber)
                .NotEmpty()
                .MaximumLength(50);
 
             RuleFor(x => x.Address)
-               .SetValidator(new AddMemberCommandAddressValidator());
+               .SetValidator(new EditMemberCommandAddressValidator());
         }
 
-        public class AddMemberCommandAddressValidator : AbstractValidator<Address>
+        public class EditMemberCommandAddressValidator : AbstractValidator<Address>
         {
-            public AddMemberCommandAddressValidator()
+            public EditMemberCommandAddressValidator()
             {
                 RuleFor(x => x.Street)
                    .NotEmpty()

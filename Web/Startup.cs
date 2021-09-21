@@ -1,17 +1,28 @@
+
+using Commands;
+using Commands.Services;
+
+using Domain.Interfaces;
+
+using FluentValidation;
+
+using MediatR;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Web.Data;
-using Domain.Interfaces;
-using Persistence.Repositories;
-using Persistence.Extensions;
-using MediatR;
-using Commands;
-using MudBlazor.Services;
+
 using MudBlazor;
-using Queries;
+using MudBlazor.Services;
+
+using Persistence.Extensions;
+using Persistence.Repositories;
+
+using Queries.Members;
+
 using Web.Extensions;
 
 namespace Web
@@ -32,25 +43,47 @@ namespace Web
             var dbConnectionString = Configuration.GetConnectionString("HaSpMan");
 
             services.AddCustomAuthentication(Configuration);
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.All;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
-            services.AddSingleton<WeatherForecastService>();
             services.AddScoped<IMemberRepository, MemberRepository>();
-            services.AddAutoMapper(typeof(Commands.MapperProfiles.MemberProfile), typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
-            services.AddMediatR(typeof(AddMemberCommand), typeof(SearchMembersQuery));
+            services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
+
+            // Add query and command assemblies to mediatr
+            var queryAssembly = typeof(SearchMembersQuery).Assembly;
+            var commandAssembly = typeof(AddMemberCommand).Assembly;
+            services.AddMediatR(new[] { queryAssembly, commandAssembly });
+
+            // For all the validators, register them with dependency injection as scoped
+            AssemblyScanner.FindValidatorsInAssembly(commandAssembly)
+                .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
+
+            // Add the custome pipeline validation to DI
+            services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
             services.AddMudServices(cfg =>
             {
                 cfg.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomCenter;
                 cfg.SnackbarConfiguration.VisibleStateDuration = 5000;
             });
+            services.AddHttpContextAccessor();
+            services.AddScoped<IUserAccessor, UserAccessor>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
