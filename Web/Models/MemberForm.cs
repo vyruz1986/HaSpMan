@@ -44,6 +44,7 @@ namespace Web.Models
         public string? HouseNumber { get; set; }
 
         [Required]
+        [Range(0, 500)]
         public double MembershipFee { get; set; }
 
         public DateTime? MembershipExpiryDate { get; set; }

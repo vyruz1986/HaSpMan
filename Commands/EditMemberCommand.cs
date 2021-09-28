@@ -41,6 +41,9 @@ namespace Commands
 
             RuleFor(x => x.Address)
                .SetValidator(new EditMemberCommandAddressValidator());
+
+            RuleFor(x => x.MembershipFee)
+               .GreaterThanOrEqualTo(0);
         }
 
         public class EditMemberCommandAddressValidator : AbstractValidator<Address>
