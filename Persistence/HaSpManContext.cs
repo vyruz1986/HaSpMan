@@ -12,6 +12,8 @@ namespace Persistence
       }
       public DbSet<Member> Members { get; set; } = null!;
 
+      public DbSet<Transaction> Transactions { get; set; } = null!;
+
       protected override void OnModelCreating(ModelBuilder builder)
       {
          builder.HasDefaultSchema("HaSpMan");

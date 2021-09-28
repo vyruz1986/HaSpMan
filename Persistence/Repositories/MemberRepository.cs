@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories
 {
+
     public class MemberRepository : IMemberRepository
     {
         private readonly HaSpManContext _context;

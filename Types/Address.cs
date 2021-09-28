@@ -12,4 +12,12 @@ namespace Types
             return $"{Street} {HouseNumber}, {ZipCode} {City}, {Country}";
         }
     }
+
+    public record CounterParty(
+        string Name, string? MemberId = null);
+
+    public record BankAccount(
+        string Name,
+        string Number);
+
 }

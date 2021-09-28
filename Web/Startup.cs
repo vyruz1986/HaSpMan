@@ -55,6 +55,7 @@ namespace Web
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
 
             // Add query and command assemblies to mediatr
