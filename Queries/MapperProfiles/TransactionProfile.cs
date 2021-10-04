@@ -15,7 +15,7 @@ namespace Queries.MapperProfiles
         public TransactionProfile()
         {
             CreateMap<Transaction, TransactionSummary>()
-                .ForMember(x => x.Counterparty, o => o.MapFrom(x => x.CounterParty.Name))
+                .ForMember(x => x.CounterParty, o => o.MapFrom(x => x.CounterParty.Name))
                 .ForMember(x => x.BankAccount, o => o.MapFrom(x => x.Account.Name))
                 .ForMember(x => x.TransactionType, o => o.MapFrom(new TransactionTypeResolver()));
         }
