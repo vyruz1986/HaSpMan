@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Domain;
 
 using MediatR;
 
 using Types;
 
-namespace Commands.Handlers
+namespace Commands.Handlers.Transaction.AddDebitFixedCosts
 {
     public record AddDebitFixedCostsTransactionCommand(
         CounterParty CounterParty, BankAccount BankAccount, decimal Amount,
         DateTime ReceivedDateTime, string Description, int Sequence,
-        ICollection<Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
+        ICollection<Domain.Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
 }
