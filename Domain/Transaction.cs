@@ -72,15 +72,15 @@ namespace Domain
                 attachments);
         }
 
-        public IReadOnlyList<Transaction> CreateInternalBankTransaction(BankAccount from, BankAccount to, decimal amount,
-            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(BankAccount from, BankAccount to, decimal amount,
+            DateTime receivedDateTime, string description, int fromSequence, int toSequence, ICollection<TransactionAttachment> attachments)
         {
             return new List<Transaction>()
             {
                 new InternalBankTransaction(new CounterParty(to.Name), from, amount, receivedDateTime, description,
-                    sequence, attachments),
+                    fromSequence, attachments),
                 new InternalBankTransaction(new CounterParty(from.Name), to, amount, receivedDateTime, description,
-                    sequence, attachments)
+                    toSequence, attachments)
             };
         }
 

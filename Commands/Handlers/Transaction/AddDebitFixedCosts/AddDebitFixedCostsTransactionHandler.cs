@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,8 +7,6 @@ using Domain;
 using MediatR;
 
 using Persistence.Repositories;
-
-using Types;
 
 namespace Commands.Handlers
 {
@@ -28,15 +23,8 @@ namespace Commands.Handlers
             var transaction = Transaction.CreateDebitFixedCosts(request.CounterParty, request.BankAccount, request.Amount,
                 request.ReceivedDateTime, request.Description, request.Sequence, request.Attachments);
             _transactionRepository.Add(transaction);
-            await _transactionRepository.SaveAsync();
+            await _transactionRepository.SaveAsync(cancellationToken);
             return transaction.Id;
         }
-    }
-
-    public record AddDebitFixedCostsTransactionCommand(
-        CounterParty CounterParty, BankAccount BankAccount, decimal Amount,
-        DateTime ReceivedDateTime, string Description, int Sequence, ICollection<Transaction.TransactionAttachment> Attachments) : IRequest<Guid>
-    {
-
     }
 }

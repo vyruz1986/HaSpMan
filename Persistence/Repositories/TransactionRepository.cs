@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Domain;
@@ -26,6 +27,11 @@ namespace Persistence.Repositories
             return await _haSpManContext.Transactions.ToListAsync();
         }
 
+        public void AddRange(IEnumerable<Transaction> transactions)
+        {
+            _haSpManContext.Transactions.AddRange(transactions);
+        }
+
         public void Add(Transaction member)
         {
             _haSpManContext.Transactions.Add(member);
@@ -35,18 +41,20 @@ namespace Persistence.Repositories
         {
             _haSpManContext.Transactions.Remove(member);
         }
-
-        public async Task SaveAsync()
+        
+        public async Task SaveAsync(CancellationToken cancellationToken = default)
         {
-            await _haSpManContext.SaveChangesAsync();
+            await _haSpManContext.SaveChangesAsync(cancellationToken);
         }
     }
     public interface ITransactionRepository
     {
         Task<Transaction> GetById(Guid id);
         Task<IEnumerable<Transaction>> GetAllAsync();
+
+        void AddRange(IEnumerable<Transaction> transactions);
         void Add(Transaction member);
         void Remove(Transaction member);
-        Task SaveAsync();
+        Task SaveAsync(CancellationToken cancellationToken = default);
     }
 }
