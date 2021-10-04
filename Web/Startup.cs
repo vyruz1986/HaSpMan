@@ -1,4 +1,6 @@
 
+using System;
+
 using Commands;
 using Commands.Services;
 
@@ -56,7 +58,10 @@ namespace Web
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
+            services.AddAutoMapper(
+                typeof(MapperProfiles.MemberProfile), 
+                typeof(Queries.MapperProfiles.MemberProfile), 
+                typeof(Queries.MapperProfiles.TransactionProfile));
 
             // Add query and command assemblies to mediatr
             var queryAssembly = typeof(SearchMembersQuery).Assembly;

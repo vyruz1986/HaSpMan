@@ -9,6 +9,6 @@ namespace Commands.Handlers.Transaction.AddDebitFixedCosts
 {
     public record AddDebitFixedCostsTransactionCommand(
         CounterParty CounterParty, BankAccount BankAccount, decimal Amount,
-        DateTime ReceivedDateTime, string Description, int Sequence,
+        DateTimeOffset ReceivedDateTime, string Description, int Sequence,
         ICollection<Domain.Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
 }

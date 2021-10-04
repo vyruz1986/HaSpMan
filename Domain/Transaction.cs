@@ -7,9 +7,9 @@ namespace Domain
 {
     public abstract class Transaction       
     {
-        private Transaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)        {
+        private Transaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)        {
             Id = Guid.NewGuid();
-            DateFiled = DateTime.UtcNow;
+            DateFiled = DateTimeOffset.UtcNow;
 
             CounterParty = counterParty ?? throw new ArgumentNullException(nameof(counterParty), "Cannot be null");
             Account = account ?? throw new ArgumentNullException(nameof(account), "Cannot be null");
@@ -26,54 +26,54 @@ namespace Domain
             Attachments = attachments ?? throw new ArgumentNullException(nameof(attachments), "Cannot be null");
         }
 
-        public static Transaction CreateDebitFixedCosts(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+        public static Transaction CreateDebitFixedCosts(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
             string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new DebitFixedCostsTransaction(counterParty, account, amount, receivedDateTime, description, sequence, attachments);
         }
 
 
-        public static Transaction CreateDebitAcquisitionGoodsAndServices(CounterParty counterParty, BankAccount bankAccount, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        public static Transaction CreateDebitAcquisitionGoodsAndServices(CounterParty counterParty, BankAccount bankAccount, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new DebitAcquisitionGoodsAndServicesTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence, attachments);
         }
 
-        public static Transaction CreateDebitAcquisitionConsumables(CounterParty counterParty, BankAccount bankAccount, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+        public static Transaction CreateDebitAcquisitionConsumables(CounterParty counterParty, BankAccount bankAccount, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
-            return new DebitAcquisitionConsumables(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
+            return new DebitAcquisitionConsumablesTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments);
         }
 
         public static Transaction CreateDebitBankCostsTransaction(CounterParty counterParty, BankAccount bankAccount, decimal amount,
-            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+            DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new DebitBankCostsTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments);
         }
 
         public static Transaction CreateCreditMemberFeeTransaction(CounterParty counterParty, BankAccount bankAccount, decimal amount,
-            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+            DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new CreditMemberFeeTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments);
         }
 
         public static Transaction CreateCreditWorkshopFeeTransaction(CounterParty counterParty, BankAccount bankAccount, decimal amount,
-            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+            DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new CreditWorkshopFeeTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments);
         }
 
         public static Transaction CreateCreditDonationTransaction(CounterParty counterParty, BankAccount bankAccount, decimal amount,
-            DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
+            DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments)
         {
             return new CreditDonationTransaction(counterParty, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments);
         }
 
         public static IReadOnlyList<Transaction> CreateInternalBankTransaction(BankAccount from, BankAccount to, decimal amount,
-            DateTime receivedDateTime, string description, int fromSequence, int toSequence, ICollection<TransactionAttachment> attachments)
+            DateTimeOffset receivedDateTime, string description, int fromSequence, int toSequence, ICollection<TransactionAttachment> attachments)
         {
             return new List<Transaction>()
             {
@@ -85,7 +85,7 @@ namespace Domain
         }
 
         public Guid Id { get;  }
-        public DateTime ReceivedDateTime { get; }
+        public DateTimeOffset ReceivedDateTime { get; }
         public decimal Amount { get; }
 
         public CounterParty CounterParty { get; }
@@ -93,7 +93,7 @@ namespace Domain
 
         public string Description { get; }
 
-        public DateTime DateFiled { get;}
+        public DateTimeOffset DateFiled { get;}
         public int Sequence { get; }
         public ICollection<TransactionAttachment> Attachments { get; }
 
@@ -120,27 +120,27 @@ namespace Domain
         }
 
         #region Specific transactions
-        private class DebitFixedCostsTransaction : Transaction
+        public class DebitFixedCostsTransaction : Transaction
         {
-            public DebitFixedCostsTransaction(CounterParty counterParty, BankAccount to, decimal amount, DateTime receivedDateTime,
+            public DebitFixedCostsTransaction(CounterParty counterParty, BankAccount to, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) :base(counterParty, to, amount, receivedDateTime, description, sequence, attachments)           {
                 
             }
         }
 
-        private class DebitAcquisitionGoodsAndServicesTransaction : Transaction
+        public class DebitAcquisitionGoodsAndServicesTransaction : Transaction
         {
 
-            public DebitAcquisitionGoodsAndServicesTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public DebitAcquisitionGoodsAndServicesTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
             }
         }
 
-        private class DebitAcquisitionConsumables : Transaction
+        public class DebitAcquisitionConsumablesTransaction : Transaction
         {
-            public DebitAcquisitionConsumables(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public DebitAcquisitionConsumablesTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
@@ -149,7 +149,7 @@ namespace Domain
 
         public class DebitBankCostsTransaction : Transaction
         {
-            public DebitBankCostsTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public DebitBankCostsTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
@@ -158,7 +158,7 @@ namespace Domain
 
         public class CreditMemberFeeTransaction : Transaction
         {
-            public CreditMemberFeeTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public CreditMemberFeeTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
@@ -167,7 +167,7 @@ namespace Domain
 
         public class CreditWorkshopFeeTransaction : Transaction
         {
-            public CreditWorkshopFeeTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public CreditWorkshopFeeTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
@@ -176,7 +176,7 @@ namespace Domain
 
         public class CreditDonationTransaction : Transaction
         {
-            public CreditDonationTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime,
+            public CreditDonationTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime,
                 string description, int sequence, ICollection<TransactionAttachment> attachments) : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
 
@@ -185,7 +185,7 @@ namespace Domain
 
         public class InternalBankTransaction : Transaction
         {
-            public InternalBankTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTime receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments) 
+            public InternalBankTransaction(CounterParty counterParty, BankAccount account, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments) 
                 : base(counterParty, account, amount, receivedDateTime, description, sequence, attachments)
             {
             }

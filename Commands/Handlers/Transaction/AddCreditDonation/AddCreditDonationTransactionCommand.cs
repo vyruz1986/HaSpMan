@@ -9,6 +9,6 @@ namespace Commands.Handlers.Transaction.AddCreditDonation
 {
     public record AddCreditDonationTransactionCommand(CounterParty CounterParty, BankAccount BankAccount,
         decimal Amount,
-        DateTime ReceivedDateTime, string Description, int Sequence,
+        DateTimeOffset ReceivedDateTime, string Description, int Sequence,
         ICollection<Domain.Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
 }
