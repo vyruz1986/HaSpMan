@@ -1,0 +1,29 @@
+﻿<MudGrid>
+    <MudItem xs="6">
+        <MudTextField T="string" Label="Counter party" @bind-Value="Transaction.CounterPartyName" For="@(() => Transaction.CounterPartyName)" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="Guid?" Label="Member id" @bind-Value="Transaction.MemberId" For="@(() => Transaction.MemberId)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)" />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="4">
+        <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
+                       AutoClose="true">
+            <PickerActions>
+                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+            </PickerActions>
+        </MudDatePicker>
+    </MudItem>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public Models.TransactionForm Transaction { get; set; } = new();
+
+    MudDatePicker _picker = new();
+}

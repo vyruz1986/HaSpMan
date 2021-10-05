@@ -18,7 +18,7 @@ namespace Commands.Handlers.Transaction.AddDebitAcquisitionGoodsAndServices
         }
         public async Task<Guid> Handle(AddDebitAcquisitionGoodsAndServicesCommand request, CancellationToken cancellationToken)
         {
-            var transaction = Domain.Transaction.CreateDebitAcquisitionGoodsAndServices(request.CounterParty, request.BankAccount, request.Amount,
+            var transaction = Domain.Transaction.CreateDebitAcquisitionGoodsAndServices(request.CounterParty, request.BankAccountId, request.Amount,
                 request.ReceivedDateTime, request.Description, request.Sequence, request.Attachments);
             _transactionRepository.Add(transaction);
             await _transactionRepository.SaveAsync(cancellationToken);

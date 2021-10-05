@@ -1,3 +1,5 @@
+using System;
+
 namespace Types
 {
     public record Address(
@@ -18,6 +20,7 @@ namespace Types
 
     public record BankAccount(
         string Name,
-        string Number);
+        string Number,
+        Guid BankAccountId);
 
 }

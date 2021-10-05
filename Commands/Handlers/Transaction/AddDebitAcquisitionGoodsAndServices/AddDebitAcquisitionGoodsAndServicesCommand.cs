@@ -7,7 +7,7 @@ using Types;
 
 namespace Commands.Handlers.Transaction.AddDebitAcquisitionGoodsAndServices
 {
-    public record AddDebitAcquisitionGoodsAndServicesCommand(CounterParty CounterParty, BankAccount BankAccount,
+    public record AddDebitAcquisitionGoodsAndServicesCommand(CounterParty CounterParty, Guid BankAccountId,
         decimal Amount,
         DateTimeOffset ReceivedDateTime, string Description, int Sequence,
         ICollection<Domain.Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
