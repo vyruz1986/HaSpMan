@@ -55,6 +55,7 @@ namespace Web
             services.AddHaSpManContext(dbConnectionString);
             services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddAutoMapper(typeof(MapperProfiles.MemberProfile), typeof(Queries.MapperProfiles.MemberProfile));
 
             // Add query and command assemblies to mediatr
@@ -66,7 +67,7 @@ namespace Web
             AssemblyScanner.FindValidatorsInAssembly(commandAssembly)
                 .ForEach(item => services.AddScoped(item.InterfaceType, item.ValidatorType));
 
-            // Add the custome pipeline validation to DI
+            // Add the custom pipeline validation to DI
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             services.AddMudServices(cfg =>
