@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 using Persistence.Repositories;
@@ -19,7 +21,7 @@ namespace Commands.Handlers.Transaction.AddInternalBank
         }
         public async Task<Guid> Handle(AddInternalBankTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transactions = Domain.Transaction.CreateInternalBankTransaction(request.From, request.To, request.Amount,
+            var transactions = Domain.Transaction.CreateInternalBankTransaction(new Types.BankAccount(request.From.Name, request.From.Number, request.From.BankAccountId), new Types.BankAccount(request.To.Name, request.To.Number, request.To.BankAccountId), request.Amount,
                 request.ReceivedDateTime, request.Description, request.FromSequence, request.ToSequence, request.Attachments);
             _transactionRepository.AddRange(transactions);
             await _transactionRepository.SaveAsync(cancellationToken);

@@ -73,7 +73,7 @@ namespace Domain
                 attachments);
         }
 
-        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(BankAccount from, BankAccount to, decimal amount,
+        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(Types.BankAccount from, Types.BankAccount to, decimal amount,
             DateTimeOffset receivedDateTime, string description, int fromSequence, int toSequence, ICollection<TransactionAttachment> attachments)
         {
             return new List<Transaction>()
