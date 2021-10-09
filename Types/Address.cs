@@ -16,7 +16,7 @@ namespace Types
     }
 
     public record CounterParty(
-        string Name, string? MemberId = null);
+        string Name);
 
     public record BankAccount(
         string Name,

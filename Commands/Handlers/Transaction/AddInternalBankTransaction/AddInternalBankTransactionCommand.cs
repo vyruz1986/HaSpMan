@@ -5,7 +5,7 @@ using MediatR;
 
 using Types;
 
-namespace Commands.Handlers.Transaction.AddInternalBank
+namespace Commands.Handlers.Transaction.AddInternalBankTransaction
 {
     public record AddInternalBankTransactionCommand(BankAccount From, BankAccount To, decimal Amount,
         DateTimeOffset ReceivedDateTime, string Description, int FromSequence, int ToSequence,

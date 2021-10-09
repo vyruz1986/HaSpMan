@@ -17,28 +17,11 @@ namespace Queries.MapperProfiles
             CreateMap<Transaction, TransactionSummary>()
                 .ForMember(x => x.CounterParty, o => o.MapFrom(x => x.CounterParty.Name))
                 .ForMember(x => x.BankAccountId, o => o.MapFrom(x => x.BankAccountId))
-                .ForMember(x => x.TransactionType, o => o.MapFrom(new TransactionTypeResolver()));
-        }
-    }
-
-    public class TransactionTypeResolver : IValueResolver<Transaction, TransactionSummary, TransactionType>
-    { 
-        public TransactionType Resolve(Transaction source, TransactionSummary destination, TransactionType destMember,
-            ResolutionContext context)
-        {
-            var transactionType = source switch
-            {
-                Transaction.DebitAcquisitionConsumablesTransaction => TransactionType.DebitAcquisitionConsumables,
-                Transaction.DebitAcquisitionGoodsAndServicesTransaction => TransactionType.DebitAcquisitionGoodsAndServices,
-                Transaction.DebitFixedCostsTransaction => TransactionType.DebitFixedCosts,
-                Transaction.DebitBankCostsTransaction => TransactionType.DebitBankCosts,
-                Transaction.CreditDonationTransaction => TransactionType.CreditDonation,
-                Transaction.CreditMemberFeeTransaction => TransactionType.CreditMemberFee,
-                Transaction.CreditWorkshopFeeTransaction => TransactionType.CreditWorkshopFee,
-                Transaction.InternalBankTransaction => TransactionType.InternalBank,
-                _ => throw new ArgumentOutOfRangeException(nameof(source), "Unknown transaction type"),
-            };
-            return transactionType;
+                .ForMember(x => x.TransactionType, o => o.MapFrom(x => x.TransactionType))
+                .ForMember(x => x.ReceivedDateTime, o => o.MapFrom(x => x.ReceivedDateTime))
+                .ForMember(x => x.Id, o => o.MapFrom(x => x.Id))
+                .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
+                .ForMember(x => x.MemberId, o => o.MapFrom(x => x.MemberId));
         }
     }
 }

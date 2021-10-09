@@ -9,7 +9,9 @@ using MediatR;
 
 using Persistence.Repositories;
 
-namespace Commands.Handlers.Transaction.AddInternalBank
+using Types;
+
+namespace Commands.Handlers.Transaction.AddInternalBankTransaction
 {
     public class AddInternalBankTransactionHandler : IRequestHandler<AddInternalBankTransactionCommand, Guid>
     {
@@ -21,7 +23,7 @@ namespace Commands.Handlers.Transaction.AddInternalBank
         }
         public async Task<Guid> Handle(AddInternalBankTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transactions = Domain.Transaction.CreateInternalBankTransaction(new Types.BankAccount(request.From.Name, request.From.Number, request.From.BankAccountId), new Types.BankAccount(request.To.Name, request.To.Number, request.To.BankAccountId), request.Amount,
+            var transactions = Domain.Transaction.CreateInternalBankTransaction(TransactionType.InternalBank, new Types.BankAccount(request.From.Name, request.From.Number, request.From.BankAccountId), new Types.BankAccount(request.To.Name, request.To.Number, request.To.BankAccountId), request.Amount,
                 request.ReceivedDateTime, request.Description, request.FromSequence, request.ToSequence, request.Attachments);
             _transactionRepository.AddRange(transactions);
             await _transactionRepository.SaveAsync(cancellationToken);
