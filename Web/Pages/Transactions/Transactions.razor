@@ -1,4 +1,4 @@
-﻿@page "/members"
+﻿@page "/transactions"
 @attribute [Authorize]
 
 @using MediatR
@@ -34,7 +34,7 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="From">@context.CounterParty</MudTd>
+        <MudTd DataLabel="From">@context.CounterPartyName</MudTd>
         <MudTd DataLabel="Amount">@context.Amount</MudTd>
         <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime</MudTd>
         @*<MudTd>

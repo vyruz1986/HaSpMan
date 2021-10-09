@@ -6,9 +6,9 @@ namespace Queries.Transactions.ViewModels
 {
     public record TransactionSummary(
         Guid Id,
-        string CounterParty,
+        string CounterPartyName,
         Guid BankAccountId,
-        string Amount,
+        decimal Amount,
         DateTimeOffset ReceivedDateTime,
         TransactionType TransactionType,
         Guid? MemberId);

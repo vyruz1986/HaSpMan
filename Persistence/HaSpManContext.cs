@@ -20,6 +20,7 @@ namespace Persistence
             builder.HasDefaultSchema("HaSpMan");
             builder.ApplyConfigurationsFromAssembly(
                typeof(Persistence.EntityConfigurations.MemberConfiguration).Assembly
+
             );
             base.OnModelCreating(builder);
         }

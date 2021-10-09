@@ -9,5 +9,5 @@ namespace Commands.Handlers.Transaction.AddInternalBankTransaction
 {
     public record AddInternalBankTransactionCommand(BankAccount From, BankAccount To, decimal Amount,
         DateTimeOffset ReceivedDateTime, string Description, int FromSequence, int ToSequence,
-        ICollection<Domain.Transaction.TransactionAttachment> Attachments) : IRequest<Guid>;
+        ICollection<TransactionAttachment> Attachments) : IRequest<Guid>;
 }

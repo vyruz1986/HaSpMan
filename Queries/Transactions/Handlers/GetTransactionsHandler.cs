@@ -63,14 +63,14 @@ namespace Queries.Transactions.Handlers
             {
                 SortDirection.Ascending => request.OrderBy switch
                 {
-                    TransactionSummaryOrderOption.From => transactions.OrderBy(x => x.CounterParty.Name),
+                    TransactionSummaryOrderOption.From => transactions.OrderBy(x => x.CounterPartyName),
                     TransactionSummaryOrderOption.Amount => transactions.OrderBy(x => x.Amount),
                     TransactionSummaryOrderOption.ReceivedDateTime => transactions.OrderBy(x => x.ReceivedDateTime),
                     _ => transactions.OrderBy(x => x.DateFiled)
                 },
                 SortDirection.Descending => request.OrderBy switch
                 {
-                    TransactionSummaryOrderOption.From => transactions.OrderByDescending(x => x.CounterParty.Name),
+                    TransactionSummaryOrderOption.From => transactions.OrderByDescending(x => x.CounterPartyName),
                     TransactionSummaryOrderOption.Amount => transactions.OrderByDescending(x => x.Amount),
                     TransactionSummaryOrderOption.ReceivedDateTime => transactions.OrderByDescending(x =>
                         x.ReceivedDateTime),
@@ -84,7 +84,7 @@ namespace Queries.Transactions.Handlers
 
         public Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
         {
-            return t => t.CounterParty.Name.ToLower().Contains(searchString) ||
+            return t => t.CounterPartyName.ToLower().Contains(searchString) ||
                         t.Amount.ToString().Contains(searchString);
         } 
     }

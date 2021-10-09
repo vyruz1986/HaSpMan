@@ -1,4 +1,4 @@
-﻿@page "/members/new"
+﻿@page "/transactions/new"
 @attribute [Authorize]
 @using MediatR
 @using AutoMapper
@@ -26,7 +26,7 @@
 
     private async Task AddTransaction()
     {
-        var command = _mapper.Map<AddDebitCommand>(_newTransaction);
+        var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
         var response = await _mediator.Send(command);
         Snackbar.Clear();
         Snackbar.Add($"Transaction for {_newTransaction.CounterPartyName} added successfully!", Severity.Success);

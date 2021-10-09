@@ -5,8 +5,11 @@
     <MudItem xs="6">
         <MudTextField T="Guid?" Label="Member id" @bind-Value="Transaction.MemberId" For="@(() => Transaction.MemberId)" />
     </MudItem>
-    <MudItem xs="12">
+    <MudItem xs="3">
         <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Description" @bind-Value="Transaction.Description" For="@(() => Transaction.Description)" />
     </MudItem>
     <MudItem xs="6">
         <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)" />

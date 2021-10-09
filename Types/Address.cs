@@ -14,10 +14,7 @@ namespace Types
             return $"{Street} {HouseNumber}, {ZipCode} {City}, {Country}";
         }
     }
-
-    public record CounterParty(
-        string Name);
-
+    
     public record BankAccount(
         string Name,
         string Number,

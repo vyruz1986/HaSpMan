@@ -2,6 +2,7 @@
 using System;
 
 using Commands;
+using Commands.Handlers.Transaction.AddDebitTransaction;
 using Commands.Services;
 
 using Domain.Interfaces;
@@ -61,12 +62,13 @@ namespace Web
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddAutoMapper(
                 typeof(MapperProfiles.MemberProfile), 
+                typeof(MapperProfiles.TransactionProfile),
                 typeof(Queries.MapperProfiles.MemberProfile), 
                 typeof(Queries.MapperProfiles.TransactionProfile));
 
             // Add query and command assemblies to mediatr
             var queryAssembly = typeof(SearchMembersQuery).Assembly;
-            var commandAssembly = typeof(AddMemberCommand).Assembly;
+            var commandAssembly = typeof(AddDebitTransactionCommand).Assembly;
             services.AddMediatR(new[] { queryAssembly, commandAssembly });
 
             // For all the validators, register them with dependency injection as scoped

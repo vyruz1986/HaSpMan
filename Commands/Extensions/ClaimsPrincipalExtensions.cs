@@ -8,7 +8,7 @@ namespace Commands.Extensions
     {
         public static string? GetName(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(CustomClaims.Name);
+            return user.FindFirstValue("preferred_username");
         }
     }
 }

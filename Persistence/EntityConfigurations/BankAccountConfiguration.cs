@@ -22,26 +22,19 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.TransactionType).IsRequired();
             builder.Property(x => x.Description).IsRequired();
             builder.Property(x => x.Sequence).IsRequired();
+            builder.Property(x => x.CounterPartyName).IsRequired();
             builder.HasIndex(x => new { x.BankAccountId, x.Sequence }).IsUnique();
-            builder.OwnsOne(x => x.CounterParty, CounterpartyConfiguration());
-            builder.OwnsMany(x => x.Attachments, AttachmentConfiguration());
+            builder.OwnsMany(x => x.Attachments, AttachmentConfiguration("Transaction_Attachments"));
 
         }
 
-        private Action<OwnedNavigationBuilder<Transaction, Transaction.TransactionAttachment>> AttachmentConfiguration()
+        private Action<OwnedNavigationBuilder<Transaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
         {
             return cfg =>
             {
+                cfg.ToTable(tableName);
                 cfg.Property(x => x.Name).IsRequired();
                 cfg.Property(x => x.BlobURI).IsRequired();
-            };
-        }
-
-        private Action<OwnedNavigationBuilder<Transaction, CounterParty>> CounterpartyConfiguration()
-        {
-            return cfg =>
-            {
-                cfg.Property(x => x.Name).HasMaxLength(200);
             };
         }
     }
