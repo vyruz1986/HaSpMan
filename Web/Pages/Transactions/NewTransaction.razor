@@ -30,7 +30,7 @@
         var response = await _mediator.Send(command);
         Snackbar.Clear();
         Snackbar.Add($"Transaction for {_newTransaction.CounterPartyName} added successfully!", Severity.Success);
-        NavManager.NavigateTo("/transaction");
+        NavManager.NavigateTo("/transactions");
     }
     private void ShowError()
     {

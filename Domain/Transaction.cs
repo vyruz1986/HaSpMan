@@ -10,15 +10,14 @@ namespace Domain
 #pragma warning disable 8618
         private Transaction() { } // Make EFCore happy
 #pragma warning restore 8618
-        private Transaction(TransactionType transactionType, string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId)
+        private Transaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId,
+            ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
             Id = Guid.NewGuid();
             DateFiled = DateTimeOffset.UtcNow;
-
-            TransactionType = transactionType;
+            
             if (string.IsNullOrWhiteSpace(counterPartyName))
             {
-
                 throw new ArgumentNullException(nameof(counterPartyName), "Cannot be null");
             }
             
@@ -37,6 +36,9 @@ namespace Domain
             Description = description;
             Sequence = sequence;
             Attachments = attachments ?? throw new ArgumentNullException(nameof(attachments), "Cannot be null");
+
+            TransactionTypeAmounts = transactionTypeAmounts ??
+                                     throw new ArgumentNullException(nameof(transactionTypeAmounts), "Cannot be null");
         }
 
         public Guid? MemberId { get; private set; }
@@ -44,8 +46,6 @@ namespace Domain
         public Guid Id { get; private set; }
         public DateTimeOffset ReceivedDateTime { get; private set; }
         public decimal Amount { get; private set; }
-
-        public TransactionType TransactionType { get; private set; }
         public string CounterPartyName { get; private set; }
         public Guid BankAccountId { get; private set; }
 
@@ -55,27 +55,32 @@ namespace Domain
         public int Sequence { get; private set; }
         public ICollection<TransactionAttachment> Attachments { get; private set; }
 
-        public static Transaction CreateDebitTransaction(TransactionType transactionType, string counterPartyName, Guid account, decimal amount, DateTimeOffset receivedDateTime,
-            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId)
+        public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; private set; }
+
+        public static Transaction CreateDebitTransaction(string counterPartyName, Guid account, decimal amount, DateTimeOffset receivedDateTime,
+            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
-            return new DebitTransaction(transactionType, counterPartyName, account, amount, receivedDateTime, description, sequence, attachments, memberId);
+            return new DebitTransaction(counterPartyName, account, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts);
         }
 
-        public static Transaction CreateCreditTransaction(TransactionType transactionType, string counterPartyName, Guid bankAccount, decimal amount,
-            DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId)
+        public static Transaction CreateCreditTransaction(string counterPartyName, Guid bankAccount, decimal amount,
+            DateTimeOffset receivedDateTime, string description, int sequence, 
+            ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
-            return new CreditTransaction(transactionType, counterPartyName, bankAccount, amount, receivedDateTime, description, sequence,
-                attachments, memberId);
+            return new CreditTransaction(counterPartyName, bankAccount, amount, receivedDateTime, description, sequence,
+                attachments, memberId, transactionTypeAmounts);
         }
-        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(TransactionType transactionType, Types.BankAccount from, Types.BankAccount to, decimal amount,
-            DateTimeOffset receivedDateTime, string description, int fromSequence, int toSequence, ICollection<TransactionAttachment> attachments)
+        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(Types.BankAccount from, Types.BankAccount to, decimal amount,
+            DateTimeOffset receivedDateTime, string description, int fromSequence, int toSequence, 
+            ICollection<TransactionAttachment> attachments, 
+            ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
             return new List<Transaction>()
             {
-                new CreditTransaction(transactionType, to.Name, from.BankAccountId, amount, receivedDateTime, description,
-                    fromSequence, attachments, null),
-                new DebitTransaction(transactionType, from.Name, to.BankAccountId, amount, receivedDateTime, description,
-                    toSequence, attachments, null)
+                new CreditTransaction(to.Name, from.BankAccountId, amount, receivedDateTime, description,
+                    fromSequence, attachments, null, transactionTypeAmounts),
+                new DebitTransaction(from.Name, to.BankAccountId, amount, receivedDateTime, description,
+                    toSequence, attachments, null, transactionTypeAmounts)
             };
         }
 
@@ -84,17 +89,17 @@ namespace Domain
         #region Specific transactions
         public class DebitTransaction : Transaction
         {
-            public DebitTransaction(TransactionType transactionType, string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId) :
-                    base(transactionType, counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId)           {
+            public DebitTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
+                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
+                    base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)           {
                 
             }
         }
         public class CreditTransaction : Transaction
         {
-            public CreditTransaction(TransactionType transactionType, string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId) : 
-                    base(transactionType, counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId)
+            public CreditTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
+                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) : 
+                    base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
             {
 
             }
@@ -102,4 +107,5 @@ namespace Domain
         
 #endregion
     }
+
 }

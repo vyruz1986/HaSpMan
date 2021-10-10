@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-
-using Domain;
 
 using MediatR;
 
@@ -15,7 +12,6 @@ namespace Commands.Handlers.Transaction.AddCreditTransaction
         Guid BankAccountId,
         decimal Amount,
         DateTimeOffset ReceivedDateTime, 
-        string Description, 
-        int Sequence,
+        string Description,
         Guid? MemberId): IRequest<Guid>;
 }

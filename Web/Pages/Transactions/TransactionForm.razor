@@ -1,4 +1,5 @@
-﻿<MudGrid>
+﻿@using Types
+<MudGrid>
     <MudItem xs="6">
         <MudTextField T="string" Label="Counter party" @bind-Value="Transaction.CounterPartyName" For="@(() => Transaction.CounterPartyName)" />
     </MudItem>
@@ -22,6 +23,19 @@
             </PickerActions>
         </MudDatePicker>
     </MudItem>
+    @foreach (var transactionType in Transaction.TransactionTypeAmounts)
+    {
+        <MudItem xs="6">
+            <MudSelect Label="Select transaction type" @bind-Value="transactionType.TransactionType">
+                @foreach (var item in Enum.GetValues<TransactionType>())
+                {
+                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                }
+            </MudSelect>
+            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount"></MudNumericField>
+        </MudItem>
+    }
+    
 </MudGrid>
 
 @code {

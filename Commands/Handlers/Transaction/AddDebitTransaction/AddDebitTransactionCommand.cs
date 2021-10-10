@@ -12,13 +12,13 @@ using Types;
 namespace Commands.Handlers.Transaction.AddDebitTransaction
 {
     public record AddDebitTransactionCommand(
-        TransactionType TransactionType, 
         string CounterPartyName,
         Guid BankAccountId,
         decimal Amount,
         DateTimeOffset ReceivedDateTime, 
         string Description, 
-        Guid? MemberId) : IRequest<Guid>;
+        Guid? MemberId,
+        ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
 
     public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTransactionCommand>
     {

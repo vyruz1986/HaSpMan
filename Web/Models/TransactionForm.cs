@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Types;
 
@@ -12,14 +10,15 @@ namespace Web.Models
     {
         public TransactionForm()
         {
-            TransactionType = TransactionType.CreditDonation;
+            TransactionTypeAmounts = new List<TransactionTypeAmount>()
+            {
+                new(TransactionType.CreditWorkshopFee, 0)
+            };
         }
 
         [Required] 
         [MaxLength(50)] 
         public string? CounterPartyName { get; set; }
-        
-        public TransactionType TransactionType { get; set; }
         
         public Guid? MemberId { get; set; }
         [Required]
@@ -32,5 +31,7 @@ namespace Web.Models
         public DateTime? ReceivedDateTime { get; set; }
 
         public string? Description { get; set; }
+
+        public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; set; }
     }
 }

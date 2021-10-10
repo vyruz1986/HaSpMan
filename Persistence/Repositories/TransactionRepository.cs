@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +28,14 @@ namespace Persistence.Repositories
             return await _haSpManContext.Transactions.ToListAsync();
         }
 
+        public async Task<int> GetLastTransactionForBankAccount(Guid bankAccountId)
+        {
+            var maxValue = await _haSpManContext.Transactions
+                .Where(x => x.BankAccountId == bankAccountId)
+                .MaxAsync(x => (int?)x.Sequence);
+            return maxValue ?? 0;
+        }
+
         public void AddRange(IEnumerable<Transaction> transactions)
         {
             _haSpManContext.Transactions.AddRange(transactions);
@@ -51,6 +60,8 @@ namespace Persistence.Repositories
     {
         Task<Transaction> GetById(Guid id);
         Task<IEnumerable<Transaction>> GetAllAsync();
+
+        Task<int> GetLastTransactionForBankAccount(Guid bankAccountId);
 
         void AddRange(IEnumerable<Transaction> transactions);
         void Add(Transaction member);

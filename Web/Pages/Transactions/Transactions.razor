@@ -30,19 +30,32 @@
             <MudTableSortLabel SortLabel="receivedDateTime" T="TransactionSummary">Received</MudTableSortLabel>
         </MudTh>
         <MudTh>
+            <MudTableSortLabel SortLabel="description" T="TransactionSummary">Description</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="transactionTypes" T="TransactionSummary">Transaction types</MudTableSortLabel>
+        </MudTh>
+        <MudTh>
             Action
         </MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="From">@context.CounterPartyName</MudTd>
-        <MudTd DataLabel="Amount">@context.Amount</MudTd>
-        <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime</MudTd>
-        @*<MudTd>
-            <MudTooltip Text="Edit">
+        <MudTd DataLabel="Amount">€@context.Amount</MudTd>
+        <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("d")</MudTd>
+        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="Transaction types">
+            @foreach (var type in @context.TransactionTypeAmounts)
+            {
+                <MudChip>@type.TransactionType for €@type.Amount</MudChip>
+            }
+        </MudTd>
+        <MudTd>
+            @*<MudTooltip Text="Edit">
                 <MudIconButton Link="@($"/members/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
                                aria-label="edit"></MudIconButton>
-            </MudTooltip>
-        </MudTd>*@
+            </MudTooltip>*@
+        </MudTd>
     </RowTemplate>
     <NoRecordsContent>
         <MudText>No matching records found</MudText>

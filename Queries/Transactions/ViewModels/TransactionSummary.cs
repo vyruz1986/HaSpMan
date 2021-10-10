@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Types;
 
@@ -10,6 +11,7 @@ namespace Queries.Transactions.ViewModels
         Guid BankAccountId,
         decimal Amount,
         DateTimeOffset ReceivedDateTime,
-        TransactionType TransactionType,
-        Guid? MemberId);
+        Guid? MemberId,
+        string Description,
+        ICollection<TransactionTypeAmount> TransactionTypeAmounts);
 }

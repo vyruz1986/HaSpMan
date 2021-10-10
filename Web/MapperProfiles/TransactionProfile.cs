@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using AutoMapper;
 
 using Commands;
@@ -16,6 +18,7 @@ namespace Web.MapperProfiles
         public TransactionProfile()
         {
             CreateMap<TransactionForm, AddDebitTransactionCommand>();
+                
 
         }
     }

@@ -20,4 +20,18 @@ namespace Types
         string Number,
         Guid BankAccountId);
 
+    public class TransactionTypeAmount
+    {
+        public TransactionType TransactionType { get; set; }
+        public decimal Amount { get; set; }
+
+        public TransactionTypeAmount(
+            TransactionType transactionType,
+            decimal amount)
+        {
+            TransactionType = transactionType;
+            Amount = amount;
+        }
+    };
+
 }

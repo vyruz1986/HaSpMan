@@ -110,9 +110,6 @@ namespace Persistence.Migrations
                     b.Property<int>("Sequence")
                         .HasColumnType("int");
 
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BankAccountId", "Sequence")
@@ -226,7 +223,33 @@ namespace Persistence.Migrations
                                 .HasForeignKey("TransactionId");
                         });
 
+                    b.OwnsMany("Types.TransactionTypeAmount", "TransactionTypeAmounts", b1 =>
+                        {
+                            b1.Property<Guid>("TransactionId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(18,2)");
+
+                            b1.Property<int>("TransactionType")
+                                .HasColumnType("int");
+
+                            b1.HasKey("TransactionId", "Id");
+
+                            b1.ToTable("Transaction_TransactionTypeAmount");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransactionId");
+                        });
+
                     b.Navigation("Attachments");
+
+                    b.Navigation("TransactionTypeAmounts");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,13 +19,24 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.Amount).IsRequired();
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.DateFiled).IsRequired();
-            builder.Property(x => x.TransactionType).IsRequired();
             builder.Property(x => x.Description).IsRequired();
             builder.Property(x => x.Sequence).IsRequired();
             builder.Property(x => x.CounterPartyName).IsRequired();
             builder.HasIndex(x => new { x.BankAccountId, x.Sequence }).IsUnique();
             builder.OwnsMany(x => x.Attachments, AttachmentConfiguration("Transaction_Attachments"));
+            builder.OwnsMany(x => x.TransactionTypeAmounts,
+                TransactionTypeAmountConfiguration("Transaction_TransactionTypeAmount"));
 
+        }
+
+        private Action<OwnedNavigationBuilder<Transaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
+        {
+            return cfg =>
+            {
+                cfg.ToTable(tableName);
+                cfg.Property(x => x.Amount).IsRequired();
+                cfg.Property(x => x.TransactionType).IsRequired();
+            };
         }
 
         private Action<OwnedNavigationBuilder<Transaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
