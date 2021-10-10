@@ -18,7 +18,7 @@ namespace Persistence.Repositories
         {
             _haSpManContext = haSpManContext;
         }
-        public async Task<Transaction> GetById(Guid id)
+        public async Task<Transaction> GetByIdAsync(Guid id)
         {
             return await _haSpManContext.Transactions.FirstOrDefaultAsync(x => x.Id == id);
         }
@@ -58,7 +58,7 @@ namespace Persistence.Repositories
     }
     public interface ITransactionRepository
     {
-        Task<Transaction> GetById(Guid id);
+        Task<Transaction> GetByIdAsync(Guid id);
         Task<IEnumerable<Transaction>> GetAllAsync();
 
         Task<int> GetLastTransactionForBankAccount(Guid bankAccountId);

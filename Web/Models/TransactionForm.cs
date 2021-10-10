@@ -10,7 +10,7 @@ namespace Web.Models
     {
         public TransactionForm()
         {
-            TransactionTypeAmounts = new List<TransactionTypeAmount>()
+            TransactionTypeAmounts = new List<TransactionTypeAmountForm>()
             {
                 new(TransactionType.CreditWorkshopFee, 0)
             };
@@ -32,6 +32,22 @@ namespace Web.Models
 
         public string? Description { get; set; }
 
-        public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; set; }
+        public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
+    }
+
+    public class TransactionTypeAmountForm
+    {
+        public TransactionTypeAmountForm(TransactionType transactionType, decimal amount)
+        {
+            TransactionType = transactionType;
+            Amount = amount;
+        }
+        [Required]
+        public TransactionType TransactionType { get; set; }
+
+
+        [Required]
+        [Range(0, 10000000)]
+        public decimal Amount { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization.Formatters;
 
 using Types;
 
@@ -10,11 +12,19 @@ namespace Domain
 #pragma warning disable 8618
         private Transaction() { } // Make EFCore happy
 #pragma warning restore 8618
-        private Transaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime, string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId,
+        private Transaction(
+            string counterPartyName, 
+            Guid bankAccountId, 
+            decimal amount, 
+            DateTimeOffset receivedDateTime, 
+            string description, 
+            int sequence, 
+            ICollection<TransactionAttachment> attachments, 
+            Guid? memberId,
             ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
             Id = Guid.NewGuid();
-            DateFiled = DateTimeOffset.UtcNow;
+            DateFiled = DateTimeOffset.Now;
             
             if (string.IsNullOrWhiteSpace(counterPartyName))
             {
@@ -31,7 +41,12 @@ namespace Domain
                 throw new ArgumentException("Amount cannot be negative", nameof(amount));
             }
             Amount = amount;
-            
+
+            if (receivedDateTime > DateTimeOffset.Now)
+            {
+                throw new ArgumentException($"Received date can not be set in the future: {receivedDateTime}",
+                    nameof(receivedDateTime));
+            }
             ReceivedDateTime = receivedDateTime;
             Description = description;
             Sequence = sequence;
@@ -106,6 +121,71 @@ namespace Domain
         }
         
 #endregion
+
+        public void ChangeCounterParty(string counterPartyName, Guid? memberId)
+        {
+            if (memberId == MemberId && counterPartyName == CounterPartyName)
+            {
+                return;
+            }
+
+            MemberId = memberId;
+            CounterPartyName = counterPartyName;
+        }
+
+        public void ChangeBankAccountId(Guid bankAccountId)
+        {
+            if (bankAccountId == BankAccountId)
+            {
+                return;
+            }
+
+            BankAccountId = bankAccountId;
+        }
+
+        public void ChangeReceivedDateTime(DateTimeOffset receivedDateTime)
+        {
+            if (receivedDateTime > DateTimeOffset.Now)
+            {
+                throw new ArgumentException($"Received date is set to be in the future: {receivedDateTime}",
+                    nameof(receivedDateTime));
+            }
+
+            if (receivedDateTime == ReceivedDateTime)
+            {
+                return;
+            }
+
+            ReceivedDateTime = receivedDateTime;
+        }
+
+        public void ChangeAmount(decimal amount, ICollection<TransactionTypeAmount> transactionTypeAmounts)
+        {
+            var sumOfTransactionTypeAmounts = transactionTypeAmounts.Sum(x => x.Amount);
+            if (amount != sumOfTransactionTypeAmounts)
+            {
+                throw new ArgumentException(
+                    $"Sum of the transaction type amounts ({sumOfTransactionTypeAmounts}) does not match total amount: {amount}", nameof(amount));
+            }
+
+            if (amount == Amount && transactionTypeAmounts.SequenceEqual(TransactionTypeAmounts))
+            {
+                return;
+            }
+
+            Amount = amount;
+            TransactionTypeAmounts = transactionTypeAmounts;
+        }
+
+        public void ChangeDescription(string description)
+        {
+            if (description == Description)
+            {
+                return;
+            }
+
+            Description = description;
+        }
     }
 
 }

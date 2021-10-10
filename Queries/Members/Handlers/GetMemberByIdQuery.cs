@@ -4,7 +4,7 @@ using MediatR;
 
 using Queries.Members.ViewModels;
 
-namespace Queries.Members
+namespace Queries.Members.Handlers
 {
     public record GetMemberByIdQuery(
         Guid Id

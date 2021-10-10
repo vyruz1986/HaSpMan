@@ -26,7 +26,7 @@ namespace Queries.Members.Handlers
 
         public async Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
         {
-            var member = await _haSpManContext.Members.SingleAsync(m => m.Id == request.Id);
+            var member = await _haSpManContext.Members.SingleAsync(m => m.Id == request.Id, cancellationToken: cancellationToken);
 
             return _mapper.Map<MemberDetail>(member);
         }

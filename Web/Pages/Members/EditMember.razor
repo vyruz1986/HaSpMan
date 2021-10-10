@@ -5,6 +5,8 @@
 @using MediatR
 @using AutoMapper
 @using Queries.Members
+@using Queries.Members.Handlers
+@using Queries.Transactions.ViewModels
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
@@ -19,7 +21,7 @@
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
-            ButtonType="ButtonType.Submit">SaveAsync member</MudButton>
+            ButtonType="ButtonType.Submit">Save member</MudButton>
     </MudItem>
 </EditForm>
 

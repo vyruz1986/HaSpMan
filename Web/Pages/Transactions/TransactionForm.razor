@@ -17,7 +17,7 @@
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
         <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
-                       AutoClose="true">
+                       AutoClose="true" MaxDate="DateTime.Now">
             <PickerActions>
                 <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
             </PickerActions>
