@@ -2,6 +2,7 @@ using System;
 
 using AutoMapper;
 
+using Commands.Handlers.Transaction.AddCreditTransaction;
 using Commands.Handlers.Transaction.AddDebitTransaction;
 
 using Queries.Members.ViewModels;
@@ -18,6 +19,7 @@ namespace Web.MapperProfiles
         public TransactionProfile()
         {
             CreateMap<TransactionForm, AddDebitTransactionCommand>();
+            CreateMap<TransactionForm, AddCreditTransactionCommand>();
             CreateMap<TransactionTypeAmountForm, TransactionTypeAmount>();
 
             CreateMap<TransactionDetail, TransactionForm>()

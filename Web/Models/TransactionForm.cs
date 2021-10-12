@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 using Types;
@@ -50,4 +51,6 @@ namespace Web.Models
         [Range(0, 10000000)]
         public decimal Amount { get; set; }
     }
+
+
 }

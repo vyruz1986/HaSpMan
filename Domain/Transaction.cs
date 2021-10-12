@@ -7,12 +7,12 @@ using Types;
 
 namespace Domain
 {
-    public  class Transaction
+    public abstract class Transaction
     {
 #pragma warning disable 8618
-        private Transaction() { } // Make EFCore happy
+        protected Transaction() { } // Make EFCore happy
 #pragma warning restore 8618
-        private Transaction(
+        protected Transaction(
             string counterPartyName, 
             Guid bankAccountId, 
             decimal amount, 
@@ -85,40 +85,10 @@ namespace Domain
             return new CreditTransaction(counterPartyName, bankAccount, amount, receivedDateTime, description, sequence,
                 attachments, memberId, transactionTypeAmounts);
         }
-        public static IReadOnlyList<Transaction> CreateInternalBankTransaction(Types.BankAccount from, Types.BankAccount to, decimal amount,
-            DateTimeOffset receivedDateTime, string description, int fromSequence, int toSequence, 
-            ICollection<TransactionAttachment> attachments, 
-            ICollection<TransactionTypeAmount> transactionTypeAmounts)
-        {
-            return new List<Transaction>()
-            {
-                new CreditTransaction(to.Name, from.BankAccountId, amount, receivedDateTime, description,
-                    fromSequence, attachments, null, transactionTypeAmounts),
-                new DebitTransaction(from.Name, to.BankAccountId, amount, receivedDateTime, description,
-                    toSequence, attachments, null, transactionTypeAmounts)
-            };
-        }
-
         
 
         #region Specific transactions
-        public class DebitTransaction : Transaction
-        {
-            public DebitTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
-                    base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)           {
-                
-            }
-        }
-        public class CreditTransaction : Transaction
-        {
-            public CreditTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-                string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) : 
-                    base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
-            {
-
-            }
-        }
+        
         
 #endregion
 
@@ -187,5 +157,32 @@ namespace Domain
             Description = description;
         }
     }
+    public class DebitTransaction : Transaction
+    {
+        private DebitTransaction() : base()
+        {
 
+        }
+        public DebitTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
+            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
+            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
+        {
+
+        }
+    }
+    public class CreditTransaction : Transaction
+    {
+        
+        private CreditTransaction():base()
+        {
+
+        }
+
+        public CreditTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
+            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
+            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
+        {
+
+        }
+    }
 }

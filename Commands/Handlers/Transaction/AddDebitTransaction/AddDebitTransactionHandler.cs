@@ -22,7 +22,7 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
         public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
         {
 
-            var lastSequence = await _transactionRepository.GetLastTransactionForBankAccount(request.BankAccountId);
+            var lastSequence = await _transactionRepository.GetLastTransactionSequence();
             var currentSequence = ++lastSequence;
             var transaction = Domain.Transaction.CreateDebitTransaction(request.CounterPartyName, request.BankAccountId, request.Amount,
                 request.ReceivedDateTime, request.Description, currentSequence, new List<TransactionAttachment>(), request.MemberId, request.TransactionTypeAmounts);

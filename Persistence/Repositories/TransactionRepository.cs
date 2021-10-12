@@ -20,18 +20,21 @@ namespace Persistence.Repositories
         }
         public async Task<Transaction> GetByIdAsync(Guid id)
         {
-            return await _haSpManContext.Transactions.FirstOrDefaultAsync(x => x.Id == id);
+
+            return await _haSpManContext.Transactions
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
+
+
 
         public async Task<IEnumerable<Transaction>> GetAllAsync()
         {
             return await _haSpManContext.Transactions.ToListAsync();
         }
 
-        public async Task<int> GetLastTransactionForBankAccount(Guid bankAccountId)
+        public async Task<int> GetLastTransactionSequence()
         {
-            var maxValue = await _haSpManContext.Transactions
-                .Where(x => x.BankAccountId == bankAccountId)
+            var maxValue = await _haSpManContext.Transactions          
                 .MaxAsync(x => (int?)x.Sequence);
             return maxValue ?? 0;
         }
@@ -61,7 +64,7 @@ namespace Persistence.Repositories
         Task<Transaction> GetByIdAsync(Guid id);
         Task<IEnumerable<Transaction>> GetAllAsync();
 
-        Task<int> GetLastTransactionForBankAccount(Guid bankAccountId);
+        Task<int> GetLastTransactionSequence();
 
         void AddRange(IEnumerable<Transaction> transactions);
         void Add(Transaction member);

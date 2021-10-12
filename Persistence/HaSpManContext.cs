@@ -1,5 +1,5 @@
 using Domain;
-using Persistence.EntityConfigurations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence

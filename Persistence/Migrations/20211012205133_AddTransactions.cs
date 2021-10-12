@@ -20,7 +20,8 @@ namespace Persistence.Migrations
                     BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateFiled = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Sequence = table.Column<int>(type: "int", nullable: false)
+                    Sequence = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +52,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction_TransactionTypeAmount",
+                name: "Transaction_TransactionTypeAmounts",
                 schema: "HaSpMan",
                 columns: table => new
                 {
@@ -63,9 +64,9 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction_TransactionTypeAmount", x => new { x.TransactionId, x.Id });
+                    table.PrimaryKey("PK_Transaction_TransactionTypeAmounts", x => new { x.TransactionId, x.Id });
                     table.ForeignKey(
-                        name: "FK_Transaction_TransactionTypeAmount_Transactions_TransactionId",
+                        name: "FK_Transaction_TransactionTypeAmounts_Transactions_TransactionId",
                         column: x => x.TransactionId,
                         principalSchema: "HaSpMan",
                         principalTable: "Transactions",
@@ -74,10 +75,10 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_BankAccountId_Sequence",
+                name: "IX_Transactions_Sequence",
                 schema: "HaSpMan",
                 table: "Transactions",
-                columns: new[] { "BankAccountId", "Sequence" },
+                column: "Sequence",
                 unique: true);
         }
 
@@ -88,7 +89,7 @@ namespace Persistence.Migrations
                 schema: "HaSpMan");
 
             migrationBuilder.DropTable(
-                name: "Transaction_TransactionTypeAmount",
+                name: "Transaction_TransactionTypeAmounts",
                 schema: "HaSpMan");
 
             migrationBuilder.DropTable(

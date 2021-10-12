@@ -3,6 +3,7 @@
 @using MediatR
 @using AutoMapper
 @using Commands.Handlers.Transaction.AddDebitTransaction
+@using Web.Models
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
@@ -13,7 +14,7 @@
 <EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator />
 
-    <TransactionForm Transaction="@_newTransaction" />
+    <TransactionForm Transaction="@_newTransaction" TransactionTypeGroup="_selectedTransactionTypeGroup" />
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
@@ -22,12 +23,28 @@
 </EditForm>
 
 @code {
-    private Models.TransactionForm _newTransaction = new();
+    private readonly Models.TransactionForm _newTransaction = new();
+
+    private TransactionTypeGroup _selectedTransactionTypeGroup = TransactionTypeGroup.Credit;
 
     private async Task AddTransaction()
     {
-        var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
-        var response = await _mediator.Send(command);
+        switch (_selectedTransactionTypeGroup)
+        {
+            case TransactionTypeGroup.Credit:
+            {
+                var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
+                await _mediator.Send(command);
+                break;
+            }
+            case TransactionTypeGroup.Debit:
+            {
+                var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
+                await _mediator.Send(command);
+                break;
+            }
+        }
+
         Snackbar.Clear();
         Snackbar.Add($"Transaction for {_newTransaction.CounterPartyName} added successfully!", Severity.Success);
         NavManager.NavigateTo("/transactions");

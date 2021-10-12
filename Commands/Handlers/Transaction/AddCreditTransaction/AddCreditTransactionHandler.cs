@@ -21,7 +21,7 @@ namespace Commands.Handlers.Transaction.AddCreditTransaction
         }
         public async Task<Guid> Handle(AddCreditTransactionCommand request, CancellationToken cancellationToken)
         {
-            var lastSequence = await _transactionRepository.GetLastTransactionForBankAccount(request.BankAccountId);
+            var lastSequence = await _transactionRepository.GetLastTransactionSequence();
             var currentSequence = ++lastSequence;
             var transaction = Domain.Transaction.CreateCreditTransaction(request.CounterPartyName, request.BankAccountId, request.Amount,
                 request.ReceivedDateTime, request.Description, currentSequence, new List<TransactionAttachment>(), request.MemberId, new List<TransactionTypeAmount>());

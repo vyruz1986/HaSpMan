@@ -1,19 +1,29 @@
 ﻿@using Types
+@using Web.Models
 <MudGrid>
     <MudItem xs="6">
-        <MudTextField T="string" Label="Counter party" @bind-Value="Transaction.CounterPartyName" For="@(() => Transaction.CounterPartyName)" />
+        <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+            @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
+            {
+                <MudRadio Option="transactionTypeGroup">@transactionTypeGroup</MudRadio>
+
+            }
+        </MudRadioGroup>
     </MudItem>
     <MudItem xs="6">
-        <MudTextField T="Guid?" Label="Member id" @bind-Value="Transaction.MemberId" For="@(() => Transaction.MemberId)" />
+        <MudTextField T="string" Label="Counter party" @bind-Value="Transaction.CounterPartyName" For="@(() => Transaction.CounterPartyName)"/>
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField T="Guid?" Label="Member id" @bind-Value="Transaction.MemberId" For="@(() => Transaction.MemberId)"/>
     </MudItem>
     <MudItem xs="3">
-        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)" />
+        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)"/>
     </MudItem>
     <MudItem xs="12">
-        <MudTextField T="string" Label="Description" @bind-Value="Transaction.Description" For="@(() => Transaction.Description)" />
+        <MudTextField T="string" Label="Description" @bind-Value="Transaction.Description" For="@(() => Transaction.Description)"/>
     </MudItem>
     <MudItem xs="6">
-        <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)" />
+        <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)"/>
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
         <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
@@ -27,7 +37,7 @@
     {
         <MudItem xs="6">
             <MudSelect Label="Select transaction type" @bind-Value="transactionType.TransactionType">
-                @foreach (var item in Enum.GetValues<TransactionType>())
+                @foreach (var item in GetScopedTransactionTypes())
                 {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
@@ -35,12 +45,39 @@
             <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount"></MudNumericField>
         </MudItem>
     }
-    
+
 </MudGrid>
 
 @code {
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
+
+    [Parameter]
+    public TransactionTypeGroup TransactionTypeGroup { get; set; }
+
+
+    private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
+    {
+        if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+        {
+            return new List<TransactionType>
+            {
+                TransactionType.CreditWorkshopFee,
+                TransactionType.CreditDonation,
+                TransactionType.CreditMemberFee,
+                TransactionType.InternalBank
+            };
+        }
+        return new List<TransactionType>
+        {
+            TransactionType.DebitAcquisitionConsumables,
+            TransactionType.DebitAcquisitionGoodsAndServices,
+            TransactionType.DebitBankCosts,
+            TransactionType.DebitFixedCosts,
+            TransactionType.InternalBank
+
+        };
+    }
 
     MudDatePicker _picker = new();
 }

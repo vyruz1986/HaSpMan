@@ -10,7 +10,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(HaSpManContext))]
-    [Migration("20211009201748_AddTransactions")]
+    [Migration("20211012205133_AddTransactions")]
     partial class AddTransactions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,10 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid?>("MemberId")
                         .HasColumnType("uniqueidentifier");
 
@@ -114,10 +118,29 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankAccountId", "Sequence")
+                    b.ToTable("Transactions");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Transaction");
+                });
+
+            modelBuilder.Entity("Domain.CreditTransaction", b =>
+                {
+                    b.HasBaseType("Domain.Transaction");
+
+                    b.HasIndex("Sequence")
                         .IsUnique();
 
-                    b.ToTable("Transactions");
+                    b.HasDiscriminator().HasValue("CreditTransaction");
+                });
+
+            modelBuilder.Entity("Domain.DebitTransaction", b =>
+                {
+                    b.HasBaseType("Domain.Transaction");
+
+                    b.HasIndex("Sequence")
+                        .IsUnique();
+
+                    b.HasDiscriminator().HasValue("DebitTransaction");
                 });
 
             modelBuilder.Entity("Domain.Member", b =>
@@ -243,7 +266,7 @@ namespace Persistence.Migrations
 
                             b1.HasKey("TransactionId", "Id");
 
-                            b1.ToTable("Transaction_TransactionTypeAmount");
+                            b1.ToTable("Transaction_TransactionTypeAmounts");
 
                             b1.WithOwner()
                                 .HasForeignKey("TransactionId");
