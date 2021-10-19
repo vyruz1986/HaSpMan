@@ -3,7 +3,6 @@
 @using MediatR
 @using AutoMapper
 @using Commands.Handlers.Transaction.AddDebitTransaction
-@using Web.Models
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
@@ -14,7 +13,7 @@
 <EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator />
 
-    <TransactionForm Transaction="@_newTransaction" TransactionTypeGroup="_selectedTransactionTypeGroup" />
+    <TransactionForm Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
