@@ -6,6 +6,7 @@ using Types;
 
 namespace Web.Models
 {
+    [TransactionForm(ErrorMessage = "Sum is not correct")]
     public class TransactionForm
     {
         public TransactionForm()
@@ -50,6 +51,4 @@ namespace Web.Models
         [Range(0, 10000000)]
         public decimal Amount { get; set; }
     }
-
-
 }

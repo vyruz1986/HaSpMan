@@ -19,7 +19,7 @@
     @*<CustomValidation @ref="sumOfAmountsValidator"></CustomValidation>*@
     <DataAnnotationsValidator/>
 
-    <TransactionForm Transaction="@Transaction"/>
+    <TransactionForm Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
@@ -34,11 +34,25 @@
     public Guid TransactionId { get; set; }
     public Models.TransactionForm Transaction = new();
 
+    private TransactionTypeGroup _transactionTypeGroup;
+
     protected override async Task OnInitializedAsync()
     {
         var query = new GetTransactionByIdQuery(TransactionId);
         var memberDetail = await _mediator.Send(query);
         Transaction = _mapper.Map<Models.TransactionForm>(memberDetail);
+        _transactionTypeGroup = GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
+    }
+
+    private TransactionTypeGroup GetTransactionTypeGroup(TransactionType transactionType)
+    {
+        return new List<TransactionType>
+        {
+            TransactionType.CreditWorkshopFee,
+            TransactionType.CreditDonation,
+            TransactionType.CreditMemberFee,
+            TransactionType.InternalBank
+        }.Contains(transactionType) ? TransactionTypeGroup.Credit : TransactionTypeGroup.Debit;
     }
 
 

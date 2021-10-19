@@ -41,19 +41,19 @@
                     <MudSelectItem Value="@item">@item</MudSelectItem>
                 }
             </MudSelect>
-            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount"></MudNumericField>
+            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount" ></MudNumericField>
         </MudItem>
     }
-
+    <ValidationSummary></ValidationSummary>
 </MudGrid>
 
 @code {
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
-
+    
     [Parameter]
     public TransactionTypeGroup TransactionTypeGroup { get; set; }
-
+    
 
     private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
     {
