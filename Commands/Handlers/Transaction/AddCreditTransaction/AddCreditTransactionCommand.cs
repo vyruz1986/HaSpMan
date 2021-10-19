@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using MediatR;
 
@@ -7,11 +8,11 @@ using Types;
 namespace Commands.Handlers.Transaction.AddCreditTransaction
 {
     public record AddCreditTransactionCommand(
-        TransactionType TransactionType, 
-        string CounterPartyName, 
+        string CounterPartyName,
         Guid BankAccountId,
         decimal Amount,
-        DateTimeOffset ReceivedDateTime, 
+        DateTimeOffset ReceivedDateTime,
         string Description,
-        Guid? MemberId): IRequest<Guid>;
+        Guid? MemberId,
+        ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
 }
