@@ -1,4 +1,8 @@
 ﻿@using Types
+@using MediatR
+@using Queries.Members
+@using Queries.Members.Handlers
+@inject IMediator mediator;
 <MudGrid>
     <MudItem xs="6">
         <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
@@ -10,16 +14,19 @@
         </MudRadioGroup>
     </MudItem>
     <MudItem xs="6">
-        <MudTextField T="string" Label="Counter party" @bind-Value="Transaction.CounterPartyName" For="@(() => Transaction.CounterPartyName)"/>
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField T="Guid?" Label="Member id" @bind-Value="Transaction.MemberId" For="@(() => Transaction.MemberId)"/>
+        <MudAutocomplete T="AutocompleteMember" 
+                         Label="Members" 
+                         @bind-Value="Transaction.Member"
+                         SearchFunc="SearchFunc" 
+                         ToStringFunc="@(e => e == null ? null : e.Name)"
+                         
+        ></MudAutocomplete>
     </MudItem>
     <MudItem xs="3">
         <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)"/>
     </MudItem>
     <MudItem xs="12">
-        <MudTextField T="string" Label="Description" @bind-Value="Transaction.Description" For="@(() => Transaction.Description)"/>
+        <MudTextField T="string" Label="Description" @bind-value="Transaction.Description" For="(() => Transaction.Description)"/>
     </MudItem>
     <MudItem xs="6">
         <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)"/>
@@ -50,9 +57,11 @@
 @code {
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
-    
+
     [Parameter]
     public TransactionTypeGroup TransactionTypeGroup { get; set; }
+
+    private AutocompleteMember? _selectedAutocompleteMember;
     
 
     private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
@@ -79,4 +88,12 @@
     }
 
     MudDatePicker _picker = new();
+
+    private async Task<IEnumerable<AutocompleteMember>> SearchFunc(string searchString)
+    {
+        var response = await mediator.Send(new AutocompleteMembersQuery(searchString));
+        return response.Members;
+    }
+    
+
 }

@@ -57,8 +57,8 @@
     {
         var command = new EditTransactionCommand(
             Id: TransactionId,
-            CounterPartyName: Transaction.CounterPartyName!,
-            MemberId: Transaction.MemberId,
+            CounterPartyName: Transaction.Member.Name!,
+            MemberId: Transaction.Member.MemberId,
             Amount: Transaction.Amount.GetValueOrDefault(),
             BankAccountId: Transaction.BankAccountId.GetValueOrDefault(),
             ReceivedDateTime: new DateTimeOffset(Transaction.ReceivedDateTime!.Value),

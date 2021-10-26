@@ -45,7 +45,7 @@
         }
 
         Snackbar.Clear();
-        Snackbar.Add($"Transaction for {_newTransaction.CounterPartyName} added successfully!", Severity.Success);
+        Snackbar.Add($"Transaction for {_newTransaction.Member.Name} added successfully!", Severity.Success);
         NavManager.NavigateTo("/transactions");
     }
     private void ShowError()

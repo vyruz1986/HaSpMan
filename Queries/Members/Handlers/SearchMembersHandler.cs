@@ -20,6 +20,17 @@ using Queries.Members.ViewModels;
 
 namespace Queries.Members.Handlers
 {
+    public class AutocompleteMember
+    {
+        public AutocompleteMember(string name, Guid? memberId)
+        {
+            Name = name;
+            MemberId = memberId;
+        }
+        public string Name { get; set; } = string.Empty;
+        public Guid? MemberId { get; set; }
+    };
+
     public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
     {
         private readonly HaSpManContext _context;

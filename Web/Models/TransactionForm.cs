@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using Queries.Members.Handlers;
 
 using Types;
 
@@ -16,12 +19,10 @@ namespace Web.Models
                 new(TransactionType.CreditWorkshopFee, 0)
             };
         }
-
-        [Required] 
-        [MaxLength(50)] 
-        public string? CounterPartyName { get; set; }
         
-        public Guid? MemberId { get; set; }
+        [NotMapped]
+        public AutocompleteMember Member { get; set; }
+
         [Required]
         public Guid? BankAccountId { get; set; }
         

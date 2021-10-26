@@ -5,6 +5,7 @@ using AutoMapper;
 using Commands.Handlers.Transaction.AddCreditTransaction;
 using Commands.Handlers.Transaction.AddDebitTransaction;
 
+using Queries.Members.Handlers;
 using Queries.Members.ViewModels;
 using Queries.Transactions.ViewModels;
 
@@ -23,7 +24,13 @@ namespace Web.MapperProfiles
             CreateMap<TransactionTypeAmountForm, TransactionTypeAmount>();
 
             CreateMap<TransactionDetail, TransactionForm>()
-                .ForMember(x => x.ReceivedDateTime, o => o.MapFrom(x => ToDateTime(x.ReceivedDateTime)));
+                .ForMember(
+                    x => x.ReceivedDateTime,
+                    o =>
+                        o.MapFrom(x => ToDateTime(x.ReceivedDateTime)))
+                .ForMember(x => x.Member,
+                    o => o.MapFrom(x => new AutocompleteMember(x.CounterPartyName, x.MemberId)));
+                
             CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
         }
 
