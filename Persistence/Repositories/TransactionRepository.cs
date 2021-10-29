@@ -12,16 +12,16 @@ namespace Persistence.Repositories
 {
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly HaSpManContext _haSpManContext;
+        private readonly IDbContextFactory<HaSpManContext> _haSpManContext;
 
-        public TransactionRepository(HaSpManContext haSpManContext)
+        public TransactionRepository(IDbContextFactory<HaSpManContext> haSpManContext)
         {
             _haSpManContext = haSpManContext;
         }
         public async Task<Transaction> GetByIdAsync(Guid id)
         {
-
-            return await _haSpManContext.Transactions
+            var context = _haSpManContext.CreateDbContext();
+            return await context.Transactions
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -29,34 +29,39 @@ namespace Persistence.Repositories
 
         public async Task<IEnumerable<Transaction>> GetAllAsync()
         {
-            return await _haSpManContext.Transactions.ToListAsync();
+            var context = _haSpManContext.CreateDbContext();
+            return await context.Transactions.ToListAsync();
         }
 
         public async Task<int> GetLastTransactionSequence()
         {
-            var maxValue = await _haSpManContext.Transactions          
+            var context = _haSpManContext.CreateDbContext();
+            var maxValue = await context.Transactions          
                 .MaxAsync(x => (int?)x.Sequence);
             return maxValue ?? 0;
         }
 
         public void AddRange(IEnumerable<Transaction> transactions)
         {
-            _haSpManContext.Transactions.AddRange(transactions);
+            var context = _haSpManContext.CreateDbContext();
+            context.Transactions.AddRange(transactions);
         }
 
         public void Add(Transaction member)
         {
-            _haSpManContext.Transactions.Add(member);
+            var context = _haSpManContext.CreateDbContext();
+            context.Transactions.Add(member);
         }
 
         public void Remove(Transaction member)
-        {
-            _haSpManContext.Transactions.Remove(member);
+        {var context = _haSpManContext.CreateDbContext();
+            context.Transactions.Remove(member);
         }
         
         public async Task SaveAsync(CancellationToken cancellationToken = default)
         {
-            await _haSpManContext.SaveChangesAsync(cancellationToken);
+            var context = _haSpManContext.CreateDbContext();
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
     public interface ITransactionRepository

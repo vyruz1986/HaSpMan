@@ -12,15 +12,16 @@ namespace Queries.Members.Handlers
 {
     public class AutocompleteMembersHandler : IRequestHandler<AutocompleteMembersQuery, AutocompleteMemberResponse>
     {
-        private readonly HaSpManContext _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
 
-        public AutocompleteMembersHandler(HaSpManContext context)
+        public AutocompleteMembersHandler(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
         public async Task<AutocompleteMemberResponse> Handle(AutocompleteMembersQuery request, CancellationToken cancellationToken)
         {
-            var members = await _context.Members
+            var context = _contextFactory.CreateDbContext();
+            var members = await context.Members
                 .Where(x => 
                     x.FirstName.Contains(request.SearchString) || 
                     x.LastName.Contains(request.SearchString))

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -8,6 +9,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 using Domain;
+using Domain.Interfaces;
 
 using MediatR;
 
@@ -20,6 +22,45 @@ using Queries.Members.ViewModels;
 
 namespace Queries.Members.Handlers
 {
+    public record GetBankAccountInfos() : IRequest<IReadOnlyList<BankAccountInfo>>;
+    public class BankAccountInfo
+    {
+        public BankAccountInfo(Guid id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public Guid Id { get; set; }
+
+        public string Name { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+    }
+
+    public class GetBankAccountInfosHandler : IRequestHandler<GetBankAccountInfos, IReadOnlyList<BankAccountInfo>>
+    {
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+
+        public GetBankAccountInfosHandler(IDbContextFactory<HaSpManContext> contextFactory)
+        {
+            _contextFactory = contextFactory;
+        }
+
+        public async Task<IReadOnlyList<BankAccountInfo>> Handle(GetBankAccountInfos request, CancellationToken cancellationToken)
+        {
+            await using var context = _contextFactory.CreateDbContext();
+            return await context.BankAccounts
+                .AsNoTracking()
+                .Select(x => new BankAccountInfo(x.Id, x.Name))
+                .ToListAsync(cancellationToken);
+            
+        }
+    }
+
     public class AutocompleteMember
     {
         public AutocompleteMember(string name, Guid? memberId)
@@ -33,22 +74,23 @@ namespace Queries.Members.Handlers
 
     public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
     {
-        private readonly HaSpManContext _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
         private readonly IMapper _mapper;
 
-        public SearchMembersHandler(HaSpManContext context, IMapper mapper)
+        public SearchMembersHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
         {
-            _context = context;
+            _contextFactory = contextFactory;
             _mapper = mapper;
         }
 
         public async Task<Paginated<MemberSummary>> Handle(SearchMembersQuery request, CancellationToken cancellationToken)
         {
-            var memberQueryable = _context.Members
+            var context = _contextFactory.CreateDbContext();
+            var memberQueryable = context.Members
                 .AsNoTracking()
                 .Where(GetFilterCriteria(request.SearchString));
 
-            var total = await memberQueryable.CountAsync();
+            var total = await memberQueryable.CountAsync(cancellationToken);
 
             memberQueryable = GetOrderedQueryable(request, memberQueryable);
 

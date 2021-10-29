@@ -16,7 +16,7 @@ namespace Persistence.Extensions
             throw new ArgumentException("The value cannot be empty or whitespace.", nameof(connectionString));
          }
 
-         serviceCollection.AddDbContext<HaSpManContext>(options =>
+         serviceCollection.AddDbContextFactory<HaSpManContext>(options =>
                      options.UseSqlServer(connectionString, b => b
                          .MigrationsAssembly("Persistence")
                          .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan")));

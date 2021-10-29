@@ -4,7 +4,7 @@
 @using Queries.Members.Handlers
 @inject IMediator mediator;
 <MudGrid>
-    <MudItem xs="6">
+    <MudItem xs="12">
         <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
             @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
             {
@@ -13,23 +13,55 @@
             }
         </MudRadioGroup>
     </MudItem>
-    <MudItem xs="6">
-        <MudAutocomplete T="AutocompleteMember" 
-                         Label="Members" 
-                         @bind-Value="Transaction.Member"
-                         SearchFunc="SearchFunc" 
-                         ToStringFunc="@(e => e == null ? null : e.Name)"
-                         
-        ></MudAutocomplete>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h4">Betrokken partijen</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="5">
+                        <MudAutocomplete T="AutocompleteMember"
+                                         Label="Members"
+                                         @bind-Value="Transaction.Member"
+                                         SearchFunc="SearchFunc"
+                                         ToStringFunc="@(e => e == null ? null : e.Name)"></MudAutocomplete>
+                    </MudItem>
+
+                    <MudItem xs="2" >
+                        @if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+                        {
+                            <MudIcon Icon="@Icons.Filled.ArrowForward"></MudIcon>
+
+                        }
+                        else if(TransactionTypeGroup == TransactionTypeGroup.Debit)
+                        {
+                            
+                            <MudIcon Icon="@Icons.Filled.ArrowBack"></MudIcon>
+                        }
+                        else
+                        {
+                            
+                            <MudIcon Icon="@Icons.Filled.Block"></MudIcon>
+                        }
+                    </MudItem>
+                    <MudItem xs="5">
+                        <MudSelect Label="Select bank account" @bind-Value="Transaction.BankAccountId">
+                            @foreach (var item in _bankAccounts)
+                            {
+                                <MudSelectItem Value="@item?.Id">@item</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
     </MudItem>
     <MudItem xs="3">
-        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)"/>
+        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)" />
     </MudItem>
     <MudItem xs="12">
-        <MudTextField T="string" Label="Description" @bind-value="Transaction.Description" For="(() => Transaction.Description)"/>
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField T="Guid?" Label="BankAccountId" @bind-value="Transaction.BankAccountId" For="(() => Transaction.BankAccountId)"/>
+        <MudTextField T="string" Label="Description" @bind-value="Transaction.Description" For="(() => Transaction.Description)" />
     </MudItem>
     <MudItem xs="12" sm="6" md="4">
         <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
@@ -44,11 +76,11 @@
         <MudItem xs="6">
             <MudSelect Label="Select transaction type" @bind-Value="transactionType.TransactionType">
                 @foreach (var item in GetScopedTransactionTypes())
-                {
+                    {
                     <MudSelectItem Value="@item">@item</MudSelectItem>
-                }
+                    }
             </MudSelect>
-            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount" ></MudNumericField>
+            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount"></MudNumericField>
         </MudItem>
     }
     <ValidationSummary></ValidationSummary>
@@ -62,7 +94,13 @@
     public TransactionTypeGroup TransactionTypeGroup { get; set; }
 
     private AutocompleteMember? _selectedAutocompleteMember;
-    
+
+    private IReadOnlyList<BankAccountInfo> _bankAccounts = new List<BankAccountInfo>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllBankAccounts();
+    }
 
     private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
     {
@@ -93,6 +131,12 @@
     {
         var response = await mediator.Send(new AutocompleteMembersQuery(searchString));
         return response.Members;
+    }
+
+    private async Task GetAllBankAccounts()
+    {
+        _bankAccounts = await mediator.Send(new GetBankAccountInfos());
+        
     }
     
 

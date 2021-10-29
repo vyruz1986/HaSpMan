@@ -13,39 +13,42 @@ namespace Persistence.Repositories
 
     public class MemberRepository : IMemberRepository
     {
-        private readonly HaSpManContext _context;
-        public MemberRepository(HaSpManContext context)
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+        public MemberRepository(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
         public void Add(Member member)
         {
-            _context.Members.Add(member);
+            var context = _contextFactory.CreateDbContext();
+            context.Members.Add(member);
         }
 
         public async Task<IEnumerable<Member>> GetAllAsync()
         {
-            return await _context.Members.ToListAsync();
+            var context = _contextFactory.CreateDbContext();
+            return await context.Members.ToListAsync();
         }
 
         public async Task<Member> GetByEmail(string email)
-        {
-            return await _context.Members.FirstOrDefaultAsync(m => m.Email == email);
+        {var context = _contextFactory.CreateDbContext();
+            return await context.Members.FirstOrDefaultAsync(m => m.Email == email);
         }
 
         public async Task<Member> GetById(Guid id)
-        {
-            return await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
+        {var context = _contextFactory.CreateDbContext();
+            return await context.Members.FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public void Remove(Member member)
-        {
-            _context.Members.Remove(member);
+        {var context = _contextFactory.CreateDbContext();
+            context.Members.Remove(member);
         }
 
         public async Task Save()
         {
-            await _context.SaveChangesAsync();
+            var context = _contextFactory.CreateDbContext();
+            await context.SaveChangesAsync();
         }
 
     }

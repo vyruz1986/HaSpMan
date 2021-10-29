@@ -24,17 +24,18 @@ namespace Queries.Transactions.Handlers
 {
     public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Paginated<TransactionSummary>>
     {
-        private readonly HaSpManContext _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
         private readonly IMapper _mapper;
 
-        public GetTransactionsHandler(HaSpManContext context, IMapper mapper)
+        public GetTransactionsHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
         {
-            _context = context;
+            _contextFactory = contextFactory;
             _mapper = mapper;
         }
         public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
         {
-            var transactions = _context.Transactions.AsNoTracking()
+            var context = _contextFactory.CreateDbContext();
+            var transactions = context.Transactions.AsNoTracking()
                 .Where(GetFilterCriteria(request.SearchString));
 
             var totalCount = await transactions.CountAsync(cancellationToken);
