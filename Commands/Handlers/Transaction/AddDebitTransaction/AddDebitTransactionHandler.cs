@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,7 +24,8 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
         }
         public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transaction = Domain.Transaction.CreateDebitTransaction(request.CounterPartyName, request.BankAccountId, request.Amount,
+            var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
+            var transaction = Domain.Transaction.CreateDebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
                 request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId, request.TransactionTypeAmounts);
 
             _transactionRepository.Add(transaction);

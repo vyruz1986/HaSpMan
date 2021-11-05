@@ -21,8 +21,13 @@ namespace Web.MapperProfiles
     {
         public TransactionProfile()
         {
-            CreateMap<TransactionForm, AddDebitTransactionCommand>();
-            CreateMap<TransactionForm, AddCreditTransactionCommand>();
+            CreateMap<TransactionForm, AddDebitTransactionCommand>()
+                .ForCtorParam(nameof(AddDebitTransactionCommand.CounterPartyName), o => o.MapFrom(x => x.Member.Name))
+                .ForCtorParam(nameof(AddDebitTransactionCommand.MemberId), o => o.MapFrom(x => x.Member.MemberId));
+            CreateMap<TransactionForm, AddCreditTransactionCommand>()
+                .ForCtorParam(nameof(AddDebitTransactionCommand.CounterPartyName), o => o.MapFrom(x => x.Member.Name))
+                .ForCtorParam(nameof(AddDebitTransactionCommand.MemberId), o => o.MapFrom(x => x.Member.MemberId));
+            ;
             CreateMap<TransactionTypeAmountForm, TransactionTypeAmount>();
 
             CreateMap<TransactionDetail, TransactionForm>()

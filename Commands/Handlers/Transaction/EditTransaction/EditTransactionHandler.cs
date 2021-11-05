@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,10 +29,13 @@ namespace Commands.Handlers.Transaction.EditTransaction
                 throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
             }
 
+
+            var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
+
             transaction.ChangeCounterParty(request.CounterPartyName, request.MemberId);
             transaction.ChangeBankAccountId(request.BankAccountId);
             transaction.ChangeReceivedDateTime(request.ReceivedDateTime);
-            transaction.ChangeAmount(request.Amount, request.TransactionTypeAmounts);
+            transaction.ChangeAmount(totalAmount, request.TransactionTypeAmounts);
             transaction.ChangeDescription(request.Description);
             
 

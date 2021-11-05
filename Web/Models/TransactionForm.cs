@@ -26,9 +26,6 @@ namespace Web.Models
         public Guid? BankAccountId { get; set; }
         
         [Required]
-        public decimal? Amount { get; set; }
-        
-        [Required]
         public DateTime? ReceivedDateTime { get; set; }
 
         public string? Description { get; set; }

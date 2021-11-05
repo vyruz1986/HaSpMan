@@ -7,14 +7,11 @@ using FluentValidation;
 
 using MediatR;
 
-using Types;
-
 namespace Commands.Handlers.Transaction.AddDebitTransaction
 {
     public record AddDebitTransactionCommand(
         string CounterPartyName,
         Guid BankAccountId,
-        decimal Amount,
         DateTimeOffset ReceivedDateTime, 
         string Description, 
         Guid? MemberId,
@@ -24,8 +21,8 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
     {
         public AddDebitTransactionCommandValidator()
         {
-            RuleFor(x => x.Amount)
-                .GreaterThanOrEqualTo(0m);
+            RuleForEach(x => x.TransactionTypeAmounts)
+                .SetValidator(new TransactionTypeValidator());
         }
     }
 }

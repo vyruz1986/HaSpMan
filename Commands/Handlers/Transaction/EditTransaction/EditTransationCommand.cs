@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using Domain;
 
+using FluentValidation;
+
 using MediatR;
 
 namespace Commands.Handlers.Transaction.EditTransaction
@@ -11,9 +13,18 @@ namespace Commands.Handlers.Transaction.EditTransaction
         Guid Id, 
         string CounterPartyName,
         Guid? MemberId,
-        decimal Amount,
         Guid BankAccountId,
         DateTimeOffset ReceivedDateTime,
         string Description,
         ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
+
+
+    public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>
+    {
+        public EditTransactionCommandValidator()
+        {
+            RuleForEach(x => x.TransactionTypeAmounts)
+                .SetValidator(new TransactionTypeValidator());
+        }
+    }
 }

@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @using MediatR
 @using AutoMapper
+@using Commands.Handlers.Transaction.AddCreditTransaction
 @using Commands.Handlers.Transaction.AddDebitTransaction
 @inject IMediator _mediator
 @inject IMapper _mapper
@@ -32,7 +33,7 @@
         {
             case TransactionTypeGroup.Credit:
             {
-                var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
+                var command = _mapper.Map<AddCreditTransactionCommand>(_newTransaction);
                 await _mediator.Send(command);
                 break;
             }
