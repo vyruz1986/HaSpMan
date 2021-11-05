@@ -25,6 +25,7 @@ using Persistence.Extensions;
 using Persistence.Repositories;
 
 using Queries.Members;
+using Queries.Members.Handlers.SearchMembers;
 
 using Web.Extensions;
 

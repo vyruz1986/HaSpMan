@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
-namespace Queries.Members.Handlers
+namespace Queries.Members.Handlers.AutocompleteMember
 {
     public class AutocompleteMembersHandler : IRequestHandler<AutocompleteMembersQuery, AutocompleteMemberResponse>
     {
@@ -25,14 +25,14 @@ namespace Queries.Members.Handlers
                 .Where(x => 
                     x.FirstName.ToLower().Contains(request.SearchString.ToLower()) || 
                     x.LastName.ToLower().Contains(request.SearchString.ToLower()))
-                .Select(x => new AutocompleteMember(x.Name, x.Id))          
+                .Select(x => new SearchMembers.AutocompleteMember(x.Name, x.Id))          
                 .ToListAsync(cancellationToken: cancellationToken);
 
             var counterParties = await context.Transactions
                 .Where(x =>
                     x.MemberId == null &&
                     x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))
-                .Select(x => new AutocompleteMember(x.CounterPartyName, x.MemberId))
+                .Select(x => new SearchMembers.AutocompleteMember(x.CounterPartyName, x.MemberId))
                 .ToListAsync(cancellationToken);
 
             var items = members.Union(counterParties).ToList();

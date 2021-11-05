@@ -9,7 +9,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 using Domain;
-using Domain.Interfaces;
 
 using MediatR;
 
@@ -20,7 +19,7 @@ using Persistence;
 using Queries.Enums;
 using Queries.Members.ViewModels;
 
-namespace Queries.Members.Handlers
+namespace Queries.Members.Handlers.SearchMembers
 {
     public record GetBankAccountInfos() : IRequest<IReadOnlyList<BankAccountInfo>>;
     public class BankAccountInfo

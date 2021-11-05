@@ -3,7 +3,7 @@
 using Queries.Enums;
 using Queries.Members.ViewModels;
 
-namespace Queries.Members
+namespace Queries.Members.Handlers.SearchMembers
 {
     public record SearchMembersQuery(
         string SearchString,

@@ -8,6 +8,7 @@ using Commands.Handlers.Transaction.AddDebitTransaction;
 using Domain;
 
 using Queries.Members.Handlers;
+using Queries.Members.Handlers.SearchMembers;
 using Queries.Members.ViewModels;
 using Queries.Transactions.ViewModels;
 
