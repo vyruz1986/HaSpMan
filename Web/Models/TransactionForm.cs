@@ -9,7 +9,6 @@ using Types;
 
 namespace Web.Models
 {
-    [TransactionForm(ErrorMessage = "Sum is not correct")]
     public class TransactionForm
     {
         public TransactionForm()

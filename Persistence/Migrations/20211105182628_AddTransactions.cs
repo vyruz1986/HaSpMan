@@ -20,7 +20,6 @@ namespace Persistence.Migrations
                     BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateFiled = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    Sequence = table.Column<int>(type: "int", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -73,13 +72,6 @@ namespace Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_Sequence",
-                schema: "HaSpMan",
-                table: "Transactions",
-                column: "Sequence",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

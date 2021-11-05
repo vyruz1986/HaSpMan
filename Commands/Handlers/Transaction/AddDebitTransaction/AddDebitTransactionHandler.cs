@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Domain;
+
 using MediatR;
 
 using Persistence.Repositories;
@@ -21,11 +23,8 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
         }
         public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
         {
-
-            var lastSequence = await _transactionRepository.GetLastTransactionSequence();
-            var currentSequence = ++lastSequence;
             var transaction = Domain.Transaction.CreateDebitTransaction(request.CounterPartyName, request.BankAccountId, request.Amount,
-                request.ReceivedDateTime, request.Description, currentSequence, new List<TransactionAttachment>(), request.MemberId, request.TransactionTypeAmounts);
+                request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId, request.TransactionTypeAmounts);
 
             _transactionRepository.Add(transaction);
             await _transactionRepository.SaveAsync(cancellationToken);

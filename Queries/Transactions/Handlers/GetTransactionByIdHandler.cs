@@ -15,17 +15,17 @@ namespace Queries.Transactions.Handlers
 {
     public class GetTransactionByIdHandler : IRequestHandler<GetTransactionByIdQuery, TransactionDetail>
     {
-        private readonly IDbContextFactory<HaSpManContext> _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
         private readonly IMapper _mapper;
 
-        public GetTransactionByIdHandler(IDbContextFactory<HaSpManContext> context, IMapper mapper)
+        public GetTransactionByIdHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
         {
-            _context = context;
+            _contextFactory = contextFactory;
             _mapper = mapper;
         }
         public async Task<TransactionDetail> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
         {
-            var context = _context.CreateDbContext();
+            var context = _contextFactory.CreateDbContext();
             var transaction = await context.Transactions.SingleAsync(x => x.Id == request.Id, cancellationToken);
 
             return _mapper.Map<TransactionDetail>(transaction);

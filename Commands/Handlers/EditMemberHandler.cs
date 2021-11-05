@@ -14,7 +14,8 @@ using MediatR;
 
 namespace Commands.Handlers
 {
-    public class EditMemberHandler : IRequestHandler<EditMemberCommand>
+    public class 
+        EditMemberHandler : IRequestHandler<EditMemberCommand>
     {
         private readonly IMemberRepository _memberRepository;
         private readonly IMapper _mapper;

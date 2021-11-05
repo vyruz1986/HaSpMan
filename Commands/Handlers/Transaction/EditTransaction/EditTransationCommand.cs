@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using MediatR;
+using Domain;
 
-using Types;
+using MediatR;
 
 namespace Commands.Handlers.Transaction.EditTransaction
 {

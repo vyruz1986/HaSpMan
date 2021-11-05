@@ -12,40 +12,38 @@ namespace Persistence.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
-        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+        private readonly HaSpManContext _context;
 
         public BankAccountRepository(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _contextFactory = contextFactory;
+            _context = contextFactory.CreateDbContext();
         }
 
         public void Add(BankAccount account)
         {
-            var context = _contextFactory.CreateDbContext();
-            context.BankAccounts.Add(account);
+            _context.BankAccounts.Add(account);
         }
 
         public async Task<IEnumerable<BankAccount>> GetAllAsync(CancellationToken ct)
         {
-            var context = _contextFactory.CreateDbContext();
-            return await context.BankAccounts.ToListAsync(ct);
+            return await _context.BankAccounts.ToListAsync(ct);
         }
 
         public async Task<BankAccount> GetByIdAsync(Guid id, CancellationToken ct)
-        {var context = _contextFactory.CreateDbContext();
-            return await context.BankAccounts.FirstOrDefaultAsync(b => b.Id == id, ct);
+        {
+            return await _context.BankAccounts.FirstOrDefaultAsync(b => b.Id == id, ct);
         }
 
         public void Remove(BankAccount account)
         {
-            var context = _contextFactory.CreateDbContext();
-            context.BankAccounts.Remove(account);
+
+            _context.BankAccounts.Remove(account);
         }
 
         public async Task SaveAsync(CancellationToken ct)
         {
-            var context = _contextFactory.CreateDbContext();
-            await context.SaveChangesAsync(ct);
+            
+            await _context.SaveChangesAsync(ct);
         }
     }
 }

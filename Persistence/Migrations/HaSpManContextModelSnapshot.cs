@@ -111,9 +111,6 @@ namespace Persistence.Migrations
                     b.Property<DateTimeOffset>("ReceivedDateTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Sequence")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Transactions");
@@ -125,18 +122,12 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Domain.Transaction");
 
-                    b.HasIndex("Sequence")
-                        .IsUnique();
-
                     b.HasDiscriminator().HasValue("CreditTransaction");
                 });
 
             modelBuilder.Entity("Domain.DebitTransaction", b =>
                 {
                     b.HasBaseType("Domain.Transaction");
-
-                    b.HasIndex("Sequence")
-                        .IsUnique();
 
                     b.HasDiscriminator().HasValue("DebitTransaction");
                 });
@@ -220,7 +211,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Transaction", b =>
                 {
-                    b.OwnsMany("Types.TransactionAttachment", "Attachments", b1 =>
+                    b.OwnsMany("Domain.TransactionAttachment", "Attachments", b1 =>
                         {
                             b1.Property<Guid>("TransactionId")
                                 .HasColumnType("uniqueidentifier");
@@ -246,7 +237,7 @@ namespace Persistence.Migrations
                                 .HasForeignKey("TransactionId");
                         });
 
-                    b.OwnsMany("Types.TransactionTypeAmount", "TransactionTypeAmounts", b1 =>
+                    b.OwnsMany("Domain.TransactionTypeAmount", "TransactionTypeAmounts", b1 =>
                         {
                             b1.Property<Guid>("TransactionId")
                                 .HasColumnType("uniqueidentifier");

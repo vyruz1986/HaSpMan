@@ -1,6 +1,6 @@
 using System;
 
-namespace Types
+namespace Domain
 {
     public class TransactionAttachment
     {

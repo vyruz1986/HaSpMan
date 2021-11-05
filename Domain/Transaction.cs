@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters;
 
 using Types;
 
@@ -18,7 +17,6 @@ namespace Domain
             decimal amount, 
             DateTimeOffset receivedDateTime, 
             string description, 
-            int sequence, 
             ICollection<TransactionAttachment> attachments, 
             Guid? memberId,
             ICollection<TransactionTypeAmount> transactionTypeAmounts)
@@ -49,7 +47,6 @@ namespace Domain
             }
             ReceivedDateTime = receivedDateTime;
             Description = description;
-            Sequence = sequence;
             Attachments = attachments ?? throw new ArgumentNullException(nameof(attachments), "Cannot be null");
 
             TransactionTypeAmounts = transactionTypeAmounts ??
@@ -67,22 +64,20 @@ namespace Domain
         public string Description { get; private set; }
 
         public DateTimeOffset DateFiled { get; private set; }
-        public int Sequence { get; private set; }
         public ICollection<TransactionAttachment> Attachments { get; private set; }
 
         public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; private set; }
 
         public static Transaction CreateDebitTransaction(string counterPartyName, Guid account, decimal amount, DateTimeOffset receivedDateTime,
-            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
+            string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
-            return new DebitTransaction(counterPartyName, account, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts);
+            return new DebitTransaction(counterPartyName, account, amount, receivedDateTime, description, attachments, memberId, transactionTypeAmounts);
         }
 
         public static Transaction CreateCreditTransaction(string counterPartyName, Guid bankAccount, decimal amount,
-            DateTimeOffset receivedDateTime, string description, int sequence, 
-            ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
+            DateTimeOffset receivedDateTime, string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
         {
-            return new CreditTransaction(counterPartyName, bankAccount, amount, receivedDateTime, description, sequence,
+            return new CreditTransaction(counterPartyName, bankAccount, amount, receivedDateTime, description,
                 attachments, memberId, transactionTypeAmounts);
         }
         
@@ -164,8 +159,8 @@ namespace Domain
 
         }
         public DebitTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
-            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
+            string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
+            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, attachments, memberId, transactionTypeAmounts)
         {
 
         }
@@ -179,8 +174,8 @@ namespace Domain
         }
 
         public CreditTransaction(string counterPartyName, Guid bankAccountId, decimal amount, DateTimeOffset receivedDateTime,
-            string description, int sequence, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
-            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, sequence, attachments, memberId, transactionTypeAmounts)
+            string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts) :
+            base(counterPartyName, bankAccountId, amount, receivedDateTime, description, attachments, memberId, transactionTypeAmounts)
         {
 
         }

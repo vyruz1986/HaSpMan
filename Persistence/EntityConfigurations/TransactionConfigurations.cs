@@ -19,9 +19,7 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.DateFiled).IsRequired();
             builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.Sequence).IsRequired();
             builder.Property(x => x.CounterPartyName).IsRequired();
-            builder.HasIndex(x => x.Sequence).IsUnique();
             builder.OwnsMany(x => x.Attachments, 
                 AttachmentConfiguration("Transaction_Attachments"));
             builder.OwnsMany(x => x.TransactionTypeAmounts,
@@ -60,9 +58,7 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.DateFiled).IsRequired();
             builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.Sequence).IsRequired();
             builder.Property(x => x.CounterPartyName).IsRequired();
-            builder.HasIndex(x => x.Sequence).IsUnique();
             builder.OwnsMany(x => x.Attachments,
                 AttachmentConfiguration("Transaction_Attachments"));
             builder.OwnsMany(x => x.TransactionTypeAmounts,

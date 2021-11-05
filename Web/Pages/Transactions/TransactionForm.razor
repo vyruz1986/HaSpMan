@@ -5,18 +5,33 @@
 @inject IMediator mediator;
 <MudGrid>
     <MudItem xs="12">
-        <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
-            @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
-            {
-                <MudRadio Option="transactionTypeGroup">@transactionTypeGroup</MudRadio>
+        
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5" >Type</MudText>
+            </MudCardHeader>
+            <MudCardContent>
 
-            }
-        </MudRadioGroup>
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+                            @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
+                            {
+                                <MudRadio Option="transactionTypeGroup">@transactionTypeGroup</MudRadio>
+
+                            }
+                        </MudRadioGroup>
+
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+            
+        </MudCard>
     </MudItem>
     <MudItem xs="12">
         <MudCard>
             <MudCardHeader>
-                <MudText Typo="Typo.h4">Betrokken partijen</MudText>
+                <MudText Typo="Typo.h5">Betrokken partijen</MudText>
             </MudCardHeader>
             <MudCardContent>
                 <MudGrid Justify="Justify.Center">
@@ -28,20 +43,20 @@
                                          ToStringFunc="@(e => e == null ? null : e.Name)"></MudAutocomplete>
                     </MudItem>
 
-                    <MudItem xs="2" >
+                    <MudItem xs="2">
                         @if (TransactionTypeGroup == TransactionTypeGroup.Credit)
                         {
                             <MudIcon Icon="@Icons.Filled.ArrowForward"></MudIcon>
 
                         }
-                        else if(TransactionTypeGroup == TransactionTypeGroup.Debit)
+                        else if (TransactionTypeGroup == TransactionTypeGroup.Debit)
                         {
-                            
+
                             <MudIcon Icon="@Icons.Filled.ArrowBack"></MudIcon>
                         }
                         else
                         {
-                            
+
                             <MudIcon Icon="@Icons.Filled.Block"></MudIcon>
                         }
                     </MudItem>
@@ -57,32 +72,62 @@
             </MudCardContent>
         </MudCard>
     </MudItem>
-    <MudItem xs="3">
-        <MudNumericField Label="Amount" @bind-Value="Transaction.Amount" For="@(() => Transaction.Amount)" />
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">
+                    Transactie
+                </MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid Justify="Justify.FlexStart">
+                    <MudItem xs="12">
+                        <MudTextField T="string" Label="Description" @bind-Text="Transaction.Description" For="(() => Transaction.Description)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
+                                       AutoClose="true" MaxDate="DateTime.Now">
+                            <PickerActions>
+                                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
     </MudItem>
     <MudItem xs="12">
-        <MudTextField T="string" Label="Description" @bind-value="Transaction.Description" For="(() => Transaction.Description)" />
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4">
-        <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
-                       AutoClose="true" MaxDate="DateTime.Now">
-            <PickerActions>
-                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-            </PickerActions>
-        </MudDatePicker>
-    </MudItem>
-    @foreach (var transactionType in Transaction.TransactionTypeAmounts)
-    {
-        <MudItem xs="6">
-            <MudSelect Label="Select transaction type" @bind-Value="transactionType.TransactionType">
-                @foreach (var item in GetScopedTransactionTypes())
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">Bedrag</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    @foreach (var transactionType in Transaction.TransactionTypeAmounts)
                     {
-                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                        <MudItem xs="6">
+                            <MudNumericField T="decimal" Label="Bedrag (€)" @bind-Value="transactionType.Amount"></MudNumericField>
+                        </MudItem>
+                        
+                        <MudItem xs="6">
+                        <MudSelect Label="Selecteer transactie type" @bind-Value="transactionType.TransactionType">
+                            @foreach (var item in GetScopedTransactionTypes())
+                                {
+                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                                }
+                        </MudSelect>
+
+                    </MudItem>
                     }
-            </MudSelect>
-            <MudNumericField T="decimal" Label="Amount" @bind-Value="transactionType.Amount"></MudNumericField>
-        </MudItem>
-    }
+                </MudGrid>
+                <MudDivider Class="my-2"></MudDivider>
+                <MudText>Som van alle types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
+                Dit bedrag moet overeenkomen met de totale transactiekost</MudText>
+            </MudCardContent>
+        </MudCard>
+        
+    </MudItem>
+   
     <ValidationSummary></ValidationSummary>
 </MudGrid>
 
