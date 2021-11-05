@@ -13,19 +13,26 @@
                 <MudText Typo="Typo.h5" >Type</MudText>
             </MudCardHeader>
             <MudCardContent>
+                @if (IsNew)
+                {
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+                                @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
+                                {
+                                    <MudRadio Option="transactionTypeGroup">@transactionTypeGroup.GetDescription()</MudRadio>
 
-                <MudGrid>
-                    <MudItem xs="6">
-                        <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
-                            @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
-                            {
-                                <MudRadio Option="transactionTypeGroup">@transactionTypeGroup</MudRadio>
+                                }
+                            </MudRadioGroup>
 
-                            }
-                        </MudRadioGroup>
-
-                    </MudItem>
-                </MudGrid>
+                        </MudItem>
+                    </MudGrid>
+                }
+                else
+                {
+                    @TransactionTypeGroup.GetDescription()
+                }
+                
             </MudCardContent>
             
         </MudCard>
@@ -108,14 +115,15 @@
                     @foreach (var transactionType in Transaction.TransactionTypeAmounts)
                     {
                         <MudItem xs="6">
-                            <MudNumericField T="decimal" Label="Bedrag (€)" @bind-Value="transactionType.Amount"></MudNumericField>
+                            <MudNumericField T="decimal" Label="Bedrag (€)" 
+                                             @bind-Value="transactionType.Amount" Min="0"></MudNumericField>
                         </MudItem>
                         
                         <MudItem xs="6">
                         <MudSelect Label="Selecteer transactie type" @bind-Value="transactionType.TransactionType">
-                            @foreach (var item in GetScopedTransactionTypes())
+                            @foreach (var item in _transactionTypes)
                                 {
-                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                                <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
                                 }
                         </MudSelect>
 
@@ -137,16 +145,30 @@
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
 
+    private TransactionTypeGroup _transactionTypeGroup;
     [Parameter]
-    public TransactionTypeGroup TransactionTypeGroup { get; set; }
+    public TransactionTypeGroup TransactionTypeGroup {
+        get => _transactionTypeGroup;
+        set
+        {
+            _transactionTypeGroup = value;
+            _transactionTypes = GetScopedTransactionTypes();
+        }
+    }
+
+    [Parameter]
+    public bool IsNew { get; set; }
 
     private AutocompleteMember? _selectedAutocompleteMember;
 
     private IReadOnlyList<BankAccountInfo> _bankAccounts = new List<BankAccountInfo>();
 
+    private IReadOnlyList<TransactionType> _transactionTypes = new List<TransactionType>();
+
     protected override async Task OnInitializedAsync()
     {
         await GetAllBankAccounts();
+        _transactionTypes = GetScopedTransactionTypes();
     }
 
     private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
@@ -159,7 +181,7 @@
                 TransactionType.CreditDonation,
                 TransactionType.CreditMemberFee,
                 TransactionType.InternalBank
-            };
+            }.OrderBy(x => x.GetDescription()).ToList();
         }
         return new List<TransactionType>
         {
@@ -169,7 +191,7 @@
             TransactionType.DebitFixedCosts,
             TransactionType.InternalBank
 
-        };
+        }.OrderBy(x => x.GetDescription()).ToList();
     }
 
     MudDatePicker _picker = new();
@@ -183,8 +205,13 @@
     private async Task GetAllBankAccounts()
     {
         _bankAccounts = await mediator.Send(new GetBankAccountInfos());
-        
+
     }
-    
+
+
+    private void TransactionTypeChanged()
+    {
+        _transactionTypes = GetScopedTransactionTypes();
+    }
 
 }

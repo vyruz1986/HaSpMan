@@ -31,6 +31,7 @@ namespace Web.Models
 
         public string? Description { get; set; }
 
+        [ValidateComplexType]
         public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
     }
 

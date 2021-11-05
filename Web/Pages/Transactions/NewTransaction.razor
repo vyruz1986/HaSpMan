@@ -12,9 +12,10 @@
 <h1>Voeg transactie toe</h1>
 
 <EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
+    <ObjectGraphDataAnnotationsValidator />
     <DataAnnotationsValidator />
 
-    <TransactionForm Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
+    <TransactionForm IsNew="true" Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"

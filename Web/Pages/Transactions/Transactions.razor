@@ -4,6 +4,7 @@
 @using MediatR
 @using Queries.Transactions.Handlers
 @using Queries.Transactions.ViewModels
+@using Types
 
 @inject IMediator _mediator
 
@@ -45,9 +46,9 @@
         <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("d")</MudTd>
         <MudTd DataLabel="Description">@context.Description</MudTd>
         <MudTd DataLabel="Transaction types">
-            @foreach (var type in @context.TransactionTypeAmounts)
+            @foreach (var type in context.TransactionTypeAmounts)
             {
-                <MudChip>@type.TransactionType for €@type.Amount</MudChip>
+                <MudChip>@type.TransactionType.GetDescription() for €@type.Amount</MudChip>
             }
         </MudTd>
         <MudTd>

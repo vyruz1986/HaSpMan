@@ -14,10 +14,10 @@
 <h1>Bewerk transactie</h1>
 
 <EditForm Model="@Transaction" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowError">
-    @*<CustomValidation @ref="sumOfAmountsValidator"></CustomValidation>*@
+    <ObjectGraphDataAnnotationsValidator />
     <DataAnnotationsValidator/>
 
-    <TransactionForm Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
+    <TransactionForm IsNew="false" Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
