@@ -154,16 +154,17 @@ namespace Queries.Members.Handlers
 
         private static Expression<Func<Member, bool>> GetFilterCriteria(string searchString)
         {
-            return m =>
-                m.Address.City.ToLower().Contains(searchString) ||
-                m.Address.Country.ToLower().Contains(searchString) ||
-                m.Address.HouseNumber.ToLower().Contains(searchString) ||
-                m.Address.Street.ToLower().Contains(searchString) ||
-                m.Address.ZipCode.ToLower().Contains(searchString) ||
-                m.Email.ToLower().Contains(searchString) ||
-                m.FirstName.ToLower().Contains(searchString) ||
-                m.LastName.ToLower().Contains(searchString) ||
-                m.PhoneNumber.ToLower().Contains(searchString);
+            var lowerCaseSearchString = searchString.ToLower();
+            return m => m.Address.City.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.Country.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.HouseNumber.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.Street.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.ZipCode.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Email.ToLower().Contains(lowerCaseSearchString) ||
+                       m.FirstName.ToLower().Contains(lowerCaseSearchString) ||
+                       m.LastName.ToLower().Contains(lowerCaseSearchString) ||
+                       m.PhoneNumber.ToLower().Contains(lowerCaseSearchString);
+            
         }
     }
 }

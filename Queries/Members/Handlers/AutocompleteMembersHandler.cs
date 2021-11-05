@@ -23,12 +23,21 @@ namespace Queries.Members.Handlers
             var context = _contextFactory.CreateDbContext();
             var members = await context.Members
                 .Where(x => 
-                    x.FirstName.Contains(request.SearchString) || 
-                    x.LastName.Contains(request.SearchString))
+                    x.FirstName.ToLower().Contains(request.SearchString.ToLower()) || 
+                    x.LastName.ToLower().Contains(request.SearchString.ToLower()))
                 .Select(x => new AutocompleteMember(x.Name, x.Id))          
                 .ToListAsync(cancellationToken: cancellationToken);
 
-            return new AutocompleteMemberResponse(members);
+            var counterParties = await context.Transactions
+                .Where(x =>
+                    x.MemberId == null &&
+                    x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))
+                .Select(x => new AutocompleteMember(x.CounterPartyName, x.MemberId))
+                .ToListAsync(cancellationToken);
+
+            var items = members.Union(counterParties).ToList();
+
+            return new AutocompleteMemberResponse(items);
         }
     }
 }
