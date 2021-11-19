@@ -18,17 +18,17 @@ namespace Persistence.Repositories
         {
             _context = haSpManContext.CreateDbContext();
         }
-        public async Task<Transaction> GetByIdAsync(Guid id)
+        public async Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken)
         {
             return await _context.Transactions
-                .FirstOrDefaultAsync(x => x.Id == id);
+                .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
 
 
 
-        public async Task<IEnumerable<Transaction>> GetAllAsync()
+        public async Task<IEnumerable<Transaction>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _context.Transactions.ToListAsync();
+            return await _context.Transactions.ToListAsync(cancellationToken);
         }
         
         public void AddRange(IEnumerable<Transaction> transactions)
@@ -46,18 +46,18 @@ namespace Persistence.Repositories
             _context.Transactions.Remove(member);
         }
         
-        public async Task SaveAsync(CancellationToken cancellationToken = default)
+        public async Task SaveAsync(CancellationToken cancellationToken)
         {
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
     public interface ITransactionRepository
     {
-        Task<Transaction> GetByIdAsync(Guid id);
-        Task<IEnumerable<Transaction>> GetAllAsync();
+        Task<Transaction> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<IEnumerable<Transaction>> GetAllAsync(CancellationToken cancellationToken);
         void AddRange(IEnumerable<Transaction> transactions);
         void Add(Transaction member);
         void Remove(Transaction member);
-        Task SaveAsync(CancellationToken cancellationToken = default);
+        Task SaveAsync(CancellationToken cancellationToken);
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -21,56 +20,6 @@ using Queries.Members.ViewModels;
 
 namespace Queries.Members.Handlers.SearchMembers
 {
-    public record GetBankAccountInfos() : IRequest<IReadOnlyList<BankAccountInfo>>;
-    public class BankAccountInfo
-    {
-        public BankAccountInfo(Guid id, string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
-        public Guid Id { get; set; }
-
-        public string Name { get; set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
-    public class GetBankAccountInfosHandler : IRequestHandler<GetBankAccountInfos, IReadOnlyList<BankAccountInfo>>
-    {
-        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
-
-        public GetBankAccountInfosHandler(IDbContextFactory<HaSpManContext> contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
-
-        public async Task<IReadOnlyList<BankAccountInfo>> Handle(GetBankAccountInfos request, CancellationToken cancellationToken)
-        {
-            await using var context = _contextFactory.CreateDbContext();
-            return await context.BankAccounts
-                .AsNoTracking()
-                .Select(x => new BankAccountInfo(x.Id, x.Name))
-                .ToListAsync(cancellationToken);
-            
-        }
-    }
-
-    public class AutocompleteMember
-    {
-        public AutocompleteMember(string name, Guid? memberId)
-        {
-            Name = name;
-            MemberId = memberId;
-        }
-        public string Name { get; set; } = string.Empty;
-        public Guid? MemberId { get; set; }
-    };
-
     public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
     {
         private readonly IDbContextFactory<HaSpManContext> _contextFactory;

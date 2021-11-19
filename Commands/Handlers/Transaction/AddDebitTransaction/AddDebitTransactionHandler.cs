@@ -25,7 +25,7 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
         public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
         {
             var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
-            var transaction = Domain.Transaction.CreateDebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
+            var transaction = new DebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
                 request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId, request.TransactionTypeAmounts);
 
             _transactionRepository.Add(transaction);

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using Queries.Members.Handlers;
 using Queries.Members.Handlers.SearchMembers;
 
 using Types;
@@ -14,6 +13,7 @@ namespace Web.Models
     {
         public TransactionForm()
         {
+            Member = new AutocompleteMember(string.Empty, null);
             TransactionTypeAmounts = new List<TransactionTypeAmountForm>()
             {
                 new(TransactionType.CreditWorkshopFee, 0)

@@ -9,10 +9,9 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-<h1>Voeg transactie toe</h1>
+<h1>Create transaction</h1>
 
 <EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
-    <ObjectGraphDataAnnotationsValidator />
     <DataAnnotationsValidator />
 
     <TransactionForm IsNew="true" Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />

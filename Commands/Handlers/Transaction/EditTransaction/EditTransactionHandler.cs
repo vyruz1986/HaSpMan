@@ -23,7 +23,7 @@ namespace Commands.Handlers.Transaction.EditTransaction
         }
         public async Task<Guid> Handle(EditTransactionCommand request, CancellationToken cancellationToken)
         {
-            var transaction = await _transactionRepository.GetByIdAsync(request.Id);
+            var transaction = await _transactionRepository.GetByIdAsync(request.Id, cancellationToken);
             if (transaction == null)
             {
                 throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));

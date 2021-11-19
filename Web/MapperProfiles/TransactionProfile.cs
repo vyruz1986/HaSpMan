@@ -40,19 +40,11 @@ namespace Web.MapperProfiles
                 .ForMember(
                     x => x.ReceivedDateTime,
                     o =>
-                        o.MapFrom(x => ToDateTime(x.ReceivedDateTime)))
+                        o.MapFrom(x => x.ReceivedDateTime.DateTime))
                 .ForMember(x => x.Member,
                     o => o.MapFrom(x => new AutocompleteMember(x.CounterPartyName, x.MemberId)));
                 
             CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
-        }
-
-        private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
-        {
-            if (dateTimeOffset == null)
-                return null;
-
-            return dateTimeOffset!.Value.DateTime;
         }
     }
 }

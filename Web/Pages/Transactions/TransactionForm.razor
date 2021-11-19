@@ -1,8 +1,7 @@
 ﻿@using Types
 @using MediatR
-@using Queries.Members
-@using Queries.Members.Handlers
 @using Queries.Members.Handlers.AutocompleteMember
+@using Queries.Members.Handlers.GetBankAccountInfos
 @using Queries.Members.Handlers.SearchMembers
 @inject IMediator mediator;
 <MudGrid>
@@ -40,7 +39,7 @@
     <MudItem xs="12">
         <MudCard>
             <MudCardHeader>
-                <MudText Typo="Typo.h5">Betrokken partijen</MudText>
+                <MudText Typo="Typo.h5">Involved parties</MudText>
             </MudCardHeader>
             <MudCardContent>
                 <MudGrid Justify="Justify.Center">
@@ -85,13 +84,13 @@
         <MudCard>
             <MudCardHeader>
                 <MudText Typo="Typo.h5">
-                    Transactie
+                    Transaction
                 </MudText>
             </MudCardHeader>
             <MudCardContent>
                 <MudGrid Justify="Justify.FlexStart">
                     <MudItem xs="12">
-                        <MudTextField T="string" Label="Description" @bind-Text="Transaction.Description" For="(() => Transaction.Description)" />
+                        <MudTextField T="string" Label="Description" @bind-Text="Transaction.Description" For="(() => Transaction.Description ?? string.Empty)" />
                     </MudItem>
                     <MudItem xs="12" sm="6" md="4">
                         <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
@@ -108,7 +107,7 @@
     <MudItem xs="12">
         <MudCard>
             <MudCardHeader>
-                <MudText Typo="Typo.h5">Bedrag</MudText>
+                <MudText Typo="Typo.h5">Amount</MudText>
             </MudCardHeader>
             <MudCardContent>
                 <MudGrid>
@@ -131,8 +130,8 @@
                     }
                 </MudGrid>
                 <MudDivider Class="my-2"></MudDivider>
-                <MudText>Som van alle types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
-                Dit bedrag moet overeenkomen met de totale transactiekost</MudText>
+                <MudText>Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
+                This value should match the total amount of the transaction</MudText>
             </MudCardContent>
         </MudCard>
         

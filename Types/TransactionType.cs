@@ -4,21 +4,21 @@ namespace Types
 {
     public enum TransactionType
     {
-        [Description("Donatie")]
+        [Description("Donation")]
         CreditDonation,
-        [Description("Lidgeld")]
+        [Description("Membership fee")]
         CreditMemberFee,
-        [Description("Workshop")]
+        [Description("Workshop fee")]
         CreditWorkshopFee,
-        [Description("Debet verbruiksgoederen")]
+        [Description("Acquisition of consumables")]
         DebitAcquisitionConsumables,
-        [Description("Debet goederen en diensten")]
+        [Description("Acquisition of goods and services")]
         DebitAcquisitionGoodsAndServices,
-        [Description("Bankkosten")]
+        [Description("Bank costs")]
         DebitBankCosts,
-        [Description("Vaste kosten")]
+        [Description("Fixed costs")]
         DebitFixedCosts,
-        [Description("Interne bank transfer")]
+        [Description("Internal bank transfer")]
         InternalBank
     }
 }

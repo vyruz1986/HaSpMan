@@ -30,9 +30,9 @@ namespace Queries.Members.Handlers.AutocompleteMember
 
             var counterParties = await context.Transactions
                 .Where(x =>
-                    x.MemberId == null &&
+                    !x.IsTransactionForMember &&
                     x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))
-                .Select(x => new SearchMembers.AutocompleteMember(x.CounterPartyName, x.MemberId))
+                .Select(x => new SearchMembers.AutocompleteMember(x.CounterPartyName, null))
                 .ToListAsync(cancellationToken);
 
             var items = members.Union(counterParties).ToList();
