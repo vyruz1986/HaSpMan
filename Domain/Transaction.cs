@@ -70,25 +70,6 @@ namespace Domain
 
         public bool IsTransactionForMember => MemberId.HasValue;
 
-        //public static Transaction CreateDebitTransaction(string counterPartyName, Guid account, decimal amount, DateTimeOffset receivedDateTime,
-        //    string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
-        //{
-        //    return new DebitTransaction(counterPartyName, account, amount, receivedDateTime, description, attachments, memberId, transactionTypeAmounts);
-        //}
-
-        //public static Transaction CreateCreditTransaction(string counterPartyName, Guid bankAccount, decimal amount,
-        //    DateTimeOffset receivedDateTime, string description, ICollection<TransactionAttachment> attachments, Guid? memberId, ICollection<TransactionTypeAmount> transactionTypeAmounts)
-        //{
-        //    return new CreditTransaction(counterPartyName, bankAccount, amount, receivedDateTime, description,
-        //        attachments, memberId, transactionTypeAmounts);
-        //}
-        
-
-        #region Specific transactions
-        
-        
-#endregion
-
         public void ChangeCounterParty(string counterPartyName, Guid? memberId)
         {
             if (memberId == MemberId && counterPartyName == CounterPartyName)

@@ -15,11 +15,13 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.Amount).IsRequired();
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.DateFiled).IsRequired();
-            builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.Description).HasMaxLength(1000);
+            builder.Property(x => x.Description)
+                .IsRequired()
+                .HasMaxLength(1000);
 
-            builder.Property(x => x.CounterPartyName).IsRequired();
-            builder.Property(x => x.CounterPartyName).HasMaxLength(120);
+            builder.Property(x => x.CounterPartyName)
+                .IsRequired()
+                .HasMaxLength(120);
 
             builder.OwnsMany(x => x.Attachments, 
                 AttachmentConfiguration("Transaction_Attachments"));
@@ -43,10 +45,12 @@ namespace Persistence.EntityConfigurations
             return cfg =>
             {
                 cfg.ToTable(tableName);
-                cfg.Property(x => x.Name).IsRequired();
-                cfg.Property(x => x.Name).HasMaxLength(50);
-                cfg.Property(x => x.BlobURI).IsRequired();
-                cfg.Property(x => x.BlobURI).HasMaxLength(1000);
+                cfg.Property(x => x.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+                cfg.Property(x => x.BlobURI)
+                    .IsRequired()
+                    .HasMaxLength(1000);
             };
         }
     }
@@ -61,11 +65,13 @@ namespace Persistence.EntityConfigurations
             builder.Property(x => x.Amount).IsRequired();
             builder.Property(x => x.BankAccountId).IsRequired();
             builder.Property(x => x.DateFiled).IsRequired();
-            builder.Property(x => x.Description).IsRequired();
-            builder.Property(x => x.Description).HasMaxLength(1000);
+            builder.Property(x => x.Description)
+                .IsRequired()
+                .HasMaxLength(1000);
 
-            builder.Property(x => x.CounterPartyName).IsRequired();
-            builder.Property(x => x.CounterPartyName).HasMaxLength(120);
+            builder.Property(x => x.CounterPartyName)
+                .IsRequired()
+                .HasMaxLength(120);
 
             builder.OwnsMany(x => x.Attachments,
                 AttachmentConfiguration("Transaction_Attachments"));
@@ -89,10 +95,12 @@ namespace Persistence.EntityConfigurations
             return cfg =>
             {
                 cfg.ToTable(tableName);
-                cfg.Property(x => x.Name).IsRequired();
-                cfg.Property(x => x.Name).HasMaxLength(50);
-                cfg.Property(x => x.BlobURI).IsRequired();
-                cfg.Property(x => x.BlobURI).HasMaxLength(1000);
+                cfg.Property(x => x.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+                cfg.Property(x => x.BlobURI)
+                    .IsRequired()
+                    .HasMaxLength(1000);
             };
         }
     }
