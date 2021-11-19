@@ -1,0 +1,79 @@
+﻿@page "/transactions/{TransactionId:guid}/edit"
+@attribute [Authorize]
+@using MediatR
+@using AutoMapper
+@using Commands.Handlers.Transaction.EditTransaction
+@using Domain
+@using Queries.Transactions.Handlers
+@using Types
+@inject IMediator _mediator
+@inject IMapper _mapper
+@inject ISnackbar _snackbar
+@inject NavigationManager _navManager
+
+<h1>Edit transaction</h1>
+
+<EditForm Model="@Transaction" OnValidSubmit="@SubmitTransaction" OnInvalidSubmit="@ShowError">
+    <DataAnnotationsValidator/>
+
+    <TransactionForm IsNew="false" Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
+
+    <MudItem xs="12" Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+                   ButtonType="ButtonType.Submit">Save transaction</MudButton>
+    </MudItem>
+</EditForm>
+
+@code {
+    
+    [Parameter]
+    public Guid TransactionId { get; set; }
+    public Models.TransactionForm Transaction = new();
+
+    private TransactionTypeGroup _transactionTypeGroup;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GetTransactionByIdQuery(TransactionId);
+        var memberDetail = await _mediator.Send(query);
+        Transaction = _mapper.Map<Models.TransactionForm>(memberDetail);
+        _transactionTypeGroup = GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
+    }
+
+    private TransactionTypeGroup GetTransactionTypeGroup(TransactionType transactionType)
+    {
+        return new List<TransactionType>
+        {
+            TransactionType.CreditWorkshopFee,
+            TransactionType.CreditDonation,
+            TransactionType.CreditMemberFee,
+            TransactionType.InternalBank
+        }.Contains(transactionType) ? TransactionTypeGroup.Credit : TransactionTypeGroup.Debit;
+    }
+
+
+    private async Task SubmitTransaction()
+    {
+
+        var command = new EditTransactionCommand(
+            Id: TransactionId,
+            CounterPartyName: Transaction.Member.Name!,
+            MemberId: Transaction.Member.MemberId,
+            BankAccountId: Transaction.BankAccountId.GetValueOrDefault(),
+            ReceivedDateTime: new DateTimeOffset(Transaction.ReceivedDateTime!.Value),
+            Description: Transaction.Description!,
+            TransactionTypeAmounts: Transaction.TransactionTypeAmounts
+                .Select(x => new TransactionTypeAmount(x.TransactionType, x.Amount))
+                .ToList()
+            );
+        var response = await _mediator.Send(command);
+        _snackbar.Clear();
+        _snackbar.Add("Transaction edited successfully!", Severity.Success);
+        _navManager.NavigateTo("/transactions");
+    }
+    private void ShowError()
+    {
+        _snackbar.Clear();
+        _snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+}

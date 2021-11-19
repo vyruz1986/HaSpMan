@@ -9,13 +9,13 @@ using Types;
 namespace Commands
 {
     public record AddMemberCommand(
-      string FirstName,
-      string LastName,
-      Address Address,
-      string Email,
-      string PhoneNumber,
-      double MembershipFee,
-      DateTimeOffset MembershipExpiryDate
+        string FirstName,
+        string LastName,
+        Address Address,
+        string Email,
+        string PhoneNumber,
+        double MembershipFee,
+        DateTimeOffset MembershipExpiryDate
     ) : IRequest<Guid>;
 
     public class AddMemberCommandValidator : AbstractValidator<AddMemberCommand>

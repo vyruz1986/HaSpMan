@@ -15,16 +15,17 @@ namespace Queries.BankAccounts.Handlers
 {
     public class GetBankAccountsHandler : IRequestHandler<GetBankAccounts, ICollection<BankAccount>>
     {
-        private readonly HaSpManContext _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
 
-        public GetBankAccountsHandler(HaSpManContext context)
+        public GetBankAccountsHandler(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task<ICollection<BankAccount>> Handle(GetBankAccounts request, CancellationToken cancellationToken)
         {
-            return await _context.BankAccounts
+            var context = _contextFactory.CreateDbContext();
+            return await context.BankAccounts
                 .Select(b => new BankAccount(b.Id, b.Name, b.AccountNumber))
                 .ToListAsync(cancellationToken);
         }

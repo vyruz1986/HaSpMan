@@ -43,5 +43,4 @@ namespace Web.MapperProfiles
             return dateTimeOffset!.Value.DateTime;
         }
     }
-
 }

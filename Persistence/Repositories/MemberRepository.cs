@@ -10,12 +10,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories
 {
+
     public class MemberRepository : IMemberRepository
     {
         private readonly HaSpManContext _context;
-        public MemberRepository(HaSpManContext context)
+
+        public MemberRepository(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _context = context;
+
+            _context = contextFactory.CreateDbContext();
         }
         public void Add(Member member)
         {

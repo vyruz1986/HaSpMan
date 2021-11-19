@@ -1,5 +1,5 @@
 using Domain;
-using Persistence.EntityConfigurations;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
@@ -13,12 +13,14 @@ namespace Persistence
         
         public DbSet<Member> Members { get; set; } = null!;
         public DbSet<BankAccount> BankAccounts { get; set; } = null!;
+        public DbSet<Transaction> Transactions { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.HasDefaultSchema("HaSpMan");
             builder.ApplyConfigurationsFromAssembly(
                typeof(Persistence.EntityConfigurations.MemberConfiguration).Assembly
+
             );
             base.OnModelCreating(builder);
         }

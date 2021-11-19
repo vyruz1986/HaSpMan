@@ -18,26 +18,27 @@ using Persistence;
 using Queries.Enums;
 using Queries.Members.ViewModels;
 
-namespace Queries.Members.Handlers
+namespace Queries.Members.Handlers.SearchMembers
 {
     public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
     {
-        private readonly HaSpManContext _context;
+        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
         private readonly IMapper _mapper;
 
-        public SearchMembersHandler(HaSpManContext context, IMapper mapper)
+        public SearchMembersHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
         {
-            _context = context;
+            _contextFactory = contextFactory;
             _mapper = mapper;
         }
 
         public async Task<Paginated<MemberSummary>> Handle(SearchMembersQuery request, CancellationToken cancellationToken)
         {
-            var memberQueryable = _context.Members
+            var context = _contextFactory.CreateDbContext();
+            var memberQueryable = context.Members
                 .AsNoTracking()
                 .Where(GetFilterCriteria(request.SearchString));
 
-            var total = await memberQueryable.CountAsync();
+            var total = await memberQueryable.CountAsync(cancellationToken);
 
             memberQueryable = GetOrderedQueryable(request, memberQueryable);
 
@@ -101,16 +102,17 @@ namespace Queries.Members.Handlers
 
         private static Expression<Func<Member, bool>> GetFilterCriteria(string searchString)
         {
-            return m =>
-                m.Address.City.ToLower().Contains(searchString) ||
-                m.Address.Country.ToLower().Contains(searchString) ||
-                m.Address.HouseNumber.ToLower().Contains(searchString) ||
-                m.Address.Street.ToLower().Contains(searchString) ||
-                m.Address.ZipCode.ToLower().Contains(searchString) ||
-                m.Email.ToLower().Contains(searchString) ||
-                m.FirstName.ToLower().Contains(searchString) ||
-                m.LastName.ToLower().Contains(searchString) ||
-                m.PhoneNumber.ToLower().Contains(searchString);
+            var lowerCaseSearchString = searchString.ToLower();
+            return m => m.Address.City.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.Country.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.HouseNumber.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.Street.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Address.ZipCode.ToLower().Contains(lowerCaseSearchString) ||
+                       m.Email.ToLower().Contains(lowerCaseSearchString) ||
+                       m.FirstName.ToLower().Contains(lowerCaseSearchString) ||
+                       m.LastName.ToLower().Contains(lowerCaseSearchString) ||
+                       m.PhoneNumber.ToLower().Contains(lowerCaseSearchString);
+            
         }
     }
 }

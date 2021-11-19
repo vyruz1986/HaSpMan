@@ -14,9 +14,9 @@ namespace Persistence.Repositories
     {
         private readonly HaSpManContext _context;
 
-        public BankAccountRepository(HaSpManContext context)
+        public BankAccountRepository(IDbContextFactory<HaSpManContext> contextFactory)
         {
-            _context = context;
+            _context = contextFactory.CreateDbContext();
         }
 
         public void Add(BankAccount account)
@@ -36,11 +36,13 @@ namespace Persistence.Repositories
 
         public void Remove(BankAccount account)
         {
+
             _context.BankAccounts.Remove(account);
         }
 
         public async Task SaveAsync(CancellationToken ct)
         {
+            
             await _context.SaveChangesAsync(ct);
         }
     }

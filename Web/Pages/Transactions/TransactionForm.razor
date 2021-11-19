@@ -1,0 +1,216 @@
+﻿@using Types
+@using MediatR
+@using Queries.Members.Handlers.AutocompleteMember
+@using Queries.Members.Handlers.GetBankAccountInfos
+@using Queries.Members.Handlers.SearchMembers
+@inject IMediator mediator;
+<MudGrid>
+    <MudItem xs="12">
+        
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5" >Type</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                @if (IsNew)
+                {
+                    <MudGrid>
+                        <MudItem xs="6">
+                            <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+                                @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
+                                {
+                                    <MudRadio Option="transactionTypeGroup">@transactionTypeGroup.GetDescription()</MudRadio>
+
+                                }
+                            </MudRadioGroup>
+
+                        </MudItem>
+                    </MudGrid>
+                }
+                else
+                {
+                    @TransactionTypeGroup.GetDescription()
+                }
+                
+            </MudCardContent>
+            
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">Involved parties</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid Justify="Justify.Center">
+                    <MudItem xs="5">
+                        <MudAutocomplete T="AutocompleteMember"
+                                         Label="Members"
+                                         @bind-Value="Transaction.Member"
+                                         SearchFunc="SearchFunc"
+                                         ToStringFunc="@(e => e == null ? null : e.Name)"></MudAutocomplete>
+                    </MudItem>
+
+                    <MudItem xs="2">
+                        @if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+                        {
+                            <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowForward"></MudIcon>
+
+                        }
+                        else if (TransactionTypeGroup == TransactionTypeGroup.Debit)
+                        {
+
+                            <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowBack"></MudIcon>
+                        }
+                        else
+                        {
+
+                            <MudIcon Icon="@Icons.Filled.Block"></MudIcon>
+                        }
+                    </MudItem>
+                    <MudItem xs="5">
+                        <MudSelect Label="Select bank account" @bind-Value="Transaction.BankAccountId">
+                            @foreach (var item in _bankAccounts)
+                            {
+                                <MudSelectItem Value="@item?.Id">@item</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">
+                    Transaction
+                </MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid Justify="Justify.FlexStart">
+                    <MudItem xs="12">
+                        <MudTextField T="string" Label="Description" @bind-Text="Transaction.Description" For="(() => Transaction.Description ?? string.Empty)" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
+                                       AutoClose="true" MaxDate="DateTime.Now">
+                            <PickerActions>
+                                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
+                            </PickerActions>
+                        </MudDatePicker>
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">Amount</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudGrid>
+                    @foreach (var transactionType in Transaction.TransactionTypeAmounts)
+                    {
+                        <MudItem xs="6">
+                            <MudNumericField T="decimal" Label="Bedrag (€)" 
+                                             @bind-Value="transactionType.Amount" Min="0"></MudNumericField>
+                        </MudItem>
+                        
+                        <MudItem xs="6">
+                        <MudSelect Label="Selecteer transactie type" @bind-Value="transactionType.TransactionType">
+                            @foreach (var item in _transactionTypes)
+                                {
+                                <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
+                                }
+                        </MudSelect>
+
+                    </MudItem>
+                    }
+                </MudGrid>
+                <MudDivider Class="my-2"></MudDivider>
+                <MudText>Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
+                This value should match the total amount of the transaction</MudText>
+            </MudCardContent>
+        </MudCard>
+        
+    </MudItem>
+   
+    <ValidationSummary></ValidationSummary>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public Models.TransactionForm Transaction { get; set; } = new();
+
+    private TransactionTypeGroup _transactionTypeGroup;
+    [Parameter]
+    public TransactionTypeGroup TransactionTypeGroup {
+        get => _transactionTypeGroup;
+        set
+        {
+            _transactionTypeGroup = value;
+            _transactionTypes = GetScopedTransactionTypes();
+        }
+    }
+
+    [Parameter]
+    public bool IsNew { get; set; }
+
+    
+
+    private IReadOnlyList<BankAccountInfo> _bankAccounts = new List<BankAccountInfo>();
+
+    private IReadOnlyList<TransactionType> _transactionTypes = new List<TransactionType>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllBankAccounts();
+        _transactionTypes = GetScopedTransactionTypes();
+    }
+
+    private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
+    {
+        if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+        {
+            return new List<TransactionType>
+            {
+                TransactionType.CreditWorkshopFee,
+                TransactionType.CreditDonation,
+                TransactionType.CreditMemberFee,
+                TransactionType.InternalBank
+            }.OrderBy(x => x.GetDescription()).ToList();
+        }
+        return new List<TransactionType>
+        {
+            TransactionType.DebitAcquisitionConsumables,
+            TransactionType.DebitAcquisitionGoodsAndServices,
+            TransactionType.DebitBankCosts,
+            TransactionType.DebitFixedCosts,
+            TransactionType.InternalBank
+
+        }.OrderBy(x => x.GetDescription()).ToList();
+    }
+
+    MudDatePicker _picker = new();
+
+    private async Task<IEnumerable<AutocompleteMember>> SearchFunc(string searchString)
+    {
+        var response = await mediator.Send(new AutocompleteMembersQuery(searchString));
+        return response.Members;
+    }
+
+    private async Task GetAllBankAccounts()
+    {
+        _bankAccounts = await mediator.Send(new GetBankAccountInfos());
+
+    }
+
+
+    private void TransactionTypeChanged()
+    {
+        _transactionTypes = GetScopedTransactionTypes();
+    }
+
+}

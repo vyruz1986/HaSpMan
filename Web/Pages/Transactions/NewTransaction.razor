@@ -1,0 +1,57 @@
+﻿@page "/transactions/new"
+@attribute [Authorize]
+@using MediatR
+@using AutoMapper
+@using Commands.Handlers.Transaction.AddCreditTransaction
+@using Commands.Handlers.Transaction.AddDebitTransaction
+@inject IMediator _mediator
+@inject IMapper _mapper
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<h1>Create transaction</h1>
+
+<EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
+    <DataAnnotationsValidator />
+
+    <TransactionForm IsNew="true" Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
+
+    <MudItem xs="12" Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+                   ButtonType="ButtonType.Submit">Add transaction</MudButton>
+    </MudItem>
+</EditForm>
+
+@code {
+    private readonly Models.TransactionForm _newTransaction = new();
+
+    private TransactionTypeGroup _selectedTransactionTypeGroup = TransactionTypeGroup.Credit;
+
+    private async Task AddTransaction()
+    {
+        switch (_selectedTransactionTypeGroup)
+        {
+            case TransactionTypeGroup.Credit:
+            {
+                var command = _mapper.Map<AddCreditTransactionCommand>(_newTransaction);
+                await _mediator.Send(command);
+                break;
+            }
+            case TransactionTypeGroup.Debit:
+            {
+                var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
+                await _mediator.Send(command);
+                break;
+            }
+        }
+
+        Snackbar.Clear();
+        Snackbar.Add($"Transaction for {_newTransaction.Member.Name} added successfully!", Severity.Success);
+        NavManager.NavigateTo("/transactions");
+    }
+    private void ShowError()
+    {
+        Snackbar.Clear();
+        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+}
