@@ -30,7 +30,7 @@ namespace Queries.Members.Handlers.AutocompleteMember
 
             var counterParties = await context.Transactions
                 .Where(x =>
-                    !x.IsTransactionForMember &&
+                    x.MemberId == null &&
                     x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))
                 .Select(x => new SearchMembers.AutocompleteMember(x.CounterPartyName, null))
                 .ToListAsync(cancellationToken);
