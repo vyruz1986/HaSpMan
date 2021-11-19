@@ -92,14 +92,16 @@ namespace Persistence.Migrations
 
                     b.Property<string>("CounterPartyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<DateTimeOffset>("DateFiled")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -223,11 +225,13 @@ namespace Persistence.Migrations
 
                             b1.Property<string>("BlobURI")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(1000)
+                                .HasColumnType("nvarchar(1000)");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)");
 
                             b1.HasKey("TransactionId", "Id");
 

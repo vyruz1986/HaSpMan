@@ -21,6 +21,20 @@ namespace Commands.Handlers.Transaction.AddDebitTransaction
     {
         public AddDebitTransactionCommandValidator()
         {
+            RuleFor(x => x.CounterPartyName)
+                .MaximumLength(120);
+            RuleFor(x => x.Description)
+                .MaximumLength(1000);
+            RuleFor(x => x.BankAccountId)
+                .NotEmpty();
+            When(x => x.MemberId != null, () =>
+            {
+                RuleFor(x => x.MemberId)
+                    .NotEmpty();
+            });
+
+            RuleFor(x => x.ReceivedDateTime)
+                .LessThanOrEqualTo(x => DateTimeOffset.Now);
             RuleForEach(x => x.TransactionTypeAmounts)
                 .SetValidator(new TransactionTypeValidator());
         }

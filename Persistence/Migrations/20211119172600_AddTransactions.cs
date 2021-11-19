@@ -16,9 +16,9 @@ namespace Persistence.Migrations
                     MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ReceivedDateTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CounterPartyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CounterPartyName = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     DateFiled = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -35,8 +35,8 @@ namespace Persistence.Migrations
                     TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BlobURI = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    BlobURI = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {

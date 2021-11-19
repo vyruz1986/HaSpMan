@@ -57,7 +57,7 @@ namespace Web
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddHaSpManContext(dbConnectionString);
-            services.MigrateHaSpManContext(dbConnectionString);
+            //services.MigrateHaSpManContext(dbConnectionString);
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>(); 
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
