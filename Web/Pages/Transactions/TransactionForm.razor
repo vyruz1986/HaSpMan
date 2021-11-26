@@ -234,14 +234,10 @@
     {
         var dialog = dialogService.Show<AddBankAccountDialog>("Add bank account");
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Cancelled && result.Data is true)
         {
-            var bankAccountForm = result.Data as BankAccountForm;
-            if (bankAccountForm != null)
-            {
-                await mediator.Send(new AddBankAccountCommand(bankAccountForm.Name, bankAccountForm.AccountNumber));
-                await GetAllBankAccounts();
-            }
+
+            await GetAllBankAccounts();
 
         }
     }
