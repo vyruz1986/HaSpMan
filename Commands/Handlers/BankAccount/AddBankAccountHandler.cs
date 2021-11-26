@@ -2,12 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Domain;
 using Domain.Interfaces;
 
 using MediatR;
 
-namespace Commands.Handlers
+namespace Commands.Handlers.BankAccount
 {
     public class AddBankAccountHandler : IRequestHandler<AddBankAccountCommand, Guid>
     {
@@ -20,7 +19,7 @@ namespace Commands.Handlers
 
         public async Task<Guid> Handle(AddBankAccountCommand request, CancellationToken ct)
         {
-            var newAccount = new BankAccount(request.Name, request.AccountNumber);
+            var newAccount = new Domain.BankAccount(request.Name, request.AccountNumber);
             _bankAccountRepository.Add(newAccount);
             await _bankAccountRepository.SaveAsync(ct);
 
