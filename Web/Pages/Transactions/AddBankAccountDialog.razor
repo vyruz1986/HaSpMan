@@ -1,0 +1,23 @@
+﻿@using Web.Models
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string" @bind-Value="bankAccountForm.Name" For="@(() => bankAccountForm.Name)" Label="Name" />
+        <MudTextField T="string" @bind-Value="bankAccountForm.AccountNumber" For="@(() => bankAccountForm.AccountNumber)" Label="Account number" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+
+    BankAccountForm bankAccountForm = new();
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    void Submit() => MudDialog?.Close(DialogResult.Ok(bankAccountForm));
+    void Cancel() => MudDialog?.Cancel();
+
+    
+
+}

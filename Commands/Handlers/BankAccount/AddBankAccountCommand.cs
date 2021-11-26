@@ -4,7 +4,7 @@ using FluentValidation;
 
 using MediatR;
 
-namespace Commands
+namespace Commands.Handlers.BankAccount
 {
     public record AddBankAccountCommand(
         string Name,
