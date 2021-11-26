@@ -3,6 +3,11 @@
 @using Queries.Members.Handlers.AutocompleteMember
 @using Queries.Members.Handlers.GetBankAccountInfos
 @using Queries.Members.Handlers.SearchMembers
+@using Web.Models
+@using Commands.Handlers.BankAccount
+
+@inject IDialogService dialogService
+
 @inject IMediator mediator;
 <MudGrid>
     <MudItem xs="12">
@@ -43,15 +48,16 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudGrid Justify="Justify.Center">
-                        <MudItem xs="5">
+                        <MudItem xs="4">
                             <MudAutocomplete T="AutocompleteMember"
                                              Label="Members"
                                              @bind-Value="Transaction.Member"
                                              SearchFunc="SearchFunc"
+                                             Variant="Variant.Outlined"
                                              ToStringFunc="@(e => e?.Name)"></MudAutocomplete>
                         </MudItem>
 
-                        <MudItem xs="2">
+                        <MudItem xs="1">
                             @if (TransactionTypeGroup == TransactionTypeGroup.Credit)
                             {
                                 <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowForward"></MudIcon>
@@ -65,16 +71,25 @@
                             else
                             {
 
-                                <MudIcon Icon="@Icons.Filled.Block"></MudIcon>
+                                <MudIcon Class="mt-4" Icon="@Icons.Filled.Block"></MudIcon>
                             }
                         </MudItem>
-                        <MudItem xs="5">
-                            <MudSelect Label="Select bank account" @bind-Value="Transaction.BankAccountId">
+                        <MudItem xs="3">
+                            <MudSelect Label="Select bank account" Variant="Variant.Outlined" @bind-Value="Transaction.BankAccountId">
                                 @foreach (var item in _bankAccounts)
                                 {
-                                    <MudSelectItem Value="@item?.Id">@item</MudSelectItem>
+                                    <MudSelectItem Value="@item?.Id">@item?.Name</MudSelectItem>
                                 }
                             </MudSelect>
+
+                        </MudItem>
+                        <MudItem xs="3">
+                            @{
+                                if (!_bankAccounts.Any())
+                                {
+                                    <MudButton Class="mt-4" @onclick="OpenAddBankAccountDialog" Variant="Variant.Filled" Color="Color.Primary">Add bank account</MudButton>
+                                }
+                            }
                         </MudItem>
                     </MudGrid>
                 </MudCardContent>
@@ -121,7 +136,7 @@
                             </MudItem>
 
                             <MudItem xs="6">
-                            <MudSelect Label="Selecteer transactie type" @bind-Value="transactionType.TransactionType">
+                            <MudSelect Label="Selecteer transactie type" Variant="Variant.Outlined" @bind-Value="transactionType.TransactionType">
                                 @foreach (var item in _transactionTypes)
                                     {
                                     <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
@@ -195,6 +210,8 @@
         }.OrderBy(x => x.GetDescription()).ToList();
     }
 
+
+
     MudDatePicker _picker = new();
 
     private async Task<IEnumerable<AutocompleteMember>> SearchFunc(string searchString)
@@ -206,7 +223,21 @@
     private async Task GetAllBankAccounts()
     {
         _bankAccounts = await mediator.Send(new GetBankAccountInfos());
+        
+        if (_bankAccounts.Count == 1 && Transaction.BankAccountId == null)
+        {
+            Transaction.BankAccountId = _bankAccounts[0].Id;
+        }
+    }
 
+    private async Task OpenAddBankAccountDialog()
+    {
+        var dialog = dialogService.Show<AddBankAccountDialog>("Add bank account");
+        var result = await dialog.Result;
+        if (!result.Cancelled && result.Data is true)
+        {
+            await GetAllBankAccounts();
+        }
     }
 
 

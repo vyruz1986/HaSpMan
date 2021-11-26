@@ -1,0 +1,33 @@
+﻿@using Web.Models
+@using Commands.Handlers.BankAccount
+@using MediatR
+
+@inject IMediator mediator; 
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string" @bind-Value="bankAccountForm.Name" For="@(() => bankAccountForm.Name)" Label="Name" />
+        <MudTextField T="string" @bind-Value="bankAccountForm.AccountNumber" For="@(() => bankAccountForm.AccountNumber)" Label="Account number" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+
+    BankAccountForm bankAccountForm = new();
+
+    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+
+    async Task Submit()
+    {
+        await mediator.Send(new AddBankAccountCommand(bankAccountForm.Name, bankAccountForm.AccountNumber));
+        MudDialog?.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel() => MudDialog?.Cancel();
+
+    
+
+}
