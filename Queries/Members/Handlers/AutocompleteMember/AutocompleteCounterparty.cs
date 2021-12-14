@@ -9,7 +9,7 @@ namespace Queries.Members.Handlers.AutocompleteMember
             Name = name;
             MemberId = memberId;
         }
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
         public Guid? MemberId { get; set; }
     };
 }

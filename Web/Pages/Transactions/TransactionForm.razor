@@ -258,10 +258,6 @@
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForNonMembers(string searchString)
     {
-        if (string.IsNullOrEmpty(searchString))
-        {
-            return new List<AutocompleteCounterparty>();
-        }
         var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, false));
         
         return response.Counterparties;

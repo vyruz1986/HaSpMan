@@ -43,7 +43,9 @@ namespace Queries.Members.Handlers.AutocompleteMember
                 .Distinct()
                 .ToListAsync(cancellationToken);
 
-            if (!counterParties.Any(x => x.Name.Equals(request.SearchString, StringComparison.InvariantCultureIgnoreCase)))
+            if (!string.IsNullOrWhiteSpace(request.SearchString) &&
+                !counterParties.Any(x => 
+                    x.Name.Equals(request.SearchString, StringComparison.InvariantCulture)))
             {
                 counterParties.Insert(0, new AutocompleteCounterparty(request.SearchString, null));
             }
