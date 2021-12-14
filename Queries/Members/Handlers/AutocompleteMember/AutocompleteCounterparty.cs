@@ -1,10 +1,10 @@
 using System;
 
-namespace Queries.Members.Handlers.SearchMembers
+namespace Queries.Members.Handlers.AutocompleteMember
 {
-    public class AutocompleteMember
+    public class AutocompleteCounterparty
     {
-        public AutocompleteMember(string name, Guid? memberId)
+        public AutocompleteCounterparty(string name, Guid? memberId)
         {
             Name = name;
             MemberId = memberId;

@@ -47,14 +47,36 @@
                     <MudText Typo="Typo.h5">Involved parties</MudText>
                 </MudCardHeader>
                 <MudCardContent>
-                    <MudGrid Justify="Justify.Center">
-                        <MudItem xs="4">
-                            <MudAutocomplete T="AutocompleteMember"
-                                             Label="Members"
-                                             @bind-Value="Transaction.Member"
-                                             SearchFunc="SearchFunc"
-                                             Variant="Variant.Outlined"
-                                             ToStringFunc="@(e => e?.Name)"></MudAutocomplete>
+                    <MudGrid Justify="Justify.SpaceBetween" Spacing="2">
+                        <MudItem xs="2">
+                            <MudRadioGroup 
+                                @bind-SelectedOption="IsSearchForMembership" >
+                                <MudRadio Option="false">Non-members</MudRadio>
+                                <MudRadio Option="true">Members</MudRadio>
+                            </MudRadioGroup>
+                        </MudItem>
+                        <MudItem xs="3">
+                            @if (IsSearchForMembership)
+                            {
+                                <MudAutocomplete T="AutocompleteCounterparty"
+                                                 Label="Members"
+                                                 @bind-Value="Transaction.Counterparty"
+                                                 SearchFunc="SearchForMembers"
+                                                 Variant="Variant.Outlined"
+                                                 ToStringFunc="ac => ac?.Name"></MudAutocomplete>
+                            }
+                            else
+                            {
+                                <MudAutocomplete T="AutocompleteCounterparty"
+                                                 Label="Non members"
+                                                 @bind-Value="Transaction.Counterparty"
+                                                 SearchFunc="SearchForNonMembers"
+                                                 Variant="Variant.Outlined"
+                                                 CoerceValue="true"
+                                                 CoerceText="true"
+                                                 ToStringFunc="ac => ac?.Name"></MudAutocomplete>
+                            }
+
                         </MudItem>
 
                         <MudItem xs="1">
@@ -74,7 +96,7 @@
                                 <MudIcon Class="mt-4" Icon="@Icons.Filled.Block"></MudIcon>
                             }
                         </MudItem>
-                        <MudItem xs="3">
+                        <MudItem xs="2">
                             <MudSelect Label="Select bank account" Variant="Variant.Outlined" @bind-Value="Transaction.BankAccountId">
                                 @foreach (var item in _bankAccounts)
                                 {
@@ -83,7 +105,7 @@
                             </MudSelect>
 
                         </MudItem>
-                        <MudItem xs="3">
+                        <MudItem xs="2">
                             @{
                                 if (!_bankAccounts.Any())
                                 {
@@ -158,8 +180,22 @@
 </MudGrid>
 
 @code {
+
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
+
+    private bool _isSearchForMembership = false;
+    
+    [Parameter]
+    public bool IsSearchForMembership
+    {
+        get => _isSearchForMembership;
+        set
+        {
+            _isSearchForMembership = value;
+            Transaction.Counterparty = new AutocompleteCounterparty(string.Empty, null);
+        }
+    }
 
     private TransactionTypeGroup _transactionTypeGroup;
     [Parameter]
@@ -174,8 +210,6 @@
 
     [Parameter]
     public bool IsNew { get; set; }
-
-
 
     private IReadOnlyList<BankAccountInfo> _bankAccounts = new List<BankAccountInfo>();
 
@@ -214,16 +248,28 @@
 
     MudDatePicker _picker = new();
 
-    private async Task<IEnumerable<AutocompleteMember>> SearchFunc(string searchString)
+    private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
-        var response = await mediator.Send(new AutocompleteMembersQuery(searchString));
-        return response.Members;
+
+        var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, true));
+        return response.Counterparties;
     }
+
+    private async Task<IEnumerable<AutocompleteCounterparty>> SearchForNonMembers(string searchString)
+    {
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            return new List<AutocompleteCounterparty>();
+        }
+        var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, false));
+        return response.Counterparties;
+    }
+
 
     private async Task GetAllBankAccounts()
     {
         _bankAccounts = await mediator.Send(new GetBankAccountInfos());
-        
+
         if (_bankAccounts.Count == 1 && Transaction.BankAccountId == null)
         {
             Transaction.BankAccountId = _bankAccounts[0].Id;
@@ -239,7 +285,6 @@
             await GetAllBankAccounts();
         }
     }
-
 
     private void TransactionTypeChanged()
     {
