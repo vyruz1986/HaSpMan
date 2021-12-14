@@ -74,6 +74,7 @@
                                                  Variant="Variant.Outlined"
                                                  CoerceValue="true"
                                                  CoerceText="true"
+                                                 Converter="@counterPartyConverter"
                                                  ToStringFunc="ac => ac?.Name"></MudAutocomplete>
                             }
 
@@ -185,7 +186,7 @@
     public Models.TransactionForm Transaction { get; set; } = new();
 
     private bool _isSearchForMembership = false;
-    
+
     [Parameter]
     public bool IsSearchForMembership
     {
@@ -257,11 +258,12 @@
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForNonMembers(string searchString)
     {
-        if (!string.IsNullOrEmpty(searchString))
+        if (string.IsNullOrEmpty(searchString))
         {
             return new List<AutocompleteCounterparty>();
         }
         var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, false));
+        
         return response.Counterparties;
     }
 
@@ -290,5 +292,11 @@
     {
         _transactionTypes = GetScopedTransactionTypes();
     }
+
+    Converter<AutocompleteCounterparty> counterPartyConverter = new Converter<AutocompleteCounterparty>
+    {
+        SetFunc = value => value.Name,
+        GetFunc = text => new AutocompleteCounterparty(text, null)
+    };
 
 }

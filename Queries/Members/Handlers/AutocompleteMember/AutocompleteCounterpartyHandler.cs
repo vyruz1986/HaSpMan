@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,13 @@ namespace Queries.Members.Handlers.AutocompleteMember
                     x.MemberId == null &&
                     x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))
                 .Select(x => new AutocompleteCounterparty(x.CounterPartyName, null))
+                .Distinct()
                 .ToListAsync(cancellationToken);
+
+            if (!counterParties.Any(x => x.Name.Equals(request.SearchString, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                counterParties.Insert(0, new AutocompleteCounterparty(request.SearchString, null));
+            }
 
             return new AutocompleteCounterpartyResponse(counterParties);
         }
