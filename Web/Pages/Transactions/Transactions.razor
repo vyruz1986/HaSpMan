@@ -9,16 +9,16 @@
 @inject IMediator _mediator
 
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" Dense="true" Hover="true"
-          @ref="table">
+<MudTable ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" Dense="true"
+    Hover="true" @ref="table">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         <MudSpacer />
         <MudButton Link="/transactions/new" Color="Color.Primary" DisableElevation="true" Variant="Variant.Filled"
-                   Size="Size.Small" Class="ma-2">Add transaction</MudButton>
+            Size="Size.Small" Class="ma-2">Add transaction</MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
@@ -28,7 +28,8 @@
             <MudTableSortLabel SortLabel="amount" T="TransactionSummary">Amount</MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="receivedDateTime" T="TransactionSummary">Received</MudTableSortLabel>
+            <MudTableSortLabel InitialDirection="SortDirection.Descending" SortLabel="receivedDateTime"
+                T="TransactionSummary">Received</MudTableSortLabel>
         </MudTh>
         <MudTh>
             <MudTableSortLabel SortLabel="description" T="TransactionSummary">Description</MudTableSortLabel>
@@ -48,13 +49,13 @@
         <MudTd DataLabel="Transaction types">
             @foreach (var type in context.TransactionTypeAmounts)
             {
-                <MudChip>@type.TransactionType.GetDescription() for €@type.Amount</MudChip>
+                    <MudChip>@type.TransactionType.GetDescription() for €@type.Amount</MudChip>
             }
         </MudTd>
         <MudTd>
             <MudTooltip Text="Edit">
                 <MudIconButton Link="@($"/transactions/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
-                               aria-label="edit"></MudIconButton>
+                    aria-label="edit"></MudIconButton>
             </MudTooltip>
         </MudTd>
     </RowTemplate>
