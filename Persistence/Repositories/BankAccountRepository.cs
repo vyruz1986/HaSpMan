@@ -29,7 +29,7 @@ namespace Persistence.Repositories
             return await _context.BankAccounts.ToListAsync(ct);
         }
 
-        public async Task<BankAccount> GetByIdAsync(Guid id, CancellationToken ct)
+        public async Task<BankAccount?> GetByIdAsync(Guid id, CancellationToken ct)
         {
             return await _context.BankAccounts.FirstOrDefaultAsync(b => b.Id == id, ct);
         }
@@ -42,7 +42,7 @@ namespace Persistence.Repositories
 
         public async Task SaveAsync(CancellationToken ct)
         {
-            
+
             await _context.SaveChangesAsync(ct);
         }
     }

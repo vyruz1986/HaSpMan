@@ -30,12 +30,12 @@ namespace Persistence.Repositories
             return await _context.Members.ToListAsync();
         }
 
-        public async Task<Member> GetByEmail(string email)
+        public async Task<Member?> GetByEmail(string email)
         {
             return await _context.Members.FirstOrDefaultAsync(m => m.Email == email);
         }
 
-        public async Task<Member> GetById(Guid id)
+        public async Task<Member?> GetById(Guid id)
         {
             return await _context.Members.FirstOrDefaultAsync(m => m.Id == id);
         }

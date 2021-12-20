@@ -4,10 +4,4 @@
     <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-
 </Project>
