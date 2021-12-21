@@ -67,9 +67,7 @@ namespace Domain
         public ICollection<TransactionAttachment> Attachments { get; private set; }
 
         public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; private set; }
-
-        public bool IsTransactionForMember => MemberId.HasValue;
-
+        
         public void ChangeCounterParty(string counterPartyName, Guid? memberId)
         {
             if (memberId == MemberId && counterPartyName == CounterPartyName)

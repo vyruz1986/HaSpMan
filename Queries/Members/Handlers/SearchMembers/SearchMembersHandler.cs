@@ -47,7 +47,7 @@ namespace Queries.Members.Handlers.SearchMembers
                 .Skip(request.PageIndex * request.PageSize)
                 .Take(request.PageSize);
 
-            var items = await memberSummaryQueryable.ToListAsync();
+            var items = await memberSummaryQueryable.ToListAsync(cancellationToken: cancellationToken);
 
             return new Paginated<MemberSummary>
             {
