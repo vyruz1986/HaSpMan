@@ -16,7 +16,7 @@
 <EditForm Model="@Transaction" OnValidSubmit="@SubmitTransaction" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator/>
 
-    <TransactionForm IsNew="false" Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
+    <TransactionForm IsNew="false" IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue" Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
@@ -57,8 +57,8 @@
 
         var command = new EditTransactionCommand(
             Id: TransactionId,
-            CounterPartyName: Transaction.Member.Name!,
-            MemberId: Transaction.Member.MemberId,
+            CounterPartyName: Transaction.Counterparty.Name!,
+            MemberId: Transaction.Counterparty.MemberId,
             BankAccountId: Transaction.BankAccountId.GetValueOrDefault(),
             ReceivedDateTime: new DateTimeOffset(Transaction.ReceivedDateTime!.Value),
             Description: Transaction.Description!,
