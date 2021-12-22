@@ -1,6 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
-
 using AutoMapper;
 
 using MediatR;
@@ -11,25 +8,24 @@ using Persistence;
 
 using Queries.Members.ViewModels;
 
-namespace Queries.Members.Handlers.GetMemberById
+namespace Queries.Members.Handlers.GetMemberById;
+
+public class GetMemberByIdHandler : IRequestHandler<GetMemberByIdQuery, MemberDetail>
 {
-    public class GetMemberByIdHandler : IRequestHandler<GetMemberByIdQuery, MemberDetail>
+    private readonly IMapper _mapper;
+    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+
+    public GetMemberByIdHandler(IMapper mapper, IDbContextFactory<HaSpManContext> contextFactory)
     {
-        private readonly IMapper _mapper;
-        private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+        _mapper = mapper;
+        _contextFactory = contextFactory;
+    }
 
-        public GetMemberByIdHandler(IMapper mapper, IDbContextFactory<HaSpManContext> contextFactory)
-        {
-            _mapper = mapper;
-            _contextFactory = contextFactory;
-        }
+    public async Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
+    {
+        var context = _contextFactory.CreateDbContext();
+        var member = await context.Members.SingleAsync(m => m.Id == request.Id, cancellationToken: cancellationToken);
 
-        public async Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
-        {
-            var context = _contextFactory.CreateDbContext();
-            var member = await context.Members.SingleAsync(m => m.Id == request.Id, cancellationToken: cancellationToken);
-
-            return _mapper.Map<MemberDetail>(member);
-        }
+        return _mapper.Map<MemberDetail>(member);
     }
 }
