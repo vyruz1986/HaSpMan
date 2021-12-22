@@ -1,31 +1,28 @@
-using System;
-
 using AutoMapper;
 
 using Queries.MapperProfiles;
 
 using Xunit;
 
-namespace Queries.Test
+namespace Queries.Test;
+
+public class MappingTests
 {
-    public class MappingTests
+    private readonly IMapper _mapper;
+
+    public MappingTests()
     {
-        private readonly IMapper _mapper;
-
-        public MappingTests()
+        var config = new MapperConfiguration(cfg =>
         {
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MemberProfile>();
-            });
+            cfg.AddProfile<MemberProfile>();
+        });
 
-            _mapper = new Mapper(config);
-        }
+        _mapper = new Mapper(config);
+    }
 
-        [Fact]
-        public void AutoMapperAssertions()
-        {
-            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
-        }
+    [Fact]
+    public void AutoMapperAssertions()
+    {
+        _mapper.ConfigurationProvider.AssertConfigurationIsValid();
     }
 }
