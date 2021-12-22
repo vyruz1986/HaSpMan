@@ -48,21 +48,16 @@ public abstract class Transaction
     }
 
     public Guid? MemberId { get; private set; }
-
     public Guid Id { get; private set; }
     public DateTimeOffset ReceivedDateTime { get; private set; }
     public decimal Amount { get; private set; }
     public string CounterPartyName { get; private set; }
     public Guid BankAccountId { get; private set; }
-
     public string Description { get; private set; }
-
     public DateTimeOffset DateFiled { get; private set; }
     public ICollection<TransactionAttachment> Attachments { get; private set; }
 
     public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; private set; }
-
-    public bool IsTransactionForMember => MemberId.HasValue;
 
     public void ChangeCounterParty(string counterPartyName, Guid? memberId)
     {
