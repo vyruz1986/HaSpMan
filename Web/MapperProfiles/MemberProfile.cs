@@ -1,5 +1,3 @@
-using System;
-
 using AutoMapper;
 
 using Commands;
@@ -10,37 +8,36 @@ using Types;
 
 using Web.Models;
 
-namespace Web.MapperProfiles
+namespace Web.MapperProfiles;
+
+public class MemberProfile : Profile
 {
-    public class MemberProfile : Profile
+    public MemberProfile()
     {
-        public MemberProfile()
-        {
-            CreateMap<MemberForm, AddMemberCommand>()
-               .ForCtorParam(nameof(AddMemberCommand.Address), o => o.MapFrom(src => src))
-               .ForMember(m => m.Address, o => o.MapFrom(src => src));
+        CreateMap<MemberForm, AddMemberCommand>()
+           .ForCtorParam(nameof(AddMemberCommand.Address), o => o.MapFrom(src => src))
+           .ForMember(m => m.Address, o => o.MapFrom(src => src));
 
 
-            CreateMap<MemberForm, Address>();
+        CreateMap<MemberForm, Address>();
 
-            CreateMap<MemberDetail, MemberForm>()
-                .ForMember(m => m.MembershipExpiryDate, o => o.MapFrom(src => ToDateTime(src.MembershipExpiryDate)))
-                .IncludeMembers(m => m.Address);
+        CreateMap<MemberDetail, MemberForm>()
+            .ForMember(m => m.MembershipExpiryDate, o => o.MapFrom(src => ToDateTime(src.MembershipExpiryDate)))
+            .IncludeMembers(m => m.Address);
 
-            CreateMap<Address, MemberForm>()
-                .ForMember(m => m.FirstName, o => o.Ignore())
-                .ForMember(m => m.LastName, o => o.Ignore())
-                .ForMember(m => m.MembershipExpiryDate, o => o.Ignore())
-                .ForMember(m => m.MembershipFee, o => o.Ignore())
-                .ForMember(m => m.PhoneNumber, o => o.Ignore())
-                .ForMember(m => m.Email, o => o.Ignore());
-        }
-        private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
-        {
-            if (dateTimeOffset == null)
-                return null;
+        CreateMap<Address, MemberForm>()
+            .ForMember(m => m.FirstName, o => o.Ignore())
+            .ForMember(m => m.LastName, o => o.Ignore())
+            .ForMember(m => m.MembershipExpiryDate, o => o.Ignore())
+            .ForMember(m => m.MembershipFee, o => o.Ignore())
+            .ForMember(m => m.PhoneNumber, o => o.Ignore())
+            .ForMember(m => m.Email, o => o.Ignore());
+    }
+    private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
+    {
+        if (dateTimeOffset == null)
+            return null;
 
-            return dateTimeOffset!.Value.DateTime;
-        }
+        return dateTimeOffset!.Value.DateTime;
     }
 }
