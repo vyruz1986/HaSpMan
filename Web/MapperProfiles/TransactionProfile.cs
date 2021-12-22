@@ -27,7 +27,7 @@ public class TransactionProfile : Profile
             .ForMember(x => x.CounterPartyName, o => o.MapFrom(x => x.Counterparty.Name))
             .ForCtorParam(nameof(AddDebitTransactionCommand.MemberId), o => o.MapFrom(x => x.Counterparty.MemberId))
             .ForMember(x => x.MemberId, o => o.MapFrom(x => x.Counterparty.MemberId));
-        ;
+
         CreateMap<TransactionTypeAmountForm, TransactionTypeAmount>();
 
         CreateMap<TransactionDetail, TransactionForm>()
