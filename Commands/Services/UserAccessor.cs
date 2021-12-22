@@ -1,23 +1,21 @@
-using System;
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Http;
 
-namespace Commands.Services
+namespace Commands.Services;
+
+public class UserAccessor : IUserAccessor
 {
-    public class UserAccessor : IUserAccessor
+    private IHttpContextAccessor _accessor;
+    public UserAccessor(IHttpContextAccessor accessor)
     {
-        private IHttpContextAccessor _accessor;
-        public UserAccessor(IHttpContextAccessor accessor)
-        {
-            _accessor = accessor ?? throw new ArgumentException("Valid IHttpContextAccessor is needed", nameof(accessor));
-        }
-
-        public ClaimsPrincipal User => _accessor.HttpContext.User;
+        _accessor = accessor ?? throw new ArgumentException("Valid IHttpContextAccessor is needed", nameof(accessor));
     }
 
-    public interface IUserAccessor
-    {
-        ClaimsPrincipal User { get; }
-    }
+    public ClaimsPrincipal User => _accessor.HttpContext.User;
+}
+
+public interface IUserAccessor
+{
+    ClaimsPrincipal User { get; }
 }
