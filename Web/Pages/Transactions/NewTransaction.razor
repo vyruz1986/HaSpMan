@@ -14,7 +14,7 @@
 <EditForm Model="@_newTransaction" OnValidSubmit="@AddTransaction" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator />
 
-    <TransactionForm IsNew="true" Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
+    <TransactionForm IsNew="true" IsSearchForMembership="false" Transaction="@_newTransaction" TransactionTypeGroup="@_selectedTransactionTypeGroup" />
 
     <MudItem xs="12" Class="d-flex justify-center">
         <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
@@ -46,7 +46,7 @@
         }
 
         Snackbar.Clear();
-        Snackbar.Add($"Transaction for {_newTransaction.Member.Name} added successfully!", Severity.Success);
+        Snackbar.Add($"Transaction for {_newTransaction.Counterparty.Name} added successfully!", Severity.Success);
         NavManager.NavigateTo("/transactions");
     }
     private void ShowError()

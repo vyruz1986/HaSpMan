@@ -1,68 +1,62 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-
-using Web.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Threading.Tasks;
 
-namespace Web.Extensions
+using Web.Configuration;
+
+namespace Web.Extensions;
+
+public static class AuthExtensions
 {
-    public static class AuthExtensions
+    public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
+        var oidcConfig = configuration.GetSection(OidcConfig.SectionName).Get<OidcConfig>();
+
+        services.AddAuthentication(options =>
         {
-            var oidcConfig = configuration.GetSection(OidcConfig.SectionName).Get<OidcConfig>();
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        })
+        .AddCookie()
+        .AddOpenIdConnect(options =>
+        {
+            options.Authority = oidcConfig.Authority;
+            options.ClientId = oidcConfig.Audience;
+            options.ClientSecret = oidcConfig.ClientSecret;
+            options.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
+            options.CallbackPath = new PathString("/callback");
+            options.SaveTokens = true;
+            options.Resource = oidcConfig.Audience;
+            options.RequireHttpsMetadata = false; //TODO
+            options.SaveTokens = true;
 
-            services.AddAuthentication(options =>
+            // Add handling of lo
+            options.Events = new OpenIdConnectEvents
             {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie()
-            .AddOpenIdConnect(options =>
-            {
-                options.Authority = oidcConfig.Authority;
-                options.ClientId = oidcConfig.Audience;
-                options.ClientSecret = oidcConfig.ClientSecret;
-                options.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
-                options.CallbackPath = new PathString("/callback");
-                options.SaveTokens = true;
-                options.Resource = oidcConfig.Audience;
-                options.RequireHttpsMetadata = false; //TODO
-                options.SaveTokens = true;
-
-                // Add handling of lo
-                options.Events = new OpenIdConnectEvents
+                OnRedirectToIdentityProviderForSignOut = (context) =>
                 {
-                    OnRedirectToIdentityProviderForSignOut = (context) =>
+                    var logoutUri = $"{oidcConfig.Authority}/protocol/openid-connect/logout";
+
+                    var postLogoutUri = context.Properties.RedirectUri;
+                    if (!string.IsNullOrEmpty(postLogoutUri))
                     {
-                        var logoutUri = $"{oidcConfig.Authority}/protocol/openid-connect/logout";
-
-                        var postLogoutUri = context.Properties.RedirectUri;
-                        if (!string.IsNullOrEmpty(postLogoutUri))
+                        if (postLogoutUri.StartsWith("/"))
                         {
-                            if (postLogoutUri.StartsWith("/"))
-                            {
-                                var request = context.Request;
-                                postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
-                            }
-                            logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
+                            var request = context.Request;
+                            postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
                         }
-
-                        context.Response.Redirect(logoutUri);
-                        context.HandleResponse();
-
-                        return Task.CompletedTask;
+                        logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
                     }
-                };
-            });
 
-            services.AddAuthorization();
+                    context.Response.Redirect(logoutUri);
+                    context.HandleResponse();
 
-            return services;
-        }
+                    return Task.CompletedTask;
+                }
+            };
+        });
+
+        services.AddAuthorization();
+
+        return services;
     }
 }

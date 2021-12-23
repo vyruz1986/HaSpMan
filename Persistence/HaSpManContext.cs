@@ -2,27 +2,26 @@ using Domain;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Persistence
+namespace Persistence;
+
+public class HaSpManContext : DbContext
 {
-    public class HaSpManContext : DbContext
+    public HaSpManContext(DbContextOptions<HaSpManContext> options)
+       : base(options)
     {
-        public HaSpManContext(DbContextOptions<HaSpManContext> options)
-           : base(options)
-        {
-        }
-        
-        public DbSet<Member> Members { get; set; } = null!;
-        public DbSet<BankAccount> BankAccounts { get; set; } = null!;
-        public DbSet<Transaction> Transactions { get; set; } = null!;
+    }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.HasDefaultSchema("HaSpMan");
-            builder.ApplyConfigurationsFromAssembly(
-               typeof(Persistence.EntityConfigurations.MemberConfiguration).Assembly
+    public DbSet<Member> Members { get; set; } = null!;
+    public DbSet<BankAccount> BankAccounts { get; set; } = null!;
+    public DbSet<Transaction> Transactions { get; set; } = null!;
 
-            );
-            base.OnModelCreating(builder);
-        }
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.HasDefaultSchema("HaSpMan");
+        builder.ApplyConfigurationsFromAssembly(
+           typeof(Persistence.EntityConfigurations.MemberConfiguration).Assembly
+
+        );
+        base.OnModelCreating(builder);
     }
 }

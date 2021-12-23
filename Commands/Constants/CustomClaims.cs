@@ -1,7 +1,6 @@
-namespace Commands.Constants
+namespace Commands.Constants;
+
+public static class CustomClaims
 {
-    public static class CustomClaims
-    {
-        public static readonly string Name = "name";
-    }
+    public static readonly string Name = "name";
 }
