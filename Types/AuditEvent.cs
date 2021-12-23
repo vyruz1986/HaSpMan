@@ -1,5 +1,3 @@
-using System;
-
 namespace Types
 {
     public record AuditEvent(

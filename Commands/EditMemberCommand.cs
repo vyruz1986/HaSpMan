@@ -1,14 +1,12 @@
-using System;
-
 using FluentValidation;
 
 using MediatR;
 
 using Types;
 
-namespace Commands
-{
-    public record EditMemberCommand(
+namespace Commands;
+
+public record EditMemberCommand(
        Guid Id,
        string FirstName,
        string LastName,
@@ -19,57 +17,57 @@ namespace Commands
        DateTimeOffset? MembershipExpiryDate
     ) : IRequest;
 
-    public class EditMemberCommandValidator : AbstractValidator<EditMemberCommand>
+public class EditMemberCommandValidator : AbstractValidator<EditMemberCommand>
+{
+    public EditMemberCommandValidator()
     {
-        public EditMemberCommandValidator()
+        RuleFor(x => x.FirstName)
+           .NotEmpty()
+           .MaximumLength(50);
+
+        RuleFor(x => x.LastName)
+           .NotEmpty()
+           .MaximumLength(50);
+
+        RuleFor(x => x.Email)
+           .NotEmpty()
+           .MaximumLength(100);
+
+        RuleFor(x => x.PhoneNumber)
+           .NotEmpty()
+           .MaximumLength(50);
+
+        RuleFor(x => x.Address)
+           .SetValidator(new EditMemberCommandAddressValidator());
+
+        RuleFor(x => x.MembershipFee)
+           .GreaterThanOrEqualTo(0);
+    }
+
+    public class EditMemberCommandAddressValidator : AbstractValidator<Address>
+    {
+        public EditMemberCommandAddressValidator()
         {
-            RuleFor(x => x.FirstName)
+            RuleFor(x => x.Street)
+               .NotEmpty()
+               .MaximumLength(200);
+
+            RuleFor(x => x.City)
                .NotEmpty()
                .MaximumLength(50);
 
-            RuleFor(x => x.LastName)
+            RuleFor(x => x.Country)
                .NotEmpty()
                .MaximumLength(50);
 
-            RuleFor(x => x.Email)
+            RuleFor(x => x.ZipCode)
                .NotEmpty()
-               .MaximumLength(100);
+               .MaximumLength(10);
 
-            RuleFor(x => x.PhoneNumber)
+            RuleFor(x => x.HouseNumber)
                .NotEmpty()
-               .MaximumLength(50);
-
-            RuleFor(x => x.Address)
-               .SetValidator(new EditMemberCommandAddressValidator());
-
-            RuleFor(x => x.MembershipFee)
-               .GreaterThanOrEqualTo(0);
-        }
-
-        public class EditMemberCommandAddressValidator : AbstractValidator<Address>
-        {
-            public EditMemberCommandAddressValidator()
-            {
-                RuleFor(x => x.Street)
-                   .NotEmpty()
-                   .MaximumLength(200);
-
-                RuleFor(x => x.City)
-                   .NotEmpty()
-                   .MaximumLength(50);
-
-                RuleFor(x => x.Country)
-                   .NotEmpty()
-                   .MaximumLength(50);
-
-                RuleFor(x => x.ZipCode)
-                   .NotEmpty()
-                   .MaximumLength(10);
-
-                RuleFor(x => x.HouseNumber)
-                   .NotEmpty()
-                   .MaximumLength(15);
-            }
+               .MaximumLength(15);
         }
     }
 }
+

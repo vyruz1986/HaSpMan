@@ -1,6 +1,3 @@
-using System;
+namespace Queries.Members.Handlers.AutocompleteMember;
 
-namespace Queries.Members.Handlers.AutocompleteMember
-{
-    public record AutocompleteCounterparty(string Name, Guid? MemberId);
-}
+public record AutocompleteCounterparty(string Name, Guid? MemberId);

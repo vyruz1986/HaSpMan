@@ -1,9 +1,8 @@
-namespace Queries.Enums
+namespace Queries.Enums;
+
+public enum SortDirection
 {
-    public enum SortDirection
-    {
-        None = 0,
-        Ascending = 1,
-        Descending = 2
-    }
+    None = 0,
+    Ascending = 1,
+    Descending = 2
 }
