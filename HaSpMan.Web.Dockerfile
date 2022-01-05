@@ -2,6 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 COPY ./*.sln ./
+COPY ./Directory.Build.props ./
 COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*} && mv $file ${file%.*}; done
 
