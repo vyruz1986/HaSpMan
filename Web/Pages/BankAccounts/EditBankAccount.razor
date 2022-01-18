@@ -1,0 +1,57 @@
+@page "/bankaccounts/{BankAccountId:guid}/edit"
+@attribute [Authorize]
+
+@using Queries.BankAccounts.GetBankAccountById
+@using Commands.Handlers.BankAccount
+@using Commands.EditBankAccount;
+@inject IMediator _mediator
+@inject IMapper _mapper
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+
+<h1>Edit bankaccount</h1>
+
+<EditForm Model="@_bankAccount" OnValidSubmit="@SubmitBankAccount" OnInvalidSubmit="@ShowError">
+    <DataAnnotationsValidator />
+
+    <BankAccountForm BankAccount="@_bankAccount" />
+
+    <MudItem xs="12" Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+            ButtonType="ButtonType.Submit">Save bankaccount</MudButton>
+    </MudItem>
+</EditForm>
+
+@code {
+    [Parameter]
+    public Guid BankAccountId { get; set; }
+
+    private Models.BankAccountForm _bankAccount = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GetBankAccountByIdQuery(BankAccountId);
+        var bankAccountDetail = await _mediator.Send(query);
+        _bankAccount = _mapper.Map<Models.BankAccountForm>(bankAccountDetail);
+    }
+
+    private async Task SubmitBankAccount()
+    {
+        var command = new EditBankAccountCommand(
+            Id: BankAccountId,
+            Name: _bankAccount.Name,
+            AccountNumber: _bankAccount.AccountNumber
+        );
+        var response = await _mediator.Send(command);
+        Snackbar.Clear();
+        Snackbar.Add($"Bankaccount {_bankAccount.Name} edited successfully!", Severity.Success);
+        NavManager.NavigateTo("/bankaccounts");
+    }
+
+    private void ShowError()
+    {
+        Snackbar.Clear();
+        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+}

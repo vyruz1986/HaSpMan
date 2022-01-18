@@ -1,0 +1,14 @@
+<MudGrid>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Name" @bind-Value="BankAccount.Name" For="@(() => BankAccount.Name)" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Account number" @bind-Value="BankAccount.AccountNumber" For="@(() => BankAccount.AccountNumber)" />
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    [Parameter]
+    public Models.BankAccountForm BankAccount { get; set; } = new();
+}

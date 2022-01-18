@@ -1,0 +1,40 @@
+@page "/bankaccounts/new"
+@attribute [Authorize]
+
+@using Commands.Handlers.BankAccount
+@inject IMediator _mediator
+@inject IMapper _mapper
+@inject ISnackbar Snackbar
+@inject NavigationManager NavManager
+
+<h1>Add new bankaccount</h1>
+
+<EditForm Model="@_newBankAccount" OnValidSubmit="@AddBankAccount" OnInvalidSubmit="@ShowError">
+    <DataAnnotationsValidator />
+
+    <BankAccountForm BankAccount="@_newBankAccount" />
+
+    <MudItem xs="12" Class="d-flex justify-center">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+            ButtonType="ButtonType.Submit">Add bankaccount</MudButton>
+    </MudItem>
+</EditForm>
+
+@code {
+    private Models.BankAccountForm _newBankAccount = new();
+
+    private async Task AddBankAccount()
+    {
+        var command = _mapper.Map<AddBankAccountCommand>(_newBankAccount);
+        var response = await _mediator.Send(command);
+        Snackbar.Clear();
+        Snackbar.Add($"Bankaccount {_newBankAccount.Name} added successfully!", Severity.Success);
+        NavManager.NavigateTo("/bankaccounts");
+    }
+
+    private void ShowError()
+    {
+        Snackbar.Clear();
+        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+}
