@@ -1,12 +1,12 @@
 # HaSpMan
 
-HaSpMan is a software solution to managing members and accounting/bookkeeping of  financial records.
+HaSpMan is a software solution to managing members and accounting/bookkeeping of financial records.
 
 ## Running locally
 
 **Prerequisites**:
 
-- .NET 5.0 SDK
+- .NET 6.0 SDK
 - Docker
 
 Start the included [`docker-compose.dev.yaml`](./docker-compose.dev.yaml) using the following command (run it in the root of this repository)
