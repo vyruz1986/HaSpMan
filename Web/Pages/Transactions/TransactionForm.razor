@@ -81,12 +81,12 @@
                         </MudItem>
 
                         <MudItem xs="1">
-                            @if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+                            @if (TransactionTypeGroup == TransactionTypeGroup.Debit)
                             {
                                 <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowForward"></MudIcon>
 
                             }
-                            else if (TransactionTypeGroup == TransactionTypeGroup.Debit)
+                            else if (TransactionTypeGroup == TransactionTypeGroup.Credit)
                             {
 
                                 <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowBack"></MudIcon>
@@ -224,22 +224,22 @@
 
     private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
     {
-        if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+        if (TransactionTypeGroup == TransactionTypeGroup.Debit)
         {
             return new List<TransactionType>
             {
-                TransactionType.CreditWorkshopFee,
-                TransactionType.CreditDonation,
-                TransactionType.CreditMemberFee,
+                TransactionType.DebitWorkshopFee,
+                TransactionType.DebitDonation,
+                TransactionType.DebitMemberFee,
                 TransactionType.InternalBank
             }.OrderBy(x => x.GetDescription()).ToList();
         }
         return new List<TransactionType>
         {
-            TransactionType.DebitAcquisitionConsumables,
-            TransactionType.DebitAcquisitionGoodsAndServices,
-            TransactionType.DebitBankCosts,
-            TransactionType.DebitFixedCosts,
+            TransactionType.CreditAcquisitionConsumables,
+            TransactionType.CreditAcquisitionGoodsAndServices,
+            TransactionType.CreditBankCosts,
+            TransactionType.CreditFixedCosts,
             TransactionType.InternalBank
 
         }.OrderBy(x => x.GetDescription()).ToList();
@@ -291,7 +291,7 @@
 
     Converter<AutocompleteCounterparty> counterPartyConverter = new Converter<AutocompleteCounterparty>
     {
-        SetFunc = value => value.Name,
+        SetFunc = value => value?.Name,
         GetFunc = text => new AutocompleteCounterparty(text, null)
     };
 

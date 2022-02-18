@@ -14,7 +14,7 @@ public class TransactionForm
         Counterparty = new AutocompleteCounterparty(string.Empty, null);
         TransactionTypeAmounts = new List<TransactionTypeAmountForm>()
         {
-            new(TransactionType.CreditWorkshopFee, 0)
+            new(TransactionType.DebitWorkshopFee, 0)
         };
     }
 
