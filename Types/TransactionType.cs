@@ -5,19 +5,19 @@ namespace Types;
 public enum TransactionType
 {
     [Description("Donation")]
-    CreditDonation,
+    DebitDonation,
     [Description("Membership fee")]
-    CreditMemberFee,
+    DebitMemberFee,
     [Description("Workshop fee")]
-    CreditWorkshopFee,
+    DebitWorkshopFee,
     [Description("Acquisition of consumables")]
-    DebitAcquisitionConsumables,
+    CreditAcquisitionConsumables,
     [Description("Acquisition of goods and services")]
-    DebitAcquisitionGoodsAndServices,
+    CreditAcquisitionGoodsAndServices,
     [Description("Bank costs")]
-    DebitBankCosts,
+    CreditBankCosts,
     [Description("Fixed costs")]
-    DebitFixedCosts,
+    CreditFixedCosts,
     [Description("Internal bank transfer")]
     InternalBank
 }

@@ -44,11 +44,11 @@
     {
         return new List<TransactionType>
         {
-            TransactionType.CreditWorkshopFee,
-            TransactionType.CreditDonation,
-            TransactionType.CreditMemberFee,
+            TransactionType.DebitWorkshopFee,
+            TransactionType.DebitDonation,
+            TransactionType.DebitMemberFee,
             TransactionType.InternalBank
-        }.Contains(transactionType) ? TransactionTypeGroup.Credit : TransactionTypeGroup.Debit;
+        }.Contains(transactionType) ? TransactionTypeGroup.Debit : TransactionTypeGroup.Credit;
     }
 
 
