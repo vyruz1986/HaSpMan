@@ -7,7 +7,8 @@
 @using Queries.Members.ViewModels
 
 @inject IMediator _mediator
-
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <MudTable ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))" Dense="true" Hover="true"
    @ref="table">
@@ -43,10 +44,20 @@
       <MudTd DataLabel="Email">@context.Email</MudTd>
       <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
       <MudTd>
-         <MudTooltip Text="Edit">
-            <MudIconButton Link="@($"/members/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
-               aria-label="edit"></MudIconButton>
-         </MudTooltip>
+          <MudGrid >
+              <MudItem xs="6">
+                  <MudTooltip Text="Edit">
+                    <MudIconButton Link="@($"/members/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
+                   aria-label="edit"></MudIconButton>
+               
+                 </MudTooltip>
+             </MudItem>
+             <MudItem xs="6">
+                <MudTooltip Text="Delete">
+                    <MudIconButton OnClick="@((e) => OpenDeleteMemberDialog(context))" Icon="@Icons.Material.Filled.Delete" aria-label="edit" />
+                </MudTooltip>
+             </MudItem>
+         </MudGrid>
       </MudTd>
    </RowTemplate>
    <NoRecordsContent>
@@ -61,42 +72,59 @@
 </MudTable>
 
 @code {
-   private MudTable<MemberSummary>? table;
-   private string searchString = "";
-   private bool _isBusy = false;
+    private MudTable<MemberSummary>? table;
+    private string searchString = "";
+    private bool _isBusy = false;
 
-   private async Task<TableData<MemberSummary>> ServerReload(TableState state)
-   {
-      // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
-      if (_isBusy)
-         return new TableData<MemberSummary>();
+    private async Task<TableData<MemberSummary>> ServerReload(TableState state)
+    {
+        // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
+        if (_isBusy)
+            return new TableData<MemberSummary>();
 
-      _isBusy = true;
+        _isBusy = true;
 
-      MemberSummaryOrderOption orderBy = state.SortLabel switch
-      {
-         "name" => MemberSummaryOrderOption.Name,
-         "address" => MemberSummaryOrderOption.Address,
-         "email" => MemberSummaryOrderOption.Email,
-         "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
-         _ => MemberSummaryOrderOption.Name
-      };
-      var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
-      var query = new SearchMembersQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
-      var data = await _mediator.Send(query);
+        MemberSummaryOrderOption orderBy = state.SortLabel switch
+        {
+            "name" => MemberSummaryOrderOption.Name,
+            "address" => MemberSummaryOrderOption.Address,
+            "email" => MemberSummaryOrderOption.Email,
+            "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
+            _ => MemberSummaryOrderOption.Name
+        };
+        var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
+        var query = new SearchMembersQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
+        var data = await _mediator.Send(query);
 
-      _isBusy = false;
-      return new TableData<MemberSummary>()
+        _isBusy = false;
+        return new TableData<MemberSummary>()
       {
          TotalItems = data.Total,
          Items = data.Items
       };
-   }
+    }
 
-   private void OnSearch(string text)
-   {
-      searchString = text;
-      table?.ReloadServerData();
-   }
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table?.ReloadServerData();
+    }
+
+    private async Task OpenDeleteMemberDialog(MemberSummary member)
+    {
+        var options = new DialogOptions { };
+        var parameters = new DialogParameters()
+            {
+                ["member"] = member
+            };
+        var reference = DialogService.Show<DeleteMemberDialog>($"Remove member", parameters, options);
+        var dialog = await reference.Result;
+        if (!dialog.Cancelled)
+        {
+            Snackbar.Clear();
+            Snackbar.Add($"Removed {member.Name} as a member");
+            table?.ReloadServerData();
+        }
+    }
 
 }

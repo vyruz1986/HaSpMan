@@ -1,6 +1,9 @@
 using Domain;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+
+using Types;
 
 namespace Persistence;
 
@@ -15,6 +18,8 @@ public class HaSpManContext : DbContext
     public DbSet<BankAccount> BankAccounts { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
 
+    //public DbSet<SystemAuditEvent> SystemAuditEvents { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema("HaSpMan");
@@ -24,4 +29,13 @@ public class HaSpManContext : DbContext
         );
         base.OnModelCreating(builder);
     }
+    
+    //public class HaspmanContextFactory : IDesignTimeDbContextFactory<HaSpManContext>
+    //{
+    //    public HaSpManContext CreateDbContext(string[] args)
+    //    {
+    //        var context = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>().UseSqlServer("Server=localhost,5201;Database=HaSpMan;User Id=sa;Password=Dev-db-Password;").Options);
+    //        return context;
+    //    }
+    //}
 }

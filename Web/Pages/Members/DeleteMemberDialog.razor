@@ -1,0 +1,27 @@
+﻿@using Commands
+@using Queries.Members.ViewModels
+@using MediatR;
+
+@inject IMediator _mediatr
+
+<MudDialog>
+    <DialogContent>
+        Are you sure you want to remove <strong>@Member.Name</strong> as a member?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public MemberSummary Member { get; set; } = null!;
+
+    private void Submit()
+    {
+        _mediatr.Send(new DeleteMemberCommand(Member.Id));
+        MudDialog.Close(true);
+    }
+    void Cancel() => MudDialog.Cancel();
+}
