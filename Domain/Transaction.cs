@@ -123,6 +123,14 @@ public abstract class Transaction
 
         Description = description;
     }
+
+    public void AddAttachments(ICollection<TransactionAttachment> attachments)
+    {
+        foreach (var attachment in attachments)
+        {
+            Attachments.Add(attachment);
+        }
+    }
 }
 public class DebitTransaction : Transaction
 {
