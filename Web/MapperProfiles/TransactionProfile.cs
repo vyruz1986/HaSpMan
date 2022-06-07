@@ -1,5 +1,6 @@
 using AutoMapper;
 
+using Commands.Handlers;
 using Commands.Handlers.Transaction.AddCreditTransaction;
 using Commands.Handlers.Transaction.AddDebitTransaction;
 
@@ -9,6 +10,7 @@ using Queries.Members.Handlers.AutocompleteMember;
 using Queries.Transactions.ViewModels;
 
 using Web.Models;
+
 
 namespace Web.MapperProfiles;
 
@@ -39,5 +41,7 @@ public class TransactionProfile : Profile
                 o => o.MapFrom(x => new AutocompleteCounterparty(x.CounterPartyName, x.MemberId)));
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
+
+        CreateMap<Models.TransactionAttachment, AttachmentFile>();
     }
 }

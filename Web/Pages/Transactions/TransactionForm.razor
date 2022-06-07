@@ -5,6 +5,7 @@
 @using Queries.Members.Handlers.SearchMembers
 @using Web.Models
 @using Commands.Handlers.BankAccount
+@using LinqKit
 
 @inject IDialogService dialogService
 
@@ -118,7 +119,7 @@
                 </MudCardContent>
             </MudCard>
         </MudItem>
-    <MudItem xs="12">
+        <MudItem xs="12">
             <MudCard>
                 <MudCardHeader>
                     <MudText Typo="Typo.h5">
@@ -144,7 +145,7 @@
                 </MudCardContent>
             </MudCard>
         </MudItem>
-    <MudItem xs="12">
+        <MudItem xs="12">
             <MudCard>
                 <MudCardHeader>
                     <MudText Typo="Typo.h5">Amount</MudText>
@@ -176,7 +177,24 @@
             </MudCard>
 
         </MudItem>
+    <MudItem xs="12">
+        <MudCard>
+            <MudCardHeader>
+                <MudText Type="Typo.h5">Attachments</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+                <InputFile id="attachmentFilePicker" OnChange="UploadFiles" hidden multiple />
 
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Filled.CloudUpload"
+                           for="attachmentFilePicker">
+                    Upload your images
+                </MudButton>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
     <ValidationSummary></ValidationSummary>
 </MudGrid>
 
@@ -294,5 +312,20 @@
         SetFunc = value => value?.Name,
         GetFunc = text => new AutocompleteCounterparty(text, null)
     };
+
+    private void UploadFiles(InputFileChangeEventArgs e)
+    {
+        var entries = e.GetMultipleFiles();
+        foreach (var file in entries)
+        {
+            using var stream = file.OpenReadStream();
+            var memoryStream = new MemoryStream();
+            stream.CopyToAsync(memoryStream);
+            var transaction = new TransactionAttachment(file.Name, file.ContentType, memoryStream.GetBuffer());
+            Transaction.TransactionAttachments.Add(transaction);
+        }
+        
+        
+    }
 
 }

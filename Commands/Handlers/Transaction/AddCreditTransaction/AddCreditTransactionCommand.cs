@@ -1,4 +1,7 @@
-﻿using Domain;
+﻿
+using Commands.Handlers.Transaction.AddAttachments;
+
+using Domain;
 
 using FluentValidation;
 
@@ -12,7 +15,7 @@ public record AddCreditTransactionCommand(
     DateTimeOffset ReceivedDateTime,
     string Description,
     Guid? MemberId,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts, ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
 
 
 public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditTransactionCommand>
@@ -35,5 +38,8 @@ public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditT
             .LessThanOrEqualTo(x => DateTimeOffset.Now);
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
+
+        RuleForEach(x => x.AttachmentFiles)
+            .SetValidator(new AttachmentValidator());
     }
 }

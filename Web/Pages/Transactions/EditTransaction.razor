@@ -2,6 +2,7 @@
 @attribute [Authorize]
 @using MediatR
 @using AutoMapper
+@using Commands.Handlers
 @using Commands.Handlers.Transaction.EditTransaction
 @using Domain
 @using Queries.Transactions.Handlers
@@ -64,6 +65,9 @@
             Description: Transaction.Description!,
             TransactionTypeAmounts: Transaction.TransactionTypeAmounts
                 .Select(x => new TransactionTypeAmount(x.TransactionType, x.Amount))
+                .ToList(),
+            AttachmentFiles: Transaction.TransactionAttachments
+                .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.Bytes))
                 .ToList()
             );
         var response = await _mediator.Send(command);

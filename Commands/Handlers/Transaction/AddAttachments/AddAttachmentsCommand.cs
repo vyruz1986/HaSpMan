@@ -78,5 +78,3 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
 }
 
 public record Attachment(string Name, string ContentType, string BlobUri, byte[] Bytes);
-
-public record AttachmentFile(string FileName, string ContentType, byte[] Bytes);

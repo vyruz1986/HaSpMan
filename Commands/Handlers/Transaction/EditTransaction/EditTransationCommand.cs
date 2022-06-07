@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Commands.Handlers.Transaction.AddAttachments;
+
+using Domain;
 
 using FluentValidation;
 
@@ -13,7 +15,7 @@ public record EditTransactionCommand(
     Guid BankAccountId,
     DateTimeOffset ReceivedDateTime,
     string Description,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts, ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
 
 
 public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>
@@ -39,6 +41,10 @@ public class EditTransactionCommandValidator : AbstractValidator<EditTransaction
             .LessThanOrEqualTo(x => DateTimeOffset.Now);
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
+
+        RuleForEach(x => x.AttachmentFiles)
+            .SetValidator(new AttachmentValidator());
+
     }
 }
 

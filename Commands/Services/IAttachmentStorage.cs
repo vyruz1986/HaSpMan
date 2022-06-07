@@ -42,7 +42,7 @@ public class AttachmentStorage : IAttachmentStorage
         var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);
         var filename = Path.GetFileName(blobUri);
         using var memoryStream = new MemoryStream();
-        content.Content.CopyTo(memoryStream);
+        await content.Content.CopyToAsync(memoryStream, cancellationToken);
         return new Attachment(filename, properties.Value.ContentType, blobUri, memoryStream.GetBuffer());
     }
 
