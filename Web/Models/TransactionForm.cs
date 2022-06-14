@@ -33,7 +33,18 @@ public class TransactionForm
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
 
+
     public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
+}
+
+public class TransactionAttachmentFile
+{
+    public string Name { get; }
+
+    public TransactionAttachmentFile(string name)
+    { 
+        Name = name;
+    }
 }
 
 public class TransactionTypeAmountForm

@@ -15,7 +15,8 @@ public record EditTransactionCommand(
     Guid BankAccountId,
     DateTimeOffset ReceivedDateTime,
     string Description,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts, ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts, 
+    ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
 
 
 public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>

@@ -7,6 +7,7 @@
 @using Domain
 @using Queries.Transactions.Handlers
 @using Types
+@using AttachmentFile = Commands.Handlers.AttachmentFile
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar _snackbar
@@ -66,9 +67,7 @@
             TransactionTypeAmounts: Transaction.TransactionTypeAmounts
                 .Select(x => new TransactionTypeAmount(x.TransactionType, x.Amount))
                 .ToList(),
-            AttachmentFiles: Transaction.TransactionAttachments
-                .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.Bytes))
-                .ToList()
+            AttachmentFiles: new List<AttachmentFile>()
             );
         var response = await _mediator.Send(command);
         _snackbar.Clear();
