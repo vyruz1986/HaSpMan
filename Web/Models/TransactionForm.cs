@@ -65,13 +65,13 @@ public class TransactionTypeAmountForm
 
 public class TransactionAttachment
 {
-    public TransactionAttachment(string fileName, string contentType, byte[] bytes)
+    public TransactionAttachment(string fileName, string contentType, string unsafePath)
     {
         FileName = fileName;
         ContentType = contentType;
-        Bytes = bytes;
+        UnsafePath = unsafePath;
     }
     public string FileName { get; set; }
     public string ContentType { get; set; }
-    public byte[] Bytes { get; set; }
+    public string UnsafePath { get; set; }
 }

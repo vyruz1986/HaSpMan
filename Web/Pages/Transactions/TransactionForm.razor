@@ -7,6 +7,8 @@
 @using Commands.Handlers.BankAccount
 @using LinqKit
 
+@inject IWebHostEnvironment Environment
+
 @inject IDialogService dialogService
 
 @inject IMediator mediator;
@@ -313,15 +315,20 @@
         GetFunc = text => new AutocompleteCounterparty(text, null)
     };
 
-    private void UploadFiles(InputFileChangeEventArgs e)
+    private async Task UploadFiles(InputFileChangeEventArgs e)
     {
         var entries = e.GetMultipleFiles();
         foreach (var file in entries)
         {
-            using var stream = file.OpenReadStream();
-            var memoryStream = new MemoryStream();
-            stream.CopyToAsync(memoryStream);
-            var transaction = new TransactionAttachment(file.Name, file.ContentType, memoryStream.GetBuffer());
+            var trustedFileNameForFileStorage = Path.GetRandomFileName();
+            var directory = Path.Combine(Environment.ContentRootPath,
+                Environment.EnvironmentName, "unsafe_uploads");
+            Directory.CreateDirectory(directory);
+            var path = Path.Combine(directory, trustedFileNameForFileStorage);
+            
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fs);
+            var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
             Transaction.TransactionAttachments.Add(transaction);
         }
         

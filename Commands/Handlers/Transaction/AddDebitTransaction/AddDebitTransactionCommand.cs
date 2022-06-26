@@ -12,7 +12,8 @@ public record AddDebitTransactionCommand(
     DateTimeOffset ReceivedDateTime,
     string Description,
     Guid? MemberId,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts) : IRequest<Guid>;
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts,
+    ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
 
 public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTransactionCommand>
 {

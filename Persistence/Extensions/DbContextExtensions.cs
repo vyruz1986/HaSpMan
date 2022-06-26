@@ -24,6 +24,11 @@ public static class DbContextExtensions
 
     public static void MigrateHaSpManContext(string connectionString)
     {
+        _ = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new ArgumentException("The value cannot be empty or whitespace.", nameof(connectionString));
+        }
         var optionsBuilder = new DbContextOptionsBuilder<HaSpManContext>()
             .UseSqlServer(connectionString, b =>
             {

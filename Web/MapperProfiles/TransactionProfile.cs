@@ -3,6 +3,7 @@ using AutoMapper;
 using Commands.Handlers;
 using Commands.Handlers.Transaction.AddCreditTransaction;
 using Commands.Handlers.Transaction.AddDebitTransaction;
+using Commands.Handlers.Transaction.EditTransaction;
 
 using Domain;
 
@@ -11,6 +12,7 @@ using Queries.Transactions.ViewModels;
 
 using Web.Models;
 
+using AttachmentFile = Commands.Handlers.AttachmentFile;
 using TransactionAttachment = Domain.TransactionAttachment;
 
 
@@ -24,7 +26,10 @@ public class TransactionProfile : Profile
             .ForCtorParam(nameof(AddDebitTransactionCommand.CounterPartyName), o => o.MapFrom(x => x.Counterparty.Name))
             .ForMember(x => x.CounterPartyName, o => o.MapFrom(a => a.Counterparty.Name))
             .ForCtorParam(nameof(AddDebitTransactionCommand.MemberId), o => o.MapFrom(x => x.Counterparty.MemberId))
-            .ForMember(x => x.MemberId, o => o.MapFrom(x => x.Counterparty.MemberId));
+            .ForMember(x => x.MemberId, o => o.MapFrom(x => x.Counterparty.MemberId))
+            .ForCtorParam(nameof(AddCreditTransactionCommand.AttachmentFiles), o => o.MapFrom(x => x.TransactionAttachments))
+            .ForMember(x => x.AttachmentFiles, o => o.MapFrom(x => x.TransactionAttachments))
+            .ForCtorParam(nameof(AddCreditTransactionCommand.TransactionTypeAmounts), o => o.MapFrom(x => x.TransactionTypeAmounts));
 
         CreateMap<TransactionForm, AddCreditTransactionCommand>()
             .ForCtorParam(nameof(AddCreditTransactionCommand.CounterPartyName), o => o.MapFrom(x => x.Counterparty.Name))
@@ -51,7 +56,14 @@ public class TransactionProfile : Profile
         CreateMap<TransactionAttachmentFile, TransactionAttachment>()
             .ForCtorParam(nameof(TransactionAttachment.Name), o => o.MapFrom(x => x.Name))
             .ForMember(x => x.FullPath, opt => opt.Ignore());
-        CreateMap<TransactionAttachment, TransactionAttachmentFile>()
-            .ForCtorParam(nameof(TransactionAttachmentFile.Name), o => o.MapFrom(x => x.Name));
+        CreateMap<Models.TransactionAttachment, AttachmentFile>()
+            .ForCtorParam(nameof(AttachmentFile.FileName), o => o.MapFrom(x => x.FileName))
+            .ForMember(x => x.FileName, o => o.MapFrom(x => x.FileName))
+            .ForCtorParam(nameof(AttachmentFile.UnsafePath), o => o.MapFrom(x => x.UnsafePath))
+            .ForMember(x => x.UnsafePath, o => o.MapFrom(x => x.UnsafePath))
+            .ForCtorParam(nameof(AttachmentFile.ContentType), o => o.MapFrom(x => x.ContentType))
+            .ForMember(x => x.ContentType, o => o.MapFrom(x => x.ContentType));
+
+
     }
 }

@@ -29,7 +29,7 @@ public class AttachmentValidator : AbstractValidator<AttachmentFile>
     {
         RuleFor(x => x.FileName).NotEmpty();
         RuleFor(x => x.ContentType).NotEmpty();
-        RuleFor(x => x.Bytes).NotEmpty();
+        RuleFor(x => x.UnsafePath).NotEmpty();
     }
 }
 
@@ -57,7 +57,7 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
         transaction.AddAttachments(transactionAttachments);
 
         await _transactionRepository.SaveAsync(cancellationToken);
-
+        
         return Unit.Value;
     }
 
@@ -68,7 +68,10 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
         foreach (var attachment in attachments)
         {
             var transactionAttachment = new TransactionAttachment(request.TransactionId, attachment.FileName);
-            await _attachmentStorage.AddAsync(transactionAttachment.FullPath, attachment.ContentType, attachment.Bytes, cancellationToken);
+            await using FileStream fs = new(attachment.UnsafePath, FileMode.Open);
+            using var memoryStream = new MemoryStream();
+            await fs.CopyToAsync(memoryStream, cancellationToken);
+            await _attachmentStorage.AddAsync(transactionAttachment.FullPath, attachment.ContentType, memoryStream.ToArray(), cancellationToken);
 
             transactionAttachments.Add(transactionAttachment);
         }

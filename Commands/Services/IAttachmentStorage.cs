@@ -26,7 +26,7 @@ public class AttachmentStorage : IAttachmentStorage
     }
     public async Task AddAsync(string path, string contentType, byte[] bytes, CancellationToken cancellationToken)
     {
-        await _container.CreateIfNotExistsAsync(PublicAccessType.BlobContainer, new Dictionary<string, string>(), cancellationToken);
+        await _container.CreateIfNotExistsAsync(PublicAccessType.Blob, new Dictionary<string, string>(), cancellationToken);
         var blob = _container.GetBlobClient(path);
 
         using var memoryStream = new MemoryStream(bytes);
@@ -54,12 +54,16 @@ public class AttachmentStorage : IAttachmentStorage
 
 public class StorageOptions
 {
-    public StorageOptions(string storageContainerName, string connectionString)
+    public StorageOptions()
+    {
+        
+    }
+    public StorageOptions(string? storageContainerName, string? connectionString)
     {
         StorageContainerName = storageContainerName;
         ConnectionString = connectionString;
     }
 
-    public string StorageContainerName { get; set; }
-    public string ConnectionString { get; set; }
+    public string? StorageContainerName { get; set; }
+    public string? ConnectionString { get; set; }
 }
