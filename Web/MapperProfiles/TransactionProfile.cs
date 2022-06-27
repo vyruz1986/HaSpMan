@@ -14,6 +14,7 @@ using Web.Models;
 
 using AttachmentFile = Commands.Handlers.AttachmentFile;
 using TransactionAttachment = Domain.TransactionAttachment;
+using TransactionTypeAmount = Domain.TransactionTypeAmount;
 
 
 namespace Web.MapperProfiles;
@@ -43,19 +44,29 @@ public class TransactionProfile : Profile
         CreateMap<TransactionTypeAmountForm, TransactionTypeAmount>();
 
         CreateMap<TransactionDetail, TransactionForm>()
+            .ForMember(x => x.Id, o => o.MapFrom(x => x.Id))
             .ForMember(
                 x => x.ReceivedDateTime,
                 o =>
                     o.MapFrom(x => x.ReceivedDateTime.DateTime))
             .ForMember(x => x.Counterparty,
                 o => o.MapFrom(x => new AutocompleteCounterparty(x.CounterPartyName, x.MemberId)))
-            .ForMember(x => x.TransactionAttachments, o => o.Ignore());
+            .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments));
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
+
+        CreateMap<Queries.Transactions.ViewModels.TransactionAttachment, Web.Models.TransactionAttachment>()
+            .ForCtorParam(nameof(Models.TransactionAttachment.FileName),  o => o.MapFrom(x => x.Name))
+            .ForCtorParam(nameof(Models.TransactionAttachment.ContentType), o => o.MapFrom(x => string.Empty))
+            .ForCtorParam(nameof(Models.TransactionAttachment.UnsafePath), o => o.MapFrom(x => string.Empty))
+            .ForMember(x => x.FileName, o => o.MapFrom(x => x.Name))
+            .ForMember(x => x.ContentType, o => o.Ignore())
+            .ForMember(x => x.UnsafePath, o => o.Ignore());
 
         CreateMap<TransactionAttachmentFile, TransactionAttachment>()
             .ForCtorParam(nameof(TransactionAttachment.Name), o => o.MapFrom(x => x.Name))
             .ForMember(x => x.FullPath, opt => opt.Ignore());
+        
         CreateMap<Models.TransactionAttachment, AttachmentFile>()
             .ForCtorParam(nameof(AttachmentFile.FileName), o => o.MapFrom(x => x.FileName))
             .ForMember(x => x.FileName, o => o.MapFrom(x => x.FileName))
@@ -64,6 +75,20 @@ public class TransactionProfile : Profile
             .ForCtorParam(nameof(AttachmentFile.ContentType), o => o.MapFrom(x => x.ContentType))
             .ForMember(x => x.ContentType, o => o.MapFrom(x => x.ContentType));
 
+        CreateMap<Domain.TransactionAttachment, Queries.Transactions.ViewModels.TransactionAttachment>();
 
+        CreateMap<Queries.Transactions.ViewModels.TransactionAttachment, Web.Models.TransactionAttachment>()
+            .ForCtorParam(nameof(Models.TransactionAttachment.FileName), o => o.MapFrom(x => x.Name))
+            .ForCtorParam(nameof(Models.TransactionAttachment.ContentType), o => o.MapFrom(x => string.Empty))
+            .ForCtorParam(nameof(Models.TransactionAttachment.UnsafePath), o => o.MapFrom(x => string.Empty))
+            .ForMember(x => x.FileName, o => o.MapFrom(x => x.Name))
+            .ForMember(x => x.ContentType, o => o.Ignore())
+            .ForMember(x => x.UnsafePath, o => o.Ignore());
+
+        CreateMap<Queries.Transactions.ViewModels.TransactionTypeAmount, TransactionTypeAmountForm>()
+            .ForCtorParam(nameof(TransactionTypeAmountForm.Amount), o => o.MapFrom(x => x.Amount))
+            .ForCtorParam(nameof(TransactionTypeAmountForm.TransactionType), o => o.MapFrom(x => x.TransactionType))
+            .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
+            .ForMember(x => x.TransactionType, o => o.MapFrom(x => x.TransactionType));
     }
 }

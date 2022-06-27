@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-using Commands.Handlers.Transaction.AddAttachments;
+using Commands.Handlers.Transaction;
 
 using Microsoft.Extensions.Options;
 

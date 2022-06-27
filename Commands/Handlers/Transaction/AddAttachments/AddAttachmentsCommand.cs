@@ -79,5 +79,3 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
         return transactionAttachments;
     }
 }
-
-public record Attachment(string Name, string ContentType, string BlobUri, byte[] Bytes);

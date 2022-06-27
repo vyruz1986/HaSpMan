@@ -19,6 +19,8 @@ public class TransactionForm
         TransactionAttachments = new List<TransactionAttachment>();
     }
 
+    public Guid Id { get; set; }
+
     [NotMapped]
     public AutocompleteCounterparty Counterparty { get; set; }
 

@@ -37,8 +37,8 @@
     protected override async Task OnInitializedAsync()
     {
         var query = new GetTransactionByIdQuery(TransactionId);
-        var memberDetail = await _mediator.Send(query);
-        Transaction = _mapper.Map<Models.TransactionForm>(memberDetail);
+        var transactionDetail = await _mediator.Send(query);
+        Transaction = _mapper.Map<Models.TransactionForm>(transactionDetail);
         _transactionTypeGroup = GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
     }
 
