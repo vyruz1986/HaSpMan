@@ -17,17 +17,18 @@ public interface IAttachmentStorage
 
 public class AttachmentStorage : IAttachmentStorage
 {
-    private readonly BlobContainerClient _container;
+    private readonly StorageOptions _storageOptions;
 
     public AttachmentStorage(IOptions<StorageOptions> options)
     {
-        var storageOptions = options.Value;
-        _container = new BlobContainerClient(storageOptions.ConnectionString, storageOptions.StorageContainerName);
+        _storageOptions = options.Value;
     }
     public async Task AddAsync(string path, string contentType, byte[] bytes, CancellationToken cancellationToken)
     {
-        await _container.CreateIfNotExistsAsync(PublicAccessType.Blob, new Dictionary<string, string>(), cancellationToken);
-        var blob = _container.GetBlobClient(path);
+        var container = new BlobContainerClient(_storageOptions.ConnectionString, _storageOptions.StorageContainerName);
+        await container.CreateIfNotExistsAsync(PublicAccessType.None
+            , new Dictionary<string, string>(), cancellationToken);
+        var blob = container.GetBlobClient(path);
 
         using var memoryStream = new MemoryStream(bytes);
         await blob.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = contentType }, cancellationToken: cancellationToken);
@@ -36,7 +37,8 @@ public class AttachmentStorage : IAttachmentStorage
 
     public async Task<Attachment> GetAsync(string blobUri, CancellationToken cancellationToken)
     {
-        var blobClient = _container.GetBlobClient(blobUri);
+        var container = new BlobContainerClient(_storageOptions.ConnectionString, _storageOptions.StorageContainerName);
+        var blobClient = container.GetBlobClient(blobUri);
         var response = await blobClient.DownloadAsync(cancellationToken);
         var content = response.Value;
         var properties = await blobClient.GetPropertiesAsync(cancellationToken: cancellationToken);

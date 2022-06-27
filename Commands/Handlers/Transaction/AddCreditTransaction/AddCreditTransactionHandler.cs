@@ -23,7 +23,8 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
     {
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new CreditTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
-            request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId, new List<TransactionTypeAmount>());
+            request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId, 
+            request.TransactionTypeAmounts);
         _transactionRepository.Add(transaction);
         await _transactionRepository.SaveAsync(cancellationToken);
 
