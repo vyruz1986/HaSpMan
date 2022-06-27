@@ -54,18 +54,6 @@ public class TransactionProfile : Profile
             .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments));
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
-
-        CreateMap<Queries.Transactions.ViewModels.TransactionAttachment, Web.Models.TransactionAttachment>()
-            .ForCtorParam(nameof(Models.TransactionAttachment.FileName),  o => o.MapFrom(x => x.Name))
-            .ForCtorParam(nameof(Models.TransactionAttachment.ContentType), o => o.MapFrom(x => string.Empty))
-            .ForCtorParam(nameof(Models.TransactionAttachment.UnsafePath), o => o.MapFrom(x => string.Empty))
-            .ForMember(x => x.FileName, o => o.MapFrom(x => x.Name))
-            .ForMember(x => x.ContentType, o => o.Ignore())
-            .ForMember(x => x.UnsafePath, o => o.Ignore());
-
-        CreateMap<TransactionAttachmentFile, TransactionAttachment>()
-            .ForCtorParam(nameof(TransactionAttachment.Name), o => o.MapFrom(x => x.Name))
-            .ForMember(x => x.FullPath, opt => opt.Ignore());
         
         CreateMap<Models.TransactionAttachment, AttachmentFile>()
             .ForCtorParam(nameof(AttachmentFile.FileName), o => o.MapFrom(x => x.FileName))

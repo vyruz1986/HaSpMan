@@ -39,16 +39,6 @@ public class TransactionForm
     public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
 }
 
-public class TransactionAttachmentFile
-{
-    public string Name { get; }
-
-    public TransactionAttachmentFile(string name)
-    { 
-        Name = name;
-    }
-}
-
 public class TransactionTypeAmountForm
 {
     public TransactionTypeAmountForm(TransactionType transactionType, decimal amount)
