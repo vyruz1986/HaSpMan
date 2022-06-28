@@ -46,7 +46,7 @@ public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTra
             cfg.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(50);
-            cfg.Property(x => x.BlobURI)
+            cfg.Property(x => x.FullPath)
                 .IsRequired()
                 .HasMaxLength(1000);
         };
@@ -96,7 +96,7 @@ public class DebitTransactionConfiguration : IEntityTypeConfiguration<DebitTrans
             cfg.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(50);
-            cfg.Property(x => x.BlobURI)
+            cfg.Property(x => x.FullPath)
                 .IsRequired()
                 .HasMaxLength(1000);
         };

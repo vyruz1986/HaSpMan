@@ -16,7 +16,10 @@ public class TransactionForm
         {
             new(TransactionType.DebitWorkshopFee, 0)
         };
+        TransactionAttachments = new List<TransactionAttachment>();
     }
+
+    public Guid Id { get; set; }
 
     [NotMapped]
     public AutocompleteCounterparty Counterparty { get; set; }
@@ -31,6 +34,9 @@ public class TransactionForm
 
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
+
+
+    public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
 }
 
 public class TransactionTypeAmountForm
@@ -47,4 +53,17 @@ public class TransactionTypeAmountForm
     [Required]
     [Range(0, 10000000)]
     public decimal Amount { get; set; }
+}
+
+public class TransactionAttachment
+{
+    public TransactionAttachment(string fileName, string contentType, string unsafePath)
+    {
+        FileName = fileName;
+        ContentType = contentType;
+        UnsafePath = unsafePath;
+    }
+    public string FileName { get; set; }
+    public string ContentType { get; set; }
+    public string UnsafePath { get; set; }
 }

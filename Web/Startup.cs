@@ -47,10 +47,14 @@ public class Startup
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddHaSpManContext(dbConnectionString);
-        services.MigrateHaSpManContext(dbConnectionString);
+        DbContextExtensions.MigrateHaSpManContext(dbConnectionString);
+
+        services.Configure<StorageOptions>(Configuration.GetSection("Storage"));
+
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+        services.AddScoped<IAttachmentStorage, AttachmentStorage>();
         services.AddAutoMapper(
             typeof(MapperProfiles.MemberProfile),
             typeof(MapperProfiles.TransactionProfile),
