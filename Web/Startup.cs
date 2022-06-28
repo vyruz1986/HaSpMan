@@ -51,7 +51,6 @@ public class Startup
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();
-        services.AddScoped<ISystemAuditEventRepository, SystemAuditEventRepository>();
         services.AddAutoMapper(
             typeof(MapperProfiles.MemberProfile),
             typeof(MapperProfiles.TransactionProfile),
