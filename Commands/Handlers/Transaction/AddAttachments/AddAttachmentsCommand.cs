@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-using Commands.Services;
+﻿using Commands.Services;
 
 using Domain;
 
