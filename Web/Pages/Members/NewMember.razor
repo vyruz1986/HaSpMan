@@ -23,7 +23,10 @@
 </EditForm>
 
 @code {
-   private Models.MemberForm _newMember = new();
+    private Models.MemberForm _newMember = new()
+    {
+        Country = "Belgium"
+    };
 
    private async Task AddMember()
    {

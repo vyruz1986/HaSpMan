@@ -47,7 +47,7 @@ public class Startup
         services.AddRazorPages();
         services.AddServerSideBlazor();
         services.AddHaSpManContext(dbConnectionString);
-        services.MigrateHaSpManContext(dbConnectionString);
+        DbContextExtensions.MigrateHaSpManContext(dbConnectionString);
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();

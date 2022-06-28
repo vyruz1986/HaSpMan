@@ -22,12 +22,15 @@ public static class DbContextExtensions
         return serviceCollection;
     }
 
-    public static void MigrateHaSpManContext(this IServiceCollection services, string connectionString)
+    public static void MigrateHaSpManContext(string connectionString)
     {
-        var serviceProvider = services.BuildServiceProvider();
-        var optionsBuilder = new DbContextOptionsBuilder<HaSpManContext>().UseSqlServer(connectionString, b => b
-            .MigrationsAssembly("Persistence")
-            .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan"));
+        var optionsBuilder = new DbContextOptionsBuilder<HaSpManContext>()
+            .UseSqlServer(connectionString, b =>
+            {
+                b.MigrationsAssembly("Persistence")
+                    .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan");
+                b.EnableRetryOnFailure();
+            });
 
         var context = new HaSpManContext(optionsBuilder.Options);
         context.Database.Migrate();
