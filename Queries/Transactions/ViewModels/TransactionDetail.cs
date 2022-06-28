@@ -1,6 +1,8 @@
 
 using Domain;
 
+using Types;
+
 namespace Queries.Transactions.ViewModels;
 
 public record TransactionDetail(
@@ -11,4 +13,8 @@ public record TransactionDetail(
     Guid BankAccountId,
     decimal Amount,
     DateTimeOffset ReceivedDateTime,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts);
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts,
+    ICollection<TransactionAttachment> TransactionAttachments);
+
+public record TransactionTypeAmount(TransactionType TransactionType, decimal Amount);
+public record TransactionAttachment(string Name, string FullPath);

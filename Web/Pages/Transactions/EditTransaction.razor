@@ -2,10 +2,12 @@
 @attribute [Authorize]
 @using MediatR
 @using AutoMapper
+@using Commands.Handlers
 @using Commands.Handlers.Transaction.EditTransaction
 @using Domain
 @using Queries.Transactions.Handlers
 @using Types
+@using AttachmentFile = Commands.Handlers.AttachmentFile
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar _snackbar
@@ -35,8 +37,8 @@
     protected override async Task OnInitializedAsync()
     {
         var query = new GetTransactionByIdQuery(TransactionId);
-        var memberDetail = await _mediator.Send(query);
-        Transaction = _mapper.Map<Models.TransactionForm>(memberDetail);
+        var transactionDetail = await _mediator.Send(query);
+        Transaction = _mapper.Map<Models.TransactionForm>(transactionDetail);
         _transactionTypeGroup = GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
     }
 
@@ -64,7 +66,8 @@
             Description: Transaction.Description!,
             TransactionTypeAmounts: Transaction.TransactionTypeAmounts
                 .Select(x => new TransactionTypeAmount(x.TransactionType, x.Amount))
-                .ToList()
+                .ToList(),
+            AttachmentFiles: new List<AttachmentFile>()
             );
         var response = await _mediator.Send(command);
         _snackbar.Clear();

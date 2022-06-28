@@ -22,7 +22,7 @@ public class GetTransactionByIdHandler : IRequestHandler<GetTransactionByIdQuery
     }
     public async Task<TransactionDetail> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var transaction = await context.Transactions.SingleAsync(x => x.Id == request.Id, cancellationToken);
 
         return _mapper.Map<TransactionDetail>(transaction);
