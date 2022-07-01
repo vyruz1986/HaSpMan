@@ -28,13 +28,4 @@ public class HaSpManContext : DbContext
         );
         base.OnModelCreating(builder);
     }
-    
-    //public class HaspmanContextFactory : IDesignTimeDbContextFactory<HaSpManContext>
-    //{
-    //    public HaSpManContext CreateDbContext(string[] args)
-    //    {
-    //        var context = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>().UseSqlServer("Server=localhost,5201;Database=HaSpMan;User Id=sa;Password=Dev-db-Password;").Options);
-    //        return context;
-    //    }
-    //}
 }
