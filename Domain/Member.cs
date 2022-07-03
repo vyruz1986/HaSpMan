@@ -3,7 +3,6 @@
 using Types;
 
 namespace Domain;
-
 public class Member
 {
     public Member(
@@ -52,6 +51,7 @@ public class Member
         AuditEvents = new List<AuditEvent>();
         AuditEvents.AddEvent("Created member", performedBy);
     }
+
 
 #pragma warning disable 8618
     private Member() { } // Make EFCore happy

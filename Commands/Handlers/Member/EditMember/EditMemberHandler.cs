@@ -38,7 +38,7 @@ public class
         member.ChangeName(request.FirstName, request.LastName, performingUser);
         member.ChangePhoneNumber(request.PhoneNumber, performingUser);
 
-        await _memberRepository.Save();
+        await _memberRepository.Save(cancellationToken);
 
         return Unit.Value;
     }

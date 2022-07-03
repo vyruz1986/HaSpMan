@@ -39,9 +39,9 @@ public class MemberRepository : IMemberRepository
         _context.Members.Remove(member);
     }
 
-    public async Task Save()
+    public async Task Save(CancellationToken cancellationToken)
     {
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
 }
