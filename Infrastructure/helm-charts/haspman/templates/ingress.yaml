@@ -20,6 +20,7 @@ metadata:
     {{- include "haspman.labels" . | nindent 4 }}
   annotations:
     cert-manager.io/cluster-issuer: {{ required "A valid cluster issuer name is required" .Values.ingress.clusterIssuerName }}
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "16k"
 spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
