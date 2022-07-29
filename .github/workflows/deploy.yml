@@ -1,13 +1,9 @@
 name: Deployment
 
-# on:
-#   push:
-#     branches:
-#       - master
 on:
   workflow_run:
-    workflows: ["Publish"]
-    # branches: [main]
+    workflows: [Publish]
+    branches: [master,helm-chart]
     types: 
       - completed
 
