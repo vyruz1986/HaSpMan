@@ -4,6 +4,12 @@ name: Deployment
 #   push:
 #     branches:
 #       - master
+on:
+  workflow_run:
+    workflows: ["Publish"]
+    # branches: [main]
+    types: 
+      - completed
 
 # Environment variables available to all jobs and steps in this workflow
 env:
@@ -13,6 +19,7 @@ env:
 
 jobs:
   deployment:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: dev
     runs-on: ubuntu-latest
     environment: dev
