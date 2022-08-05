@@ -14,7 +14,7 @@ env:
   NAMESPACE: haspman-${{env.deplo}}
 
 jobs:
-  deployment:
+  deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: dev
     runs-on: ubuntu-latest
