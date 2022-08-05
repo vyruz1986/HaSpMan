@@ -1,8 +1,6 @@
-name: Deployment
-
 on:
   workflow_run:
-    workflows: [Publish]
+    workflows: [publish]
     branches: [master,helm-chart]
     types: 
       - completed
