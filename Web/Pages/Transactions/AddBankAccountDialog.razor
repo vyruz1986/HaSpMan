@@ -6,8 +6,14 @@
 
 <MudDialog>
     <DialogContent>
-        <MudTextField T="string" @bind-Value="bankAccountForm.Name" For="@(() => bankAccountForm.Name)" Label="Name" />
-        <MudTextField T="string" @bind-Value="bankAccountForm.AccountNumber" For="@(() => bankAccountForm.AccountNumber)" Label="Account number" />
+        <MudTextField @bind-Value="bankAccountForm.Name"
+                      For="@(() => bankAccountForm.Name)"
+                      Label="Name"
+                      T="string"/>
+        <MudTextField @bind-Value="bankAccountForm.AccountNumber"
+                      For="@(() => bankAccountForm.AccountNumber)"
+                      Label="Account number"
+                      T="string"/>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -18,7 +24,8 @@
 
     BankAccountForm bankAccountForm = new();
 
-    [CascadingParameter] MudDialogInstance? MudDialog { get; set; }
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
 
     async Task Submit()
     {
@@ -27,7 +34,4 @@
     }
 
     void Cancel() => MudDialog?.Cancel();
-
-    
-
 }
