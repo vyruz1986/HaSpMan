@@ -9,11 +9,10 @@
 @inject IMediator _mediator
 
 
-<MudTable class="mt-10"
+<MudTable Class="mt-10"
           Dense="true"
           Hover="true"
           @ref="table"
-          class="mt-10"
           ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
