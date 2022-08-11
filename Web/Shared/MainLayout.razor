@@ -2,16 +2,21 @@
 @inherits LayoutComponentBase
 @inject NavigationManager NavManager
 
-<MudThemeProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-            OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">HaSpMan @_version</MudText>
-        <MudSpacer />
+        <MudIconButton Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       Icon="@Icons.Material.Filled.Menu"
+                       OnClick="@((e) => DrawerToggle())"/>
+        <MudText Class="ml-3"
+                 Typo="Typo.h5">
+            HaSpMan @_version
+        </MudText>
+        <MudSpacer/>
         <MudMenu Icon="@Icons.Material.Filled.MoreVert">
             <AuthorizeView>
                 <Authorized>
@@ -27,17 +32,21 @@
             </AuthorizeView>
         </MudMenu>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
+    <MudDrawer @bind-Open="_drawerOpen"
+               ClipMode="DrawerClipMode.Always"
+               Elevation="2">
+        <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.Medium">
+        <MudContainer MaxWidth="MaxWidth.ExtraLarge">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
 @code {
     private bool _drawerOpen = true;
+
     private string _version
     {
         get
@@ -58,4 +67,5 @@
     {
         _drawerOpen = !_drawerOpen;
     }
+
 }

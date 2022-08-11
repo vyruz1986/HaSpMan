@@ -10,7 +10,7 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))" Dense="true" Hover="true"
+<MudTable Class="mt-10" ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))" Dense="true" Hover="true"
    @ref="table">
    <ToolBarContent>
       <MudText Typo="Typo.h6">Members</MudText>

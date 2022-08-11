@@ -1,0 +1,39 @@
+.expand {
+    width: 100%;
+}
+
+.mw-1 {
+    max-width: 100px;
+}
+
+.mw-2 {
+    max-width: 200px;
+}
+
+.mw-3 {
+    max-width: 300px;
+}
+
+.mw-4 {
+    max-width: 400px;
+}
+
+.mw-5 {
+    max-width: 500px;
+}
+
+.mw-6 {
+    max-width: 600px;
+}
+
+.mw-7 {
+    max-width: 700px;
+}
+
+.mw-8 {
+    max-width: 800px;
+}
+
+.mw-9 {
+    max-width: 900px;
+}

@@ -13,23 +13,36 @@
 @inject ISnackbar _snackbar
 @inject NavigationManager _navManager
 
-<h1>Edit transaction</h1>
+<h1 class="my-6">Edit transaction</h1>
 
-<EditForm Model="@Transaction" OnValidSubmit="@SubmitTransaction" OnInvalidSubmit="@ShowError">
+<EditForm Model="@Transaction"
+          OnInvalidSubmit="@ShowError"
+          OnValidSubmit="@SubmitTransaction">
     <DataAnnotationsValidator/>
 
-    <TransactionForm IsNew="false" IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue" Transaction="@Transaction" TransactionTypeGroup="_transactionTypeGroup"/>
+    <TransactionForm IsNew="false"
+                     IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue"
+                     Transaction="@Transaction"
+                     TransactionTypeGroup="_transactionTypeGroup"/>
 
-    <MudItem xs="12" Class="d-flex justify-center">
-        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
-                   ButtonType="ButtonType.Submit">Save transaction</MudButton>
+    <MudItem Class="d-flex justify-start"
+             xs="12">
+        <MudButton ButtonType="ButtonType.Submit"
+                   Class="mt-8"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Size="Size.Large"
+                   Variant="Variant.Filled">
+            Save transaction
+        </MudButton>
     </MudItem>
 </EditForm>
 
 @code {
-    
+
     [Parameter]
     public Guid TransactionId { get; set; }
+
     public Models.TransactionForm Transaction = new();
 
     private TransactionTypeGroup _transactionTypeGroup;
@@ -56,7 +69,6 @@
 
     private async Task SubmitTransaction()
     {
-
         var command = new EditTransactionCommand(
             Id: TransactionId,
             CounterPartyName: Transaction.Counterparty.Name!,
@@ -74,9 +86,11 @@
         _snackbar.Add("Transaction edited successfully!", Severity.Success);
         _navManager.NavigateTo("/transactions");
     }
+
     private void ShowError()
     {
         _snackbar.Clear();
         _snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
+
 }
