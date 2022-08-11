@@ -146,7 +146,7 @@
                     <MudTextField @bind-Text="Transaction.Description"
                                   For="(() => Transaction.Description)"
                                   Label="Description"
-                                  T="string"/>
+                                  T="string" />
                 </MudItem>
                 <MudItem md="4"
                          sm="6"
@@ -234,7 +234,7 @@
             <InputFile hidden
                        id="attachmentFilePicker"
                        multiple
-                       OnChange="UploadFiles"/>
+                       OnChange="UploadFiles" />
 
             <MudButton Color="Color.Primary"
                        for="attachmentFilePicker"

@@ -14,9 +14,9 @@
 <EditForm Model="@_newMember"
           OnInvalidSubmit="@ShowError"
           OnValidSubmit="@AddMember">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
 
-    <MemberForm Member="@_newMember"/>
+    <MemberForm Member="@_newMember" />
 
     <MudItem Class="d-flex flex-row justify-start"
              xs="12">

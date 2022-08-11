@@ -14,12 +14,12 @@
 <EditForm Model="@_newTransaction"
           OnInvalidSubmit="@ShowError"
           OnValidSubmit="@AddTransaction">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
 
     <TransactionForm IsNew="true"
                      IsSearchForMembership="false"
                      Transaction="@_newTransaction"
-                     TransactionTypeGroup="@_selectedTransactionTypeGroup"/>
+                     TransactionTypeGroup="@_selectedTransactionTypeGroup" />
 
     <MudItem Class="d-flex justify-start"
              xs="12">

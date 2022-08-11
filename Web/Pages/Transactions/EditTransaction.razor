@@ -18,12 +18,12 @@
 <EditForm Model="@Transaction"
           OnInvalidSubmit="@ShowError"
           OnValidSubmit="@SubmitTransaction">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
 
     <TransactionForm IsNew="false"
                      IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue"
                      Transaction="@Transaction"
-                     TransactionTypeGroup="_transactionTypeGroup"/>
+                     TransactionTypeGroup="_transactionTypeGroup" />
 
     <MudItem Class="d-flex justify-start"
              xs="12">

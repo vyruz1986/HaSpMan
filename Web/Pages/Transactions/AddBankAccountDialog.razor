@@ -9,17 +9,18 @@
         <MudTextField @bind-Value="bankAccountForm.Name"
                       For="@(() => bankAccountForm.Name)"
                       Label="Name"
-                      T="string"/>
+                      T="string" />
         <MudTextField @bind-Value="bankAccountForm.AccountNumber"
                       For="@(() => bankAccountForm.AccountNumber)"
                       Label="Account number"
-                      T="string"/>
+                      T="string" />
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
     </DialogActions>
 </MudDialog>
+
 @code {
 
     BankAccountForm bankAccountForm = new();

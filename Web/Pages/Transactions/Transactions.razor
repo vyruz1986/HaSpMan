@@ -16,7 +16,7 @@
           ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
-        <MudSpacer/>
+        <MudSpacer />
         <MudTextField Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
                       Class="mt-0"
@@ -25,7 +25,7 @@
                       T="string"
                       ValueChanged="@(s => OnSearch(s))">
         </MudTextField>
-        <MudSpacer/>
+        <MudSpacer />
         <MudButton Class="ma-2"
                    Color="Color.Primary"
                    DisableElevation="true"
@@ -98,7 +98,7 @@
         <MudText>Loading...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudTablePager/>
+        <MudTablePager />
     </PagerContent>
 </MudTable>
 
