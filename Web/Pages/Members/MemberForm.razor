@@ -1,7 +1,7 @@
 <div class="d-flex flex-column justify-start align-start mw-5">
     <MudCard class="mb-8 mt-2 pb-3 expand">
         <MudCardHeader class="pb-0">
-            <h2>Personal info</h2>
+            <MudText Typo="Typo.h5">Personal info</MudText>
         </MudCardHeader>
         <MudCardContent Class="d-flex flex-column gap-4 expand">
             <MudTextField T="string" Label="First name" @bind-Value="Member.FirstName" For="@(() => Member.FirstName)" />
@@ -13,7 +13,7 @@
     
     <MudCard class="my-8 pb-3 expand">
         <MudCardHeader class="pb-0">
-            <h2>Address</h2>
+            <MudText Typo="Typo.h5">Address</MudText>
         </MudCardHeader>
         <MudCardContent Class="d-flex flex-column gap-4 expand">
             <MudTextField T="string" Label="Street" @bind-Value="Member.Street" For="@(() => Member.Street)" />
@@ -26,7 +26,7 @@
     
     <MudCard class="my-8 pb-3 expand">
         <MudCardHeader class="pb-0">
-            <h2>Membership</h2>
+            <MudText Typo="Typo.h5">Membership</MudText>
         </MudCardHeader>
         <MudCardContent Class="d-flex flex-column gap-4 expand">
             <MudDatePicker @ref="_picker"
