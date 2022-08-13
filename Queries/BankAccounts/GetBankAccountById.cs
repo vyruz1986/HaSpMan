@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
-namespace Queries.BankAccounts.GetBankAccountById;
+namespace Queries.BankAccounts;
 
 public record GetBankAccountByIdQuery(Guid Id) : IRequest<BankAccountDetail>;
 

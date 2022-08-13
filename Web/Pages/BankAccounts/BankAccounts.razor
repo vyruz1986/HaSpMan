@@ -2,7 +2,6 @@
 @attribute [Authorize]
 
 @using Queries.BankAccounts
-@using Queries.GetBankAccounts
 
 @inject IMediator _mediator
 @inject IDialogService DialogService
@@ -42,7 +41,7 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="address"
+            <MudTableSortLabel SortLabel="accountNumber"
                                T="BankAccountDetail">
                 Accountnumber
             </MudTableSortLabel>
@@ -92,23 +91,21 @@
 
         _isBusy = true;
 
-    // MemberSummaryOrderOption orderBy = state.SortLabel switch
-    // {
-    //     "name" => MemberSummaryOrderOption.Name,
-    //     "address" => MemberSummaryOrderOption.Address,
-    //     "email" => MemberSummaryOrderOption.Email,
-    //     "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
-    //     _ => MemberSummaryOrderOption.Name
-    // };
+        BankAccountDetailOrderOption orderBy = state.SortLabel switch
+        {
+            "name" => BankAccountDetailOrderOption.Name,
+            "accountNumber" => BankAccountDetailOrderOption.AccountNumber,
+            _ => BankAccountDetailOrderOption.Name
+        };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
-        var query = new GetBankAccounts();
+        var query = new SearchBankAccountsQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
         _isBusy = false;
         return new TableData<BankAccountDetail>()
         {
-            TotalItems = data.Count,
-            Items = data
+            TotalItems = data.Total,
+            Items = data.Items
         };
     }
 
