@@ -1,14 +1,25 @@
-<MudGrid>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Name" @bind-Value="BankAccount.Name" For="@(() => BankAccount.Name)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Account number" @bind-Value="BankAccount.AccountNumber" For="@(() => BankAccount.AccountNumber)" />
-    </MudItem>
-</MudGrid>
+<div class="d-flex flex-column justify-start align-start mw-5">
+    <MudCard class="mb-8 mt-2 pb-3 expand">
+        <MudCardHeader class="pb-0">
+            <MudText Typo="Typo.h5">Personal info</MudText>
+        </MudCardHeader>
+        <MudCardContent Class="d-flex flex-column gap-4 expand">
+            <MudTextField @bind-Value="BankAccount.Name"
+                          For="@(() => BankAccount.Name)"
+                          Label="Name"
+                          T="string" />
+            <MudTextField @bind-Value="BankAccount.AccountNumber"
+                          For="@(() => BankAccount.AccountNumber)"
+                          Label="Account number"
+                          T="string" />
+        </MudCardContent>
+    </MudCard>
+</div>
 
 
 @code {
+
     [Parameter]
     public Models.BankAccountForm BankAccount { get; set; } = new();
+
 }

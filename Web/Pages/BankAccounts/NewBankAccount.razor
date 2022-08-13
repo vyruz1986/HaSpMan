@@ -7,16 +7,25 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-<h1>Add new bankaccount</h1>
+<h1 class="my-6">Add new bankaccount</h1>
 
-<EditForm Model="@_newBankAccount" OnValidSubmit="@AddBankAccount" OnInvalidSubmit="@ShowError">
+<EditForm Model="@_newBankAccount"
+          OnInvalidSubmit="@ShowError"
+          OnValidSubmit="@AddBankAccount">
     <DataAnnotationsValidator />
 
     <BankAccountForm BankAccount="@_newBankAccount" />
 
-    <MudItem xs="12" Class="d-flex justify-center">
-        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
-            ButtonType="ButtonType.Submit">Add bankaccount</MudButton>
+    <MudItem Class="d-flex justify-start"
+             xs="12">
+        <MudButton ButtonType="ButtonType.Submit"
+                   Class="mt-8"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Size="Size.Large"
+                   Variant="Variant.Filled">
+            Add bankaccount
+        </MudButton>
     </MudItem>
 </EditForm>
 
@@ -37,4 +46,5 @@
         Snackbar.Clear();
         Snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
+
 }
