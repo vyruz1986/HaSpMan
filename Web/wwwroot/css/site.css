@@ -2,6 +2,14 @@
     width: 100%;
 }
 
+.d-grid {
+    display: grid;
+}
+
+.place-items-center {
+    place-items: center;
+}
+
 .mw-1 {
     max-width: 100px;
 }
@@ -36,4 +44,16 @@
 
 .mw-9 {
     max-width: 900px;
+}
+
+.mw-10 {
+    max-width: 1000px;
+}
+
+.mw-11 {
+    max-width: 1100px;
+}
+
+.mw-12 {
+    max-width: 1200px;
 }
