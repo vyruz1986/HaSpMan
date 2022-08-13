@@ -37,7 +37,7 @@ public class AddMemberHandler : IRequestHandler<AddMemberCommand, Guid>
         );
 
         _memberRepository.Add(newMember);
-        await _memberRepository.Save();
+        await _memberRepository.Save(cancellationToken);
         return newMember.Id;
     }
 }

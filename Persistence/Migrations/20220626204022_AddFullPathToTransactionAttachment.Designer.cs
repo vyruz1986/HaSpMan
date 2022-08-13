@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,10 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(HaSpManContext))]
-    partial class HaSpManContextModelSnapshot : ModelSnapshot
+    [Migration("20220626204022_AddFullPathToTransactionAttachment")]
+    partial class AddFullPathToTransactionAttachment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,43 +137,6 @@ namespace Persistence.Migrations
                     b.HasBaseType("Domain.Transaction");
 
                     b.HasDiscriminator().HasValue("DebitTransaction");
-                });
-
-            modelBuilder.Entity("Domain.BankAccount", b =>
-                {
-                    b.OwnsMany("Types.AuditEvent", "AuditEvents", b1 =>
-                        {
-                            b1.Property<Guid>("BankAccountId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
-
-                            b1.Property<string>("Description")
-                                .IsRequired()
-                                .HasMaxLength(1000)
-                                .HasColumnType("varchar(1000)");
-
-                            b1.Property<string>("PerformedBy")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("varchar(100)");
-
-                            b1.Property<DateTimeOffset>("Timestamp")
-                                .HasColumnType("datetimeoffset");
-
-                            b1.HasKey("BankAccountId", "Id");
-
-                            b1.ToTable("BankAccount_AuditEvents", "HaSpMan");
-
-                            b1.WithOwner()
-                                .HasForeignKey("BankAccountId");
-                        });
-
-                    b.Navigation("AuditEvents");
                 });
 
             modelBuilder.Entity("Domain.Member", b =>

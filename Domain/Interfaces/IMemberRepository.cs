@@ -7,5 +7,5 @@ public interface IMemberRepository
     Task<IEnumerable<Member>> GetAllAsync();
     void Add(Member member);
     void Remove(Member member);
-    Task Save();
+    Task Save(CancellationToken cancellationToken);
 }

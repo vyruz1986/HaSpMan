@@ -5,7 +5,6 @@ using MediatR;
 using Types;
 
 namespace Commands;
-
 public record EditMemberCommand(
        Guid Id,
        string FirstName,

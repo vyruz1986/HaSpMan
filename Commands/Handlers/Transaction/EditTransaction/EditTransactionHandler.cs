@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
 
+using Commands.Handlers.Transaction.AddAttachments;
+
+using Domain;
+
 using MediatR;
 
 using Persistence.Repositories;
@@ -10,11 +14,13 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Gu
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
 
-    public EditTransactionHandler(ITransactionRepository transactionRepository, IMapper mapper)
+    public EditTransactionHandler(ITransactionRepository transactionRepository, IMapper mapper, IMediator mediator)
     {
         _transactionRepository = transactionRepository;
         _mapper = mapper;
+        _mediator = mediator;
     }
     public async Task<Guid> Handle(EditTransactionCommand request, CancellationToken cancellationToken)
     {
@@ -35,6 +41,10 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Gu
 
 
         await _transactionRepository.SaveAsync(cancellationToken);
+
+        
+        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.AttachmentFiles), cancellationToken);
+
         return transaction.Id;
     }
 }

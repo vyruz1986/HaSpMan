@@ -5,10 +5,16 @@
 @using Queries.Members.Handlers.SearchMembers
 @using Web.Models
 @using Commands.Handlers.BankAccount
+@using Commands.Handlers.Transaction.GetAttachment
+@using LinqKit
+
+@inject IWebHostEnvironment Environment
 
 @inject IDialogService dialogService
 
 @inject IMediator mediator;
+
+@inject IJSRuntime JS;
 <MudGrid>
     <MudItem xs="12">
 
@@ -118,7 +124,7 @@
                 </MudCardContent>
             </MudCard>
         </MudItem>
-    <MudItem xs="12">
+        <MudItem xs="12">
             <MudCard>
                 <MudCardHeader>
                     <MudText Typo="Typo.h5">
@@ -144,7 +150,7 @@
                 </MudCardContent>
             </MudCard>
         </MudItem>
-    <MudItem xs="12">
+        <MudItem xs="12">
             <MudCard>
                 <MudCardHeader>
                     <MudText Typo="Typo.h5">Amount</MudText>
@@ -176,7 +182,38 @@
             </MudCard>
 
         </MudItem>
+    <MudItem xs="12">
+        <MudCard>
+        <MudList Clickable="true">
+            <MudListSubheader>
+                Attachments
+            </MudListSubheader>
+            @foreach (var attachment in Transaction.TransactionAttachments)
+            {
+                <MudListItem Icon="@Icons.Outlined.Save" OnClick="(() => Download(attachment.FileName))">@attachment.FileName
 
+                </MudListItem>
+            }
+        </MudList>
+        </MudCard>
+        <MudCard>
+            <MudCardHeader>
+                <MudText Type="Typo.h5">Attachments</MudText>
+            </MudCardHeader>
+            <MudCardContent>
+
+                <InputFile id="attachmentFilePicker" OnChange="UploadFiles" hidden multiple/>
+
+                <MudButton HtmlTag="label"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Filled.CloudUpload"
+                           for="attachmentFilePicker">
+                    Upload new attachment(s)
+                </MudButton>
+            </MudCardContent>
+        </MudCard>
+    </MudItem>
     <ValidationSummary></ValidationSummary>
 </MudGrid>
 
@@ -259,7 +296,7 @@
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForNonMembers(string searchString)
     {
         var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, false));
-        
+
         return response.Counterparties;
     }
 
@@ -294,5 +331,34 @@
         SetFunc = value => value?.Name,
         GetFunc = text => new AutocompleteCounterparty(text, null)
     };
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        var entries = e.GetMultipleFiles();
+        foreach (var file in entries)
+        {
+            var trustedFileNameForFileStorage = Path.GetRandomFileName();
+            var directory = Path.Combine(Environment.ContentRootPath,
+                Environment.EnvironmentName, "unsafe_uploads");
+            Directory.CreateDirectory(directory);
+            var path = Path.Combine(directory, trustedFileNameForFileStorage);
+
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fs);
+            var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
+            Transaction.TransactionAttachments.Add(transaction);
+        }
+
+
+    }
+
+
+    private async Task Download(string attachmentFileName)
+    {
+        var attachment = await mediator.Send(new GetAttachmentCommand(Transaction.Id, attachmentFileName));
+        var fileStream = new MemoryStream(attachment.Bytes);
+        using var streamRef = new DotNetStreamReference(fileStream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", attachment.Name, streamRef); // THIS FEELS SOOOO DIRTY
+    }
 
 }
