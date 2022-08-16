@@ -1,0 +1,116 @@
+@page "/bankaccounts"
+@attribute [Authorize]
+
+@using Queries.BankAccounts
+
+@inject IMediator _mediator
+
+<MudTable Dense="true"
+          Class="mt-10"
+          Hover="true"
+          @ref="table"
+          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetail>>>(ServerReload))">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Bankaccounts</MudText>
+        <MudSpacer />
+        <MudTextField Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="mt-0"
+                      IconSize="Size.Medium"
+                      Placeholder="Search"
+                      T="string"
+                      ValueChanged="@(s => OnSearch(s))">
+        </MudTextField>
+        <MudSpacer />
+        <MudButton Class="ma-2"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Link="/bankaccounts/new"
+                   Size="Size.Small"
+                   Variant="Variant.Filled">
+            Add bankaccount
+        </MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T="BankAccountDetail">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="accountNumber"
+                               T="BankAccountDetail">
+                Accountnumber
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            Action
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.AccountNumber</MudTd>
+        <MudTd>
+            <MudGrid >
+                <MudItem xs="6">
+                    <MudTooltip Text="Edit">
+                        <MudIconButton aria-label="edit"
+                                       Icon="@Icons.Material.Filled.Edit"
+                                       Link="@($"/bankaccounts/{@context.Id}/edit")">
+                        </MudIconButton>
+
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<BankAccountDetail>? table;
+    private string searchString = "";
+    private bool _isBusy = false;
+
+    private async Task<TableData<BankAccountDetail>> ServerReload(TableState state)
+    {
+    // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
+        if (_isBusy)
+            return new TableData<BankAccountDetail>();
+
+        _isBusy = true;
+
+        BankAccountDetailOrderOption orderBy = state.SortLabel switch
+        {
+            "name" => BankAccountDetailOrderOption.Name,
+            "accountNumber" => BankAccountDetailOrderOption.AccountNumber,
+            _ => BankAccountDetailOrderOption.Name
+        };
+        var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
+        var query = new SearchBankAccountsQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
+        var data = await _mediator.Send(query);
+
+        _isBusy = false;
+        return new TableData<BankAccountDetail>()
+        {
+            TotalItems = data.Total,
+            Items = data.Items
+        };
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table?.ReloadServerData();
+    }
+
+}
