@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using MudBlazor;
 using MudBlazor.Services;
 
+using Persistence.Configuration;
 using Persistence.Extensions;
 using Persistence.Repositories;
 

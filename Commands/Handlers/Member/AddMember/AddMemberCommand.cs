@@ -1,10 +1,8 @@
 ﻿using FluentValidation;
 
-using MediatR;
-
 using Types;
 
-namespace Commands;
+namespace Commands.Handlers.Member.AddMember;
 
 public record AddMemberCommand(
     string FirstName,

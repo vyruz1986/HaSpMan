@@ -1,8 +1,6 @@
 using FluentValidation;
 
-using MediatR;
-
-namespace Commands.Handlers.BankAccount;
+namespace Commands.Handlers.BankAccount.AddBankAccount;
 
 public record AddBankAccountCommand(
     string Name,

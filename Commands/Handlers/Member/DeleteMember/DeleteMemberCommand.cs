@@ -1,11 +1,6 @@
-﻿
-using Commands.Extensions;
+﻿using Domain.Interfaces;
 
-using Domain.Interfaces;
-
-using MediatR;
-
-namespace Commands;
+namespace Commands.Handlers.Member.DeleteMember;
 
 public record DeleteMemberCommand(Guid Id) : IRequest;
 
