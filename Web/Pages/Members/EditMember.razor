@@ -1,46 +1,31 @@
 @page "/members/{MemberId:guid}/edit"
+
 @attribute [Authorize]
 
-@using Commands
 @using Commands.Handlers.Member.EditMember
-@using MediatR
-@using AutoMapper
-@using Queries.Members.Handlers
 @using Queries.Members.Handlers.GetMemberById
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-<h1 class="my-6">Edit member</h1>
+<h1>Edit member</h1>
 
-<EditForm Model="@member"
-          OnInvalidSubmit="@ShowError"
-          OnValidSubmit="@SubmitMember">
+<EditForm Model="@member" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator />
 
     <MemberForm Member="@member" />
 
-    <MudItem Class="d-flex flex-row justify-start"
-             xs="12">
-        <MudButton ButtonType="ButtonType.Submit"
-                   Class="mt-8"
-                   Color="Color.Primary"
-                   DisableElevation="true"
-                   Size="Size.Large"
-                   Variant="Variant.Filled">
-            Save member
-        </MudButton>
+    <MudItem xs="12" Class="d-flex justify-start">
+        <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
+            ButtonType="ButtonType.Submit">Save member</MudButton>
     </MudItem>
 </EditForm>
 
 @code {
-
     [Parameter]
     public Guid MemberId { get; set; }
-
     public Models.MemberForm member = new();
-
     protected override async Task OnInitializedAsync()
     {
         var query = new GetMemberByIdQuery(MemberId);
@@ -51,32 +36,30 @@
     private async Task SubmitMember()
     {
         var command = new EditMemberCommand(
-            Id: MemberId,
-            FirstName: member.FirstName!,
-            LastName: member.LastName!,
-            Address: new(
-                Street: member.Street!,
-                City: member.City!,
-                Country: member.Country!,
-                ZipCode: member.ZipCode!,
-                HouseNumber: member.HouseNumber!
-                ),
-            Email: member.Email!,
-            PhoneNumber: member.PhoneNumber!,
-            MembershipFee: member.MembershipFee,
-            MembershipExpiryDate: member.MembershipExpiryDate == null ? null : new
-                DateTimeOffset(member.MembershipExpiryDate!.Value)
-            );
+        Id: MemberId,
+        FirstName: member.FirstName!,
+        LastName: member.LastName!,
+        Address: new (
+        Street: member.Street!,
+        City: member.City!,
+        Country: member.Country!,
+        ZipCode: member.ZipCode!,
+        HouseNumber: member.HouseNumber!
+        ),
+        Email: member.Email!,
+        PhoneNumber: member.PhoneNumber!,
+        MembershipFee: member.MembershipFee,
+        MembershipExpiryDate: member.MembershipExpiryDate == null ? (DateTimeOffset?)null : new
+        DateTimeOffset(member.MembershipExpiryDate!.Value)
+        );
         var response = await _mediator.Send(command);
         Snackbar.Clear();
         Snackbar.Add($"Member {member.FirstName} {member.LastName} edited successfully!", Severity.Success);
         NavManager.NavigateTo("/members");
     }
-
     private void ShowError()
     {
         Snackbar.Clear();
         Snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
-
 }
