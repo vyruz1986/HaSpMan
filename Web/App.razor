@@ -17,7 +17,13 @@
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
+                <div class="d-grid place-items-center expand">
+                    <img class=" expand mw-7" src="images/404.jpg"
+                         alt="Sorry, there's nothing at this address." />
+                    <MudText Typo="Typo.body2">
+                        <a href="https://www.freepik.com/vectors/disconnect">Disconnect vector created by jcomp - www.freepik.com</a>
+                    </MudText>
+                </div>
             </LayoutView>
         </NotFound>
     </Router>

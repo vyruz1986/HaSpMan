@@ -10,65 +10,96 @@
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))" Dense="true" Hover="true"
-   @ref="table">
-   <ToolBarContent>
-      <MudText Typo="Typo.h6">Members</MudText>
-      <MudSpacer />
-      <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-         AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-      <MudSpacer />
-      <MudButton Link="/members/new" Color="Color.Primary" DisableElevation="true" Variant="Variant.Filled"
-         Size="Size.Small" Class="ma-2">Add member</MudButton>
-   </ToolBarContent>
-   <HeaderContent>
-      <MudTh>
-         <MudTableSortLabel SortLabel="name" T="MemberSummary">Name</MudTableSortLabel>
-      </MudTh>
-      <MudTh>
-         <MudTableSortLabel SortLabel="address" T="MemberSummary">Address</MudTableSortLabel>
-      </MudTh>
-      <MudTh>
-         <MudTableSortLabel SortLabel="email" T="MemberSummary">Email</MudTableSortLabel>
-      </MudTh>
-      <MudTh>
-         <MudTableSortLabel SortLabel="phoneNumber" T="MemberSummary">Phone</MudTableSortLabel>
-      </MudTh>
-      <MudTh>
-         Action
-      </MudTh>
-   </HeaderContent>
-   <RowTemplate>
-      <MudTd DataLabel="Name">@context.Name</MudTd>
-      <MudTd DataLabel="Address">@context.Address</MudTd>
-      <MudTd DataLabel="Email">@context.Email</MudTd>
-      <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
-      <MudTd>
-          <MudGrid >
-              <MudItem xs="6">
-                  <MudTooltip Text="Edit">
-                    <MudIconButton Link="@($"/members/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
-                   aria-label="edit"></MudIconButton>
-               
-                 </MudTooltip>
-             </MudItem>
-             <MudItem xs="6">
-                <MudTooltip Text="Delete">
-                    <MudIconButton OnClick="@((e) => OpenDeleteMemberDialog(context))" Icon="@Icons.Material.Filled.Delete" aria-label="edit" />
-                </MudTooltip>
-             </MudItem>
-         </MudGrid>
-      </MudTd>
-   </RowTemplate>
-   <NoRecordsContent>
-      <MudText>No matching records found</MudText>
-   </NoRecordsContent>
-   <LoadingContent>
-      <MudText>Loading...</MudText>
-   </LoadingContent>
-   <PagerContent>
-      <MudTablePager />
-   </PagerContent>
+<MudTable Class="mt-10"
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Members</MudText>
+        <MudSpacer />
+        <MudTextField Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="mt-0"
+                      IconSize="Size.Medium"
+                      Placeholder="Search"
+                      T="string"
+                      ValueChanged="@(s => OnSearch(s))">
+        </MudTextField>
+        <MudSpacer />
+        <MudButton Class="ma-2"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Link="/members/new"
+                   Size="Size.Small"
+                   Variant="Variant.Filled">
+            Add member
+        </MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel SortLabel="name"
+                               T="MemberSummary">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="address"
+                               T="MemberSummary">
+                Address
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="email"
+                               T="MemberSummary">
+                Email
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            <MudTableSortLabel SortLabel="phoneNumber"
+                               T="MemberSummary">
+                Phone
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            Action
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Address">@context.Address</MudTd>
+        <MudTd DataLabel="Email">@context.Email</MudTd>
+        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd>
+            <MudGrid >
+                <MudItem xs="6">
+                    <MudTooltip Text="Edit">
+                        <MudIconButton aria-label="edit"
+                                       Icon="@Icons.Material.Filled.Edit"
+                                       Link="@($"/members/{@context.Id}/edit")">
+                        </MudIconButton>
+
+                    </MudTooltip>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudTooltip Text="Delete">
+                        <MudIconButton aria-label="edit"
+                                       Icon="@Icons.Material.Filled.Delete"
+                                       OnClick="@((e) => OpenDeleteMemberDialog(context))" />
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
 </MudTable>
 
 @code {
@@ -78,7 +109,7 @@
 
     private async Task<TableData<MemberSummary>> ServerReload(TableState state)
     {
-        // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
+    // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
         if (_isBusy)
             return new TableData<MemberSummary>();
 
@@ -98,10 +129,10 @@
 
         _isBusy = false;
         return new TableData<MemberSummary>()
-      {
-         TotalItems = data.Total,
-         Items = data.Items
-      };
+        {
+            TotalItems = data.Total,
+            Items = data.Items
+        };
     }
 
     private void OnSearch(string text)
@@ -114,9 +145,9 @@
     {
         var options = new DialogOptions { };
         var parameters = new DialogParameters()
-            {
-                ["member"] = member
-            };
+        {
+            ["member"] = member
+        };
         var reference = DialogService.Show<DeleteMemberDialog>($"Remove member", parameters, options);
         var dialog = await reference.Result;
         if (!dialog.Cancelled)
