@@ -14,15 +14,20 @@
         <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
     </DialogActions>
 </MudDialog>
-@code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public MemberSummary Member { get; set; } = null!;
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public MemberSummary Member { get; set; } = null!;
 
     private void Submit()
     {
         _mediatr.Send(new DeleteMemberCommand(Member.Id));
         MudDialog.Close(true);
     }
+
     void Cancel() => MudDialog.Cancel();
 }

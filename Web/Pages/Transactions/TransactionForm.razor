@@ -15,206 +15,238 @@
 @inject IMediator mediator;
 
 @inject IJSRuntime JS;
-<MudGrid>
-    <MudItem xs="12">
-
-        <MudCard>
-            <MudCardHeader>
-                <MudText Typo="Typo.h5">Type</MudText>
-            </MudCardHeader>
-            <MudCardContent>
-                @if (IsNew)
-                {
-                    <MudGrid>
-                        <MudItem xs="6">
-                            <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
-                                @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
-                                    {
-                                    <MudRadio Option="transactionTypeGroup">@transactionTypeGroup.GetDescription()</MudRadio>
-
-                                    }
-                            </MudRadioGroup>
-
-                        </MudItem>
-                    </MudGrid>
-                }
-                else
-                {
-                    @TransactionTypeGroup.GetDescription()
-                }
-
-            </MudCardContent>
-
-        </MudCard>
-    </MudItem>
-    <MudItem xs="12">
-            <MudCard>
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5">Involved parties</MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid Justify="Justify.SpaceBetween" Spacing="2">
-                        <MudItem xs="2">
-                            <MudRadioGroup 
-                                @bind-SelectedOption="IsSearchForMembership" >
-                                <MudRadio Option="false">Non-members</MudRadio>
-                                <MudRadio Option="true">Members</MudRadio>
-                            </MudRadioGroup>
-                        </MudItem>
-                        <MudItem xs="3">
-                            @if (IsSearchForMembership)
+<MudGrid Spacing="5" Class="mw-9">
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Type</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            @if (IsNew)
+            {
+                <MudGrid>
+                    <MudItem xs="6">
+                        <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+                            @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
                             {
-                                <MudAutocomplete T="AutocompleteCounterparty"
-                                                 Label="Members"
-                                                 @bind-Value="Transaction.Counterparty"
-                                                 SearchFunc="SearchForMembers"
-                                                 Variant="Variant.Outlined"
-                                                 ToStringFunc="ac => ac?.Name"></MudAutocomplete>
+                                <MudRadio Option="transactionTypeGroup">@transactionTypeGroup.GetDescription()</MudRadio>
                             }
-                            else
-                            {
-                                <MudAutocomplete T="AutocompleteCounterparty"
-                                                 Label="Non members"
-                                                 @bind-Value="Transaction.Counterparty"
-                                                 SearchFunc="SearchForNonMembers"
-                                                 Variant="Variant.Outlined"
-                                                 CoerceValue="true"
-                                                 CoerceText="true"
-                                                 Converter="@counterPartyConverter"
-                                                 ToStringFunc="ac => ac?.Name"></MudAutocomplete>
-                            }
+                        </MudRadioGroup>
 
-                        </MudItem>
+                    </MudItem>
+                </MudGrid>
+            }
+            else
+            {
+                @TransactionTypeGroup.GetDescription()
+            }
 
-                        <MudItem xs="1">
-                            @if (TransactionTypeGroup == TransactionTypeGroup.Debit)
-                            {
-                                <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowForward"></MudIcon>
+        </MudCardContent>
 
-                            }
-                            else if (TransactionTypeGroup == TransactionTypeGroup.Credit)
-                            {
+    </MudCard>
+</MudItem>
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Involved parties</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Justify="Justify.SpaceBetween">
+                <MudItem xs="3">
+                    <MudRadioGroup @bind-SelectedOption="IsSearchForMembership">
+                        <MudRadio Option="false">Non-members</MudRadio>
+                        <MudRadio Option="true">Members</MudRadio>
+                    </MudRadioGroup>
+                </MudItem>
+                <MudItem xs="3">
+                    @if (IsSearchForMembership)
+                    {
+                        <MudAutocomplete @bind-Value="Transaction.Counterparty"
+                                         Label="Members"
+                                         SearchFunc="SearchForMembers"
+                                         T="AutocompleteCounterparty"
+                                         ToStringFunc="ac => ac?.Name"
+                                         Variant="Variant.Outlined">
+                        </MudAutocomplete>
+                    }
+                    else
+                    {
+                        <MudAutocomplete @bind-Value="Transaction.Counterparty"
+                                         CoerceText="true"
+                                         CoerceValue="true"
+                                         Converter="@counterPartyConverter"
+                                         Label="Non members"
+                                         SearchFunc="SearchForNonMembers"
+                                         T="AutocompleteCounterparty"
+                                         ToStringFunc="ac => ac?.Name"
+                                         Variant="Variant.Outlined">
+                        </MudAutocomplete>
+                    }
 
-                                <MudIcon Class="mt-4" Icon="@Icons.Filled.ArrowBack"></MudIcon>
-                            }
-                            else
-                            {
+                </MudItem>
 
-                                <MudIcon Class="mt-4" Icon="@Icons.Filled.Block"></MudIcon>
-                            }
-                        </MudItem>
-                        <MudItem xs="2">
-                            <MudSelect Label="Select bank account" Variant="Variant.Outlined" @bind-Value="Transaction.BankAccountId">
-                                @foreach (var item in _bankAccounts)
-                                {
-                                    <MudSelectItem Value="@item?.Id">@item?.Name</MudSelectItem>
-                                }
-                            </MudSelect>
-
-                        </MudItem>
-                        <MudItem xs="2">
-                            @{
-                                if (!_bankAccounts.Any())
-                                {
-                                    <MudButton Class="mt-4" @onclick="OpenAddBankAccountDialog" Variant="Variant.Filled" Color="Color.Primary">Add bank account</MudButton>
-                                }
-                            }
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12">
-            <MudCard>
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5">
-                        Transaction
-                    </MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid Justify="Justify.FlexStart">
-                        <MudItem xs="12">
-                            <MudTextField T="string" Label="Description" 
-                                          @bind-Text="Transaction.Description" 
-                                          For="(() => Transaction.Description)" />
-                        </MudItem>
-                        <MudItem xs="12" sm="6" md="4">
-                            <MudDatePicker @ref="_picker" Label="Transaction date" @bind-Date="Transaction.ReceivedDateTime"
-                                           AutoClose="true" MaxDate="DateTime.Now">
-                                <PickerActions>
-                                    <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-                                </PickerActions>
-                            </MudDatePicker>
-                        </MudItem>
-                    </MudGrid>
-                </MudCardContent>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12">
-            <MudCard>
-                <MudCardHeader>
-                    <MudText Typo="Typo.h5">Amount</MudText>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudGrid>
-                        @foreach (var transactionType in Transaction.TransactionTypeAmounts)
+                <MudItem xs="1">
+                    @if (TransactionTypeGroup == TransactionTypeGroup.Debit)
+                    {
+                        <MudIcon Class="mt-4"
+                                 Icon="@Icons.Filled.ArrowForward">
+                        </MudIcon>
+                    }
+                    else if (TransactionTypeGroup == TransactionTypeGroup.Credit)
+                    {
+                        <MudIcon Class="mt-4"
+                                 Icon="@Icons.Filled.ArrowBack">
+                        </MudIcon>
+                    }
+                    else
+                    {
+                        <MudIcon Class="mt-4"
+                                 Icon="@Icons.Filled.Block">
+                        </MudIcon>
+                    }
+                </MudItem>
+                <MudItem xs="3">
+                    <MudSelect @bind-Value="Transaction.BankAccountId"
+                               Label="Select bank account"
+                               Variant="Variant.Outlined">
+                        @foreach (var item in _bankAccounts)
                         {
-                            <MudItem xs="6">
-                                <MudNumericField T="decimal" Label="Bedrag (€)"
-                                                 @bind-Value="transactionType.Amount" Min="0"></MudNumericField>
-                            </MudItem>
-
-                            <MudItem xs="6">
-                            <MudSelect Label="Selecteer transactie type" Variant="Variant.Outlined" @bind-Value="transactionType.TransactionType">
-                                @foreach (var item in _transactionTypes)
-                                    {
-                                    <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
-                                    }
-                            </MudSelect>
-
-                        </MudItem>
+                            <MudSelectItem Value="@item?.Id">@item?.Name</MudSelectItem>
                         }
-                    </MudGrid>
-                    <MudDivider Class="my-2"></MudDivider>
-                    <MudText>Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
-                    This value should match the total amount of the transaction</MudText>
-                </MudCardContent>
-            </MudCard>
+                    </MudSelect>
 
-        </MudItem>
-    <MudItem xs="12">
-        <MudCard>
+                </MudItem>
+                <MudItem xs="3">
+                    @{
+                        if (!_bankAccounts.Any())
+                        {
+                            <MudButton Class="mt-4"
+                                       Color="Color.Primary"
+                                       @onclick="OpenAddBankAccountDialog"
+                                       Variant="Variant.Filled">
+                                Add bank account
+                            </MudButton>
+                        }
+                    }
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+</MudItem>
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">
+                Transaction
+            </MudText>
+        </MudCardHeader>
+        <MudCardContent Class="pb-8">
+            <MudGrid Justify="Justify.FlexStart">
+                <MudItem xs="12">
+                    <MudTextField @bind-Text="Transaction.Description"
+                                  For="(() => Transaction.Description)"
+                                  Label="Description"
+                                  T="string" />
+                </MudItem>
+                <MudItem md="4"
+                         sm="6"
+                         xs="12">
+                    <MudDatePicker AutoClose="true"
+                                   @bind-Date="Transaction.ReceivedDateTime"
+                                   DateFormat="dd/MM/yyyy"
+                                   Editable="true"
+                                   Label="Transaction date"
+                                   Mask="@(new DateMask("dd/MM/yyyy"))"
+                                   MaxDate="DateTime.Now"
+                                   @ref="_picker">
+                        <PickerActions>
+                            <MudButton Class="mr-auto align-self-start"
+                                       OnClick="@(() => _picker.Clear())">
+                                Clear
+                            </MudButton>
+                        </PickerActions>
+                    </MudDatePicker>
+                </MudItem>
+            </MudGrid>
+        </MudCardContent>
+    </MudCard>
+</MudItem>
+<MudItem xs="12">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">Amount</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudGrid Spacing="6">
+                @foreach (var transactionType in Transaction.TransactionTypeAmounts)
+                {
+                    <MudItem xs="5">
+                        <MudNumericField @bind-Value="transactionType.Amount"
+                                         Label="Bedrag (€)"
+                                         Min="0"
+                                         T="decimal">
+                        </MudNumericField>
+                    </MudItem>
+
+                    <MudItem xs="7">
+                        <MudSelect @bind-Value="transactionType.TransactionType"
+                                   Label="Selecteer transactie type"
+                                   Variant="Variant.Outlined">
+                            @foreach (var item in _transactionTypes)
+                            {
+                                <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+            </MudGrid>
+            <MudDivider Class="mb-4 mt-6" />
+            <MudText>
+                Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
+                This value should match the total amount of the transaction
+            </MudText>
+        </MudCardContent>
+    </MudCard>
+
+</MudItem>
+<MudItem xs="12">
+    <MudCard>
         <MudList Clickable="true">
             <MudListSubheader>
                 Attachments
             </MudListSubheader>
             @foreach (var attachment in Transaction.TransactionAttachments)
             {
-                <MudListItem Icon="@Icons.Outlined.Save" OnClick="(() => Download(attachment.FileName))">@attachment.FileName
+                <MudListItem Icon="@Icons.Outlined.Save"
+                             OnClick="(() => Download(attachment.FileName))">
+                    @attachment.FileName
 
                 </MudListItem>
             }
         </MudList>
-        </MudCard>
-        <MudCard>
-            <MudCardHeader>
-                <MudText Type="Typo.h5">Attachments</MudText>
-            </MudCardHeader>
-            <MudCardContent>
+    </MudCard>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Type="Typo.h5">Attachments</MudText>
+        </MudCardHeader>
+        <MudCardContent>
 
-                <InputFile id="attachmentFilePicker" OnChange="UploadFiles" hidden multiple/>
+            <InputFile hidden
+                       id="attachmentFilePicker"
+                       multiple
+                       OnChange="UploadFiles" />
 
-                <MudButton HtmlTag="label"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           StartIcon="@Icons.Filled.CloudUpload"
-                           for="attachmentFilePicker">
-                    Upload new attachment(s)
-                </MudButton>
-            </MudCardContent>
-        </MudCard>
-    </MudItem>
-    <ValidationSummary></ValidationSummary>
+            <MudButton Color="Color.Primary"
+                       for="attachmentFilePicker"
+                       HtmlTag="label"
+                       StartIcon="@Icons.Filled.CloudUpload"
+                       Variant="Variant.Filled">
+                Upload new attachment(s)
+            </MudButton>
+        </MudCardContent>
+    </MudCard>
+</MudItem>
+<ValidationSummary></ValidationSummary>
 </MudGrid>
 
 @code {
@@ -236,8 +268,10 @@
     }
 
     private TransactionTypeGroup _transactionTypeGroup;
+
     [Parameter]
-    public TransactionTypeGroup TransactionTypeGroup {
+    public TransactionTypeGroup TransactionTypeGroup
+    {
         get => _transactionTypeGroup;
         set
         {
@@ -278,17 +312,14 @@
             TransactionType.CreditBankCosts,
             TransactionType.CreditFixedCosts,
             TransactionType.InternalBank
-
         }.OrderBy(x => x.GetDescription()).ToList();
     }
-
 
 
     MudDatePicker _picker = new();
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
-
         var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, true));
         return response.Counterparties;
     }
@@ -348,8 +379,6 @@
             var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
             Transaction.TransactionAttachments.Add(transaction);
         }
-
-
     }
 
     private async Task Download(string attachmentFileName)

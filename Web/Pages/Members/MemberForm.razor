@@ -1,51 +1,93 @@
-<MudGrid>
-    <MudItem xs="6">
-        <MudTextField T="string" Label="First name" @bind-Value="Member.FirstName" For="@(() => Member.FirstName)" />
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField T="string" Label="Last name" @bind-Value="Member.LastName" For="@(() => Member.LastName)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Email" @bind-Value="Member.Email" For="@(() => Member.Email)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Phone number" @bind-Value="Member.PhoneNumber"
-            For="@(() => Member.PhoneNumber)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Street" @bind-Value="Member.Street" For="@(() => Member.Street)" />
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField T="string" Label="House number" @bind-Value="Member.HouseNumber"
-            For="@(() => Member.HouseNumber)" />
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField T="string" Label="Postal code" @bind-Value="Member.ZipCode" For="@(() => Member.ZipCode)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="City" @bind-Value="Member.City" For="@(() => Member.City)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Country" @bind-Value="Member.Country" For="@(() => Member.Country)" />
-    </MudItem>
-    <MudItem xs="12" sm="6" md="4">
-        <MudDatePicker @ref="_picker" Label="Membership expiration date" @bind-Date="Member.MembershipExpiryDate"
-            AutoClose="true">
-            <PickerActions>
-                <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Clear())">Clear</MudButton>
-            </PickerActions>
-        </MudDatePicker>
-    </MudItem>
-    <MudItem xs="12" sm="6">
-        <ErrorBoundary>
-            <MudNumericField Label="Monthly membership fee" @bind-Value="Member.MembershipFee" Format="F2" Min="0" Max="500"
-                Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.EuroSymbol"
-                For="@(() => Member.MembershipFee)" />
-        </ErrorBoundary>
-    </MudItem>
-</MudGrid>
+<div class="d-flex flex-column justify-start align-start mw-5">
+    <MudCard class="mb-8 mt-2 pb-3 expand">
+        <MudCardHeader class="pb-0">
+            <MudText Typo="Typo.h5">Personal info</MudText>
+        </MudCardHeader>
+        <MudCardContent Class="d-flex flex-column gap-4 expand">
+            <MudTextField @bind-Value="Member.FirstName"
+                          For="@(() => Member.FirstName)"
+                          Label="First name"
+                          T="string" />
+            <MudTextField @bind-Value="Member.LastName"
+                          For="@(() => Member.LastName)"
+                          Label="Last name"
+                          T="string" />
+            <MudTextField @bind-Value="Member.Email"
+                          For="@(() => Member.Email)"
+                          Label="Email"
+                          T="string" />
+            <MudTextField @bind-Value="Member.PhoneNumber"
+                          For="@(() => Member.PhoneNumber)"
+                          Label="Phone number"
+                          T="string" />
+        </MudCardContent>
+    </MudCard>
+
+    <MudCard class="my-8 pb-3 expand">
+        <MudCardHeader class="pb-0">
+            <MudText Typo="Typo.h5">Address</MudText>
+        </MudCardHeader>
+        <MudCardContent Class="d-flex flex-column gap-4 expand">
+            <MudTextField @bind-Value="Member.Street"
+                          For="@(() => Member.Street)"
+                          Label="Street"
+                          T="string" />
+            <MudTextField @bind-Value="Member.HouseNumber"
+                          For="@(() => Member.HouseNumber)"
+                          Label="House number"
+                          T="string" />
+            <MudTextField @bind-Value="Member.ZipCode"
+                          For="@(() => Member.ZipCode)"
+                          Label="Postal code"
+                          T="string" />
+            <MudTextField @bind-Value="Member.City"
+                          For="@(() => Member.City)"
+                          Label="City"
+                          T="string" />
+            <MudTextField @bind-Value="Member.Country"
+                          For="@(() => Member.Country)"
+                          Label="Country"
+                          T="string" />
+        </MudCardContent>
+    </MudCard>
+
+    <MudCard class="my-8 pb-3 expand">
+        <MudCardHeader class="pb-0">
+            <MudText Typo="Typo.h5">Membership</MudText>
+        </MudCardHeader>
+        <MudCardContent Class="d-flex flex-column gap-4 expand">
+            <MudDatePicker AutoClose="true"
+                           @bind-Date="Member.MembershipExpiryDate"
+                           DateFormat="dd/MM/yyyy"
+                           Editable="true"
+                           Label="Membership expiration date"
+                           Mask="@(new DateMask("dd/MM/yyyy"))"
+                           @ref="_picker">
+                <PickerActions>
+                    <MudButton Class="mr-auto align-self-start"
+                               OnClick="@(() => _picker.Clear())">
+                        Clear
+                    </MudButton>
+                </PickerActions>
+            </MudDatePicker>
+
+            <ErrorBoundary>
+                <MudNumericField Adornment="Adornment.Start"
+                                 AdornmentIcon="@Icons.Material.Filled.EuroSymbol"
+                                 @bind-Value="Member.MembershipFee"
+                                 For="@(() => Member.MembershipFee)"
+                                 Format="F2"
+                                 Label="Monthly membership fee"
+                                 Max="500"
+                                 Min="0" />
+            </ErrorBoundary>
+        </MudCardContent>
+    </MudCard>
+
+</div>
 
 @code {
+
     [Parameter]
     public Models.MemberForm Member { get; set; } = new();
 
