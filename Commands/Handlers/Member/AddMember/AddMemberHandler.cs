@@ -1,14 +1,9 @@
-using AutoMapper;
-
 using Commands.Extensions;
 using Commands.Services;
 
-using Domain;
 using Domain.Interfaces;
 
-using MediatR;
-
-namespace Commands.Handlers;
+namespace Commands.Handlers.Member.AddMember;
 
 public class AddMemberHandler : IRequestHandler<AddMemberCommand, Guid>
 {
@@ -25,7 +20,7 @@ public class AddMemberHandler : IRequestHandler<AddMemberCommand, Guid>
 
     public async Task<Guid> Handle(AddMemberCommand request, CancellationToken cancellationToken)
     {
-        var newMember = new Member(
+        var newMember = new Domain.Member(
             firstName: request.FirstName,
             lastName: request.LastName,
             address: request.Address,

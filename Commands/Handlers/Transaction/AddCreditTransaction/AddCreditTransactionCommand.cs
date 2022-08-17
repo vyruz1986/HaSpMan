@@ -5,8 +5,6 @@ using Domain;
 
 using FluentValidation;
 
-using MediatR;
-
 namespace Commands.Handlers.Transaction.AddCreditTransaction;
 
 public record AddCreditTransactionCommand(

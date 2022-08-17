@@ -1,10 +1,9 @@
 using FluentValidation;
 
-using MediatR;
-
 using Types;
 
-namespace Commands;
+namespace Commands.Handlers.Member.EditMember;
+
 public record EditMemberCommand(
        Guid Id,
        string FirstName,

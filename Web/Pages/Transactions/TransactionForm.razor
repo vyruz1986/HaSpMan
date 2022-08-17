@@ -4,7 +4,7 @@
 @using Queries.Members.Handlers.GetBankAccountInfos
 @using Queries.Members.Handlers.SearchMembers
 @using Web.Models
-@using Commands.Handlers.BankAccount
+@using Commands.Handlers.BankAccount.AddBankAccount
 @using Commands.Handlers.Transaction.GetAttachment
 @using LinqKit
 
@@ -381,10 +381,9 @@
         }
     }
 
-
     private async Task Download(string attachmentFileName)
     {
-        var attachment = await mediator.Send(new GetAttachmentCommand(Transaction.Id, attachmentFileName));
+        var attachment = await mediator.Send(new GetAttachmentQuery(Transaction.Id, attachmentFileName));
         var fileStream = new MemoryStream(attachment.Bytes);
         using var streamRef = new DotNetStreamReference(fileStream);
         await JS.InvokeVoidAsync("downloadFileFromStream", attachment.Name, streamRef); // THIS FEELS SOOOO DIRTY

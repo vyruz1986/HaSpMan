@@ -3,7 +3,7 @@ using Commands.Services;
 
 using Domain.Interfaces;
 
-namespace Commands.Handlers.BankAccount;
+namespace Commands.Handlers.BankAccount.AddBankAccount;
 
 public class AddBankAccountHandler : IRequestHandler<AddBankAccountCommand, Guid>
 {

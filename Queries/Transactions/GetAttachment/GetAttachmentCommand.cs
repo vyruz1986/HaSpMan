@@ -1,33 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Commands.Services;
-
-using FluentValidation;
-
-using MediatR;
+﻿using Domain.Interfaces;
 
 using Persistence.Repositories;
 
+using Types;
+
 namespace Commands.Handlers.Transaction.GetAttachment;
 
-public record GetAttachmentCommand(Guid TransactionId, string FileName) : IRequest<Attachment>;
+public record GetAttachmentQuery(Guid TransactionId, string FileName) : IRequest<Attachment>;
 
-public class GetAttachmentCommandValidator : AbstractValidator<GetAttachmentCommand>
-{
-    public GetAttachmentCommandValidator()
-    {
-        RuleFor(x => x.FileName).NotEmpty();
-        RuleFor(x => x.TransactionId).NotEmpty();
-
-    }
-        
-}
-
-public class GetAttachmentHandler : IRequestHandler<GetAttachmentCommand, Attachment>
+public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachment>
 {
     private readonly ITransactionRepository _transactionRepository;
     private readonly IAttachmentStorage _attachmentStorage;
@@ -37,7 +18,7 @@ public class GetAttachmentHandler : IRequestHandler<GetAttachmentCommand, Attach
         _transactionRepository = transactionRepository;
         _attachmentStorage = attachmentStorage;
     }
-    public async Task<Attachment> Handle(GetAttachmentCommand request, CancellationToken cancellationToken)
+    public async Task<Attachment> Handle(GetAttachmentQuery request, CancellationToken cancellationToken)
     {
         
         var transactionId = request.TransactionId;
@@ -54,8 +35,6 @@ public class GetAttachmentHandler : IRequestHandler<GetAttachmentCommand, Attach
         }
 
         var file = await _attachmentStorage.GetAsync(attachment.FullPath, cancellationToken);
-        return file;
-        
-
+        return file;        
     }
 }

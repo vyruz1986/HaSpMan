@@ -1,7 +1,7 @@
 @page "/bankaccounts/{BankAccountId:guid}/edit"
 @attribute [Authorize]
-@using Commands.Handlers.BankAccount
-@using Commands.EditBankAccount;
+@using Commands.Handlers.BankAccount.AddBankAccount
+@using Commands.Handlers.BankAccount.EditBankAccount;
 @using Queries.BankAccounts
 @inject IMediator _mediator
 @inject IMapper _mapper

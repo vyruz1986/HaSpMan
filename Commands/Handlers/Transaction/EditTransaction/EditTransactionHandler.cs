@@ -1,10 +1,4 @@
-﻿using AutoMapper;
-
-using Commands.Handlers.Transaction.AddAttachments;
-
-using Domain;
-
-using MediatR;
+﻿using Commands.Handlers.Transaction.AddAttachments;
 
 using Persistence.Repositories;
 

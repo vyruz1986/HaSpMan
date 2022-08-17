@@ -1,6 +1,13 @@
 using FluentValidation;
 
-namespace Commands.EditBankAccount;
+namespace Commands.Handlers.BankAccount.EditBankAccount;
+
+public record EditBankAccountCommand(
+       Guid Id,
+       string Name,
+       string AccountNumber
+    ) : IRequest<Guid>;
+
 
 public class EditBankAccountValidator : AbstractValidator<EditBankAccountCommand>
 {
@@ -16,7 +23,5 @@ public class EditBankAccountValidator : AbstractValidator<EditBankAccountCommand
             .NotEmpty()
             .MinimumLength(5)
             .MaximumLength(34);
-
-
     }
 }

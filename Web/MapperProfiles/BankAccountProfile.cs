@@ -1,6 +1,6 @@
 using AutoMapper;
 
-using Commands.Handlers.BankAccount;
+using Commands.Handlers.BankAccount.AddBankAccount;
 
 using Domain;
 
