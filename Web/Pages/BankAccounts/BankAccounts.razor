@@ -5,8 +5,8 @@
 
 @inject IMediator _mediator
 
-<MudTable Dense="true"
-          Class="mt-10"
+<MudTable Class="mt-10 mw-9"
+          Dense="true"
           Hover="true"
           @ref="table"
           ServerData="@(new Func<TableState, Task<TableData<BankAccountDetail>>>(ServerReload))">

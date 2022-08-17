@@ -1,11 +1,8 @@
 @page "/members/{MemberId:guid}/edit"
+
 @attribute [Authorize]
 
-@using Commands
 @using Commands.Handlers.Member.EditMember
-@using MediatR
-@using AutoMapper
-@using Queries.Members.Handlers
 @using Queries.Members.Handlers.GetMemberById
 @inject IMediator _mediator
 @inject IMapper _mapper
@@ -14,17 +11,14 @@
 
 <h1 class="my-6">Edit member</h1>
 
-<EditForm Model="@member"
-          OnInvalidSubmit="@ShowError"
-          OnValidSubmit="@SubmitMember">
+<EditForm Model="@member" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowError">
     <DataAnnotationsValidator />
 
     <MemberForm Member="@member" />
 
-    <MudItem Class="d-flex flex-row justify-start"
-             xs="12">
+    <MudItem Class="d-flex justify-start" xs="12">
         <MudButton ButtonType="ButtonType.Submit"
-                   Class="mt-8"
+                   Class="my-8"
                    Color="Color.Primary"
                    DisableElevation="true"
                    Size="Size.Large"
@@ -64,7 +58,7 @@
             Email: member.Email!,
             PhoneNumber: member.PhoneNumber!,
             MembershipFee: member.MembershipFee,
-            MembershipExpiryDate: member.MembershipExpiryDate == null ? null : new
+            MembershipExpiryDate: member.MembershipExpiryDate == null ? (DateTimeOffset?)null : new
                 DateTimeOffset(member.MembershipExpiryDate!.Value)
             );
         var response = await _mediator.Send(command);
@@ -78,5 +72,4 @@
         Snackbar.Clear();
         Snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
-
 }
