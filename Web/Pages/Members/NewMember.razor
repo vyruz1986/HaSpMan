@@ -13,31 +13,40 @@
 <EditForm Model="@_newMember" OnValidSubmit="@AddMember" OnInvalidSubmit="@ShowError">
    <DataAnnotationsValidator />
 
-   <MemberForm Member="@_newMember" />
+    <MemberForm Member="@_newMember" />
 
-   <MudItem xs="12" Class="d-flex justify-start">
-      <MudButton Variant="Variant.Filled" DisableElevation="true" Color="Color.Primary" Size="Size.Large" Class="mt-8"
-         ButtonType="ButtonType.Submit">Add member</MudButton>
-   </MudItem>
+    <MudItem Class="d-flex justify-start" xs="12">
+        <MudButton ButtonType="ButtonType.Submit"
+                   Class="my-8"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Size="Size.Large"
+                   Variant="Variant.Filled">
+            Add member
+        </MudButton>
+    </MudItem>
 </EditForm>
 
 @code {
+
     private Models.MemberForm _newMember = new()
     {
         Country = "Belgium"
     };
 
-   private async Task AddMember()
-   {
-      var command = _mapper.Map<AddMemberCommand>(_newMember);
-      var response = await _mediator.Send(command);
-      Snackbar.Clear();
-      Snackbar.Add($"Member {_newMember.FirstName} {_newMember.LastName} added successfully!", Severity.Success);
-      NavManager.NavigateTo("/members");
-   }
-   private void ShowError()
-   {
-      Snackbar.Clear();
-      Snackbar.Add("Please correct all errors on the form", Severity.Error);
-   }
+    private async Task AddMember()
+    {
+        var command = _mapper.Map<AddMemberCommand>(_newMember);
+        var response = await _mediator.Send(command);
+        Snackbar.Clear();
+        Snackbar.Add($"Member {_newMember.FirstName} {_newMember.LastName} added successfully!", Severity.Success);
+        NavManager.NavigateTo("/members");
+    }
+
+    private void ShowError()
+    {
+        Snackbar.Clear();
+        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+    }
+
 }
