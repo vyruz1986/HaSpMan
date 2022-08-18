@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 
 using Web.Configuration;
 
@@ -24,7 +25,7 @@ public static class AuthExtensions
             options.ClientSecret = oidcConfig.ClientSecret;
             options.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
             options.CallbackPath = new PathString("/callback");
-            options.SaveTokens = true;
+            
             options.Resource = oidcConfig.Audience;
             options.RequireHttpsMetadata = false; //TODO
             options.SaveTokens = true;
@@ -55,7 +56,13 @@ public static class AuthExtensions
             };
         });
 
-        services.AddAuthorization();
+        services.AddAuthorization(options =>
+        {
+            options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .RequireRole("Administrator")
+                .Build();
+        });
 
         return services;
     }
