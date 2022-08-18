@@ -19,5 +19,9 @@ public enum TransactionType
     [Description("Fixed costs")]
     CreditFixedCosts,
     [Description("Internal bank transfer")]
-    InternalBank
+    InternalBank,
+    [Description("Sale of consumables")]
+    DebitSaleConsumables,
+    [Description("Sale of goods and services")]
+    DebitSaleGoodsAndServices
 }
