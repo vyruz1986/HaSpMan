@@ -1,11 +1,8 @@
 using System.Linq.Expressions;
 
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 using Domain;
-
-using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -44,7 +41,6 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
             .Take(request.PageSize);
 
         var items = await memberSummaryQueryable.ToListAsync(cancellationToken: cancellationToken);
-
 
         return new Paginated<MemberSummary>
         {

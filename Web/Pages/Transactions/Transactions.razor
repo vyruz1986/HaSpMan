@@ -1,4 +1,4 @@
-﻿@page "/transactions"
+@page "/transactions"
 @attribute [Authorize]
 
 @using MediatR
@@ -13,7 +13,8 @@
           Dense="true"
           Hover="true"
           @ref="table"
-          ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))">
+          ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))"
+          Loading="@loading">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
@@ -31,7 +32,8 @@
                    DisableElevation="true"
                    Link="/transactions/new"
                    Size="Size.Small"
-                   Variant="Variant.Filled">
+                   Variant="Variant.Filled"
+                   Disabled="@loading">
             Add transaction
         </MudButton>
     </ToolBarContent>
@@ -105,15 +107,15 @@
 @code {
     private MudTable<TransactionSummary>? table;
     private string searchString = "";
-    private bool _isBusy = false;
+
+    // TODO: Keeping this local variable shouldn't be necessary 
+    // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
+    // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
+    private bool loading = true;
 
     private async Task<TableData<TransactionSummary>> ServerReload(TableState state)
     {
-    // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
-        if (_isBusy)
-            return new TableData<TransactionSummary>();
-
-        _isBusy = true;
+        loading = true;
 
         TransactionSummaryOrderOption orderBy = state.SortLabel switch
         {
@@ -126,7 +128,7 @@
         var query = new GetTransactionQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
-        _isBusy = false;
+        loading = false;
         return new TableData<TransactionSummary>()
         {
             TotalItems = data.Total,
@@ -139,5 +141,4 @@
         searchString = text;
         table?.ReloadServerData();
     }
-
 }
