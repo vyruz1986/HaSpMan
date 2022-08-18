@@ -163,7 +163,7 @@
             {
                 <MudItem xs="6">
                     <MudNumericField @bind-Value="transactionType.Amount"
-                                     Label="Bedrag (€)"
+                                     Label="Amount (€)"
                                      Min="0"
                                      T="decimal">
                     </MudNumericField>
@@ -171,7 +171,7 @@
 
                 <MudItem xs="6">
                     <MudSelect @bind-Value="transactionType.TransactionType"
-                               Label="Selecteer transactie type"
+                               Label="Select transaction type"
                                Variant="Variant.Outlined">
                         @foreach (var item in _transactionTypes)
                         {
