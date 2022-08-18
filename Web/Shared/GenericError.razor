@@ -1,0 +1,24 @@
+@inject NavigationManager navigationManager
+
+<MudContainer MaxWidth="MaxWidth.Small">
+    <div class="title">
+        <h1>
+            Something went wrong!
+        </h1>
+    </div>
+    <div class="body">
+        <MudButton OnClick="ForceReload"
+                Variant="Variant.Filled"
+                EndIcon="@Icons.Filled.Refresh"
+                Color="Color.Primary">
+            Reload application
+        </MudButton>
+    </div>
+</MudContainer>
+
+@code{
+    private void ForceReload()
+    {
+        navigationManager.NavigateTo(navigationManager.Uri, forceLoad: true);
+    }
+}
