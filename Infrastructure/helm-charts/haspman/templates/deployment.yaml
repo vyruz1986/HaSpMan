@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "haspman.fullname" . }}
+  labels:
+    {{- include "haspman.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "haspman.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "haspman.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "haspman.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.Version }}"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: {{ .Values.haspman.environment}}
+            - name: ConnectionStrings__HaSpMan
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "haspman.fullname" . }}
+                  key: DB_CONNECTION_STRING
+            - name: Oidc__Authority
+              value: {{ required "A valid .Values.haspman.oauth.authority entry required!" .Values.haspman.oauth.authority | quote }}
+            - name: Oidc__Audience
+              value: {{ required "A valid .Values.haspman.oauth.clientId entry required!" .Values.haspman.oauth.clientId | quote }}
+            - name: Oidc__ClientSecret
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "haspman.fullname" . }}
+                  key: CLIENT_SECRET
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
