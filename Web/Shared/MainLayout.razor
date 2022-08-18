@@ -12,12 +12,11 @@
                        Edge="Edge.Start"
                        Icon="@Icons.Material.Filled.Menu"
                        OnClick="@((e) => DrawerToggle())" />
-        <MudText Class="ml-3"
-                 Typo="Typo.h5">
-            HaSpMan @_version
+        <MudText Class="ml-3" Typo="Typo.h5">
+            <a class="title" href="home">HaSpMan @_version</a>
         </MudText>
         <MudSpacer />
-        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+        <MudMenu Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert">
             <AuthorizeView>
                 <Authorized>
                     <MudMenuItem>
