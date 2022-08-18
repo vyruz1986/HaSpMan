@@ -277,7 +277,9 @@
                 TransactionType.DebitWorkshopFee,
                 TransactionType.DebitDonation,
                 TransactionType.DebitMemberFee,
-                TransactionType.InternalBank
+                TransactionType.InternalBank,
+                TransactionType.DebitSaleConsumables,
+                TransactionType.DebitSaleGoodsAndServices
             }.OrderBy(x => x.GetDescription()).ToList();
         }
         return new List<TransactionType>
