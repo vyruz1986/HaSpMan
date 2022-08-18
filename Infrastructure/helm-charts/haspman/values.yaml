@@ -72,6 +72,8 @@ affinity: {}
 haspman:
   environment: Dev
   dbConnectionString: ""
+  storageConnectionString: ""
+  storageContainerName: ""
   oauth:
     clientId: ""
     clientSecret: ""
