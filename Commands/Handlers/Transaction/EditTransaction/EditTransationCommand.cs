@@ -4,8 +4,6 @@ using Domain;
 
 using FluentValidation;
 
-using MediatR;
-
 namespace Commands.Handlers.Transaction.EditTransaction;
 
 public record EditTransactionCommand(

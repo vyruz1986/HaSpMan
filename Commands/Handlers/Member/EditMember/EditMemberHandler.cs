@@ -1,13 +1,9 @@
-using AutoMapper;
-
 using Commands.Extensions;
 using Commands.Services;
 
 using Domain.Interfaces;
 
-using MediatR;
-
-namespace Commands.Handlers;
+namespace Commands.Handlers.Member.EditMember;
 
 public class
     EditMemberHandler : IRequestHandler<EditMemberCommand>

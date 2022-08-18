@@ -1,6 +1,6 @@
 using AutoMapper;
 
-using Commands;
+using Commands.Handlers.Member.AddMember;
 
 using Queries.Members.ViewModels;
 

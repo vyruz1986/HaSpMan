@@ -2,8 +2,6 @@
 
 using Domain;
 
-using MediatR;
-
 using Persistence.Repositories;
 
 namespace Commands.Handlers.Transaction.AddDebitTransaction;

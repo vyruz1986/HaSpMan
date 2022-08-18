@@ -9,33 +9,63 @@
 @inject IMediator _mediator
 
 
-<MudTable ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" Dense="true"
-    Hover="true" @ref="table">
+<MudTable Class="mt-10"
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
-        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Class="mt-0"
+                      IconSize="Size.Medium"
+                      Placeholder="Search"
+                      T="string"
+                      ValueChanged="@(s => OnSearch(s))">
+        </MudTextField>
         <MudSpacer />
-        <MudButton Link="/transactions/new" Color="Color.Primary" DisableElevation="true" Variant="Variant.Filled"
-            Size="Size.Small" Class="ma-2">Add transaction</MudButton>
+        <MudButton Class="ma-2"
+                   Color="Color.Primary"
+                   DisableElevation="true"
+                   Link="/transactions/new"
+                   Size="Size.Small"
+                   Variant="Variant.Filled">
+            Add transaction
+        </MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            <MudTableSortLabel SortLabel="from" T="TransactionSummary">From</MudTableSortLabel>
+            <MudTableSortLabel SortLabel="from"
+                               T="TransactionSummary">
+                From
+            </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="amount" T="TransactionSummary">Amount</MudTableSortLabel>
+            <MudTableSortLabel SortLabel="amount"
+                               T="TransactionSummary">
+                Amount
+            </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel InitialDirection="SortDirection.Descending" SortLabel="receivedDateTime"
-                T="TransactionSummary">Received</MudTableSortLabel>
+            <MudTableSortLabel InitialDirection="SortDirection.Descending"
+                               SortLabel="receivedDateTime"
+                               T="TransactionSummary">
+                Received
+            </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="description" T="TransactionSummary">Description</MudTableSortLabel>
+            <MudTableSortLabel SortLabel="description"
+                               T="TransactionSummary">
+                Description
+            </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="transactionTypes" T="TransactionSummary">Transaction types</MudTableSortLabel>
+            <MudTableSortLabel SortLabel="transactionTypes"
+                               T="TransactionSummary">
+                Transaction types
+            </MudTableSortLabel>
         </MudTh>
         <MudTh>
             Action
@@ -44,18 +74,20 @@
     <RowTemplate>
         <MudTd DataLabel="From">@context.CounterPartyName</MudTd>
         <MudTd DataLabel="Amount">€@context.Amount</MudTd>
-        <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("d")</MudTd>
+        <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="Description">@context.Description</MudTd>
         <MudTd DataLabel="Transaction types">
             @foreach (var type in context.TransactionTypeAmounts)
             {
-                    <MudChip>@type.TransactionType.GetDescription() for €@type.Amount</MudChip>
+                <MudChip>@type.TransactionType.GetDescription() for €@type.Amount</MudChip>
             }
         </MudTd>
         <MudTd>
             <MudTooltip Text="Edit">
-                <MudIconButton Link="@($"/transactions/{@context.Id}/edit")" Icon="@Icons.Material.Filled.Edit"
-                    aria-label="edit"></MudIconButton>
+                <MudIconButton aria-label="edit"
+                               Icon="@Icons.Material.Filled.Edit"
+                               Link="@($"/transactions/{@context.Id}/edit")">
+                </MudIconButton>
             </MudTooltip>
         </MudTd>
     </RowTemplate>
@@ -77,7 +109,7 @@
 
     private async Task<TableData<TransactionSummary>> ServerReload(TableState state)
     {
-        // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
+    // Workaround for https://github.com/Garderoben/MudBlazor/issues/2070
         if (_isBusy)
             return new TableData<TransactionSummary>();
 
@@ -89,7 +121,7 @@
             "amount" => TransactionSummaryOrderOption.Amount,
             "receivedDateTime" => TransactionSummaryOrderOption.ReceivedDateTime,
             _ => TransactionSummaryOrderOption.From
-        };
+            };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
         var query = new GetTransactionQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);

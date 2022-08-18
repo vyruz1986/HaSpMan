@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,14 +12,15 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(HaSpManContext))]
-    partial class HaSpManContextModelSnapshot : ModelSnapshot
+    [Migration("20220118231153_Added AuditEvents to BankAccount")]
+    partial class AddedAuditEventstoBankAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("HaSpMan")
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -176,6 +178,38 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Member", b =>
                 {
+                    b.OwnsMany("Types.AuditEvent", "AuditEvents", b1 =>
+                        {
+                            b1.Property<Guid>("MemberId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("varchar(1000)");
+
+                            b1.Property<string>("PerformedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("varchar(100)");
+
+                            b1.Property<DateTimeOffset>("Timestamp")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.HasKey("MemberId", "Id");
+
+                            b1.ToTable("Member_AuditEvents", "HaSpMan");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MemberId");
+                        });
+
                     b.OwnsOne("Types.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("MemberId")
@@ -214,38 +248,6 @@ namespace Persistence.Migrations
                                 .HasForeignKey("MemberId");
                         });
 
-                    b.OwnsMany("Types.AuditEvent", "AuditEvents", b1 =>
-                        {
-                            b1.Property<Guid>("MemberId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
-
-                            b1.Property<string>("Description")
-                                .IsRequired()
-                                .HasMaxLength(1000)
-                                .HasColumnType("varchar(1000)");
-
-                            b1.Property<string>("PerformedBy")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("varchar(100)");
-
-                            b1.Property<DateTimeOffset>("Timestamp")
-                                .HasColumnType("datetimeoffset");
-
-                            b1.HasKey("MemberId", "Id");
-
-                            b1.ToTable("Member_AuditEvents", "HaSpMan");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MemberId");
-                        });
-
                     b.Navigation("Address")
                         .IsRequired();
 
@@ -265,7 +267,7 @@ namespace Persistence.Migrations
 
                             SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"), 1L, 1);
 
-                            b1.Property<string>("FullPath")
+                            b1.Property<string>("BlobURI")
                                 .IsRequired()
                                 .HasMaxLength(1000)
                                 .HasColumnType("nvarchar(1000)");

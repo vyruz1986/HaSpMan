@@ -1,19 +1,16 @@
-﻿using Azure.Storage.Blobs;
+
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-using Commands.Handlers.Transaction;
+using Domain.Interfaces;
 
 using Microsoft.Extensions.Options;
 
-namespace Commands.Services;
+using Persistence.Configuration;
 
-public interface IAttachmentStorage
-{
-    Task AddAsync(string path, string contentType, byte[] bytes, CancellationToken cancellationToken);
+using Types;
 
-    Task<Attachment> GetAsync(string blobUri, CancellationToken cancellationToken);
-    void Delete(string blobUri, CancellationToken cancellationToken);
-}
+namespace Persistence.Repositories;
 
 public class AttachmentStorage : IAttachmentStorage
 {
@@ -52,20 +49,4 @@ public class AttachmentStorage : IAttachmentStorage
     {
         throw new NotImplementedException();
     }
-}
-
-public class StorageOptions
-{
-    public StorageOptions()
-    {
-        
-    }
-    public StorageOptions(string? storageContainerName, string? connectionString)
-    {
-        StorageContainerName = storageContainerName;
-        ConnectionString = connectionString;
-    }
-
-    public string? StorageContainerName { get; set; }
-    public string? ConnectionString { get; set; }
 }

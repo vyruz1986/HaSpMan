@@ -1,19 +1,20 @@
-@page "/members/new"
-
+@page "/bankaccounts/new"
 @attribute [Authorize]
 
-@using Commands.Handlers.Member.AddMember
+@using Commands.Handlers.BankAccount.AddBankAccount
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
-<h1 class="my-6">Add new member</h1>
+<h1 class="my-6">Add new bankaccount</h1>
 
-<EditForm Model="@_newMember" OnValidSubmit="@AddMember" OnInvalidSubmit="@ShowError">
-   <DataAnnotationsValidator />
+<EditForm Model="@_newBankAccount"
+          OnInvalidSubmit="@ShowError"
+          OnValidSubmit="@AddBankAccount">
+    <DataAnnotationsValidator />
 
-    <MemberForm Member="@_newMember" />
+    <BankAccountForm BankAccount="@_newBankAccount" />
 
     <MudItem Class="d-flex justify-start" xs="12">
         <MudButton ButtonType="ButtonType.Submit"
@@ -22,25 +23,21 @@
                    DisableElevation="true"
                    Size="Size.Large"
                    Variant="Variant.Filled">
-            Add member
+            Add bankaccount
         </MudButton>
     </MudItem>
 </EditForm>
 
 @code {
+    private Models.BankAccountForm _newBankAccount = new();
 
-    private Models.MemberForm _newMember = new()
+    private async Task AddBankAccount()
     {
-        Country = "Belgium"
-    };
-
-    private async Task AddMember()
-    {
-        var command = _mapper.Map<AddMemberCommand>(_newMember);
+        var command = _mapper.Map<AddBankAccountCommand>(_newBankAccount);
         var response = await _mediator.Send(command);
         Snackbar.Clear();
-        Snackbar.Add($"Member {_newMember.FirstName} {_newMember.LastName} added successfully!", Severity.Success);
-        NavManager.NavigateTo("/members");
+        Snackbar.Add($"Bankaccount {_newBankAccount.Name} added successfully!", Severity.Success);
+        NavManager.NavigateTo("/bankaccounts");
     }
 
     private void ShowError()

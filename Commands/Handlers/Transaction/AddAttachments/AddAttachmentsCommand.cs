@@ -1,10 +1,7 @@
-﻿using Commands.Services;
-
-using Domain;
+﻿using Domain;
+using Domain.Interfaces;
 
 using FluentValidation;
-
-using MediatR;
 
 using Persistence.Repositories;
 

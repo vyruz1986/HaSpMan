@@ -2,8 +2,6 @@
 
 using FluentValidation;
 
-using MediatR;
-
 namespace Commands.Handlers.Transaction.AddDebitTransaction;
 
 public record AddDebitTransactionCommand(
