@@ -37,6 +37,13 @@ spec:
                 secretKeyRef:
                   name: {{ include "haspman.fullname" . }}
                   key: DB_CONNECTION_STRING
+            - name: Storage__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "haspman.fullname" . }}
+                  key: STORAGE_CONNECTION_STRING
+            - name: Storage__StorageContainerName
+              value: {{ required "A valid .Values.haspman.storageContainerName entry is required" .Values.haspman.storageContainerName | quote }}
             - name: Oidc__Authority
               value: {{ required "A valid .Values.haspman.oauth.authority entry required!" .Values.haspman.oauth.authority | quote }}
             - name: Oidc__Audience
