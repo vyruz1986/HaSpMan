@@ -67,29 +67,3 @@ jobs:
           charts_dir: Infrastructure/helm-charts
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-
-  deploy:
-    name: Deploy to dev
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-        # Set the target Azure Kubernetes Service (AKS) cluster. 
-      - uses: azure/aks-set-context@v1
-        with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
-          cluster-name: ${{ env.CLUSTER_NAME }}
-          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-      - name: Base64 decode helm release values
-        id: write_values_file
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: 'values.yaml'
-          encodedString: ${{ secrets.HASPMAN_VALUES }}
-      - name: 'Deploy'
-        uses: 'deliverybot/helm@v1'
-        with:
-          release: 'dev'
-          namespace: 'haspman-dev'
-          chart: 'haspman'
-          value-files: ${{ steps.write_values_file.outputs.filePath }} 
-          repository: https://brixel.github.io/HaSpMan
