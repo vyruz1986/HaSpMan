@@ -1,0 +1,11 @@
+div.title {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+div.body{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
