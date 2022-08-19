@@ -10,7 +10,10 @@ public static class AuthExtensions
 {
     public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        var oidcConfig = configuration.GetSection(OidcConfig.SectionName).Get<OidcConfig>();
+        var configurationSection = configuration.GetSection(OidcConfig.SectionName);
+        var oidcConfig = configurationSection.Get<OidcConfig>();
+        
+        services.Configure<OidcConfig>(configurationSection);
 
         services.AddAuthentication(options =>
         {
