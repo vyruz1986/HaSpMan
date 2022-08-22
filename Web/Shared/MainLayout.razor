@@ -1,6 +1,9 @@
 @using System.Reflection
+@using Microsoft.Extensions.Options
+@using Configuration
 @inherits LayoutComponentBase
 @inject NavigationManager NavManager
+@inject IOptions<OidcConfig> oidcOptions
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -21,7 +24,7 @@
             <AuthorizeView>
                 <Authorized>
                     <MudMenuItem>
-                        <MudLink Href="Account/Logout">Logout</MudLink>
+                        <MudLink Href="@GetLogoutUrl()">Logout</MudLink>
                     </MudMenuItem>
                 </Authorized>
                 <NotAuthorized>
@@ -39,7 +42,14 @@
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    <GenericError></GenericError>
+                </ErrorContent>
+            </ErrorBoundary>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
@@ -56,6 +66,11 @@
             var fullSemVerField = gitVersionInformationType?.GetField("FullSemVer");
             return fullSemVerField?.GetValue(null)?.ToString() ?? "0.0.0";
         }
+    }
+
+    private string GetLogoutUrl()
+    {
+        return $"{oidcOptions.Value.Authority}/protocol/openid-connect/logout?redirect_uri={NavManager.BaseUri}Account/Logout";
     }
 
     private void Logout()
