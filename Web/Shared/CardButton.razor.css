@@ -1,0 +1,25 @@
+.button {
+    min-width: 10rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+.button:hover {
+    filter: blur(50);
+    background-color: #DDDDDD;
+}
+
+::deep .mud-paper.mud-card {
+    background-color: red;
+}
+
+::deep .mud-icon-root.mud-svg-icon {
+    font-size: 5rem;
+}
+
+::deep .mud-icon-root.mud-svg-icon path {
+    color: #4a4657;
+}

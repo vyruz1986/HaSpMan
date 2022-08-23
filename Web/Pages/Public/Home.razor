@@ -3,22 +3,27 @@
 
 <h1 class="my-6">Welcome to HaSpMan</h1>
 
-<div class="buttons">
-    <MudIcon Icon="@Icons.Filled.Person"></MudIcon>
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               Link="/members/new">Add Member</MudButton>
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               Link="/members">List member</MudButton>
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               Link="/transactions/new">Add Transaction</MudButton>
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               Link="/transactions">List Transactions</MudButton>
+<div class="button-row">
+    <CardButton Icon="@Icons.Filled.PersonAdd" OnClick="@(() => Navigate("/members/new"))">
+        Add Member
+    </CardButton>
+    
+    <CardButton Icon="@Icons.Filled.People" OnClick="@(() => Navigate("/members"))">
+        List Members
+    </CardButton>
+    
+    <CardButton Icon="@Icons.Filled.CompareArrows" OnClick="@(() => Navigate("/transactions/new"))">
+        Add Transaction
+    </CardButton>
+    
+    <CardButton Icon="@Icons.Filled.List" OnClick="@(() => Navigate("/transactions"))">
+        List Transactions
+    </CardButton>
 </div>
 
 @code {
-    
+    void Navigate(string uri)
+    {
+        Navigation.NavigateTo(uri, true);
+    }
 }
