@@ -293,6 +293,7 @@
     }
 
     MudDatePicker _picker = new();
+    private int _maxAllowedSize = 1024 * 1024 * 10;
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
@@ -350,7 +351,7 @@
             var path = Path.Combine(directory, trustedFileNameForFileStorage);
 
             await using FileStream fs = new(path, FileMode.Create);
-            await file.OpenReadStream().CopyToAsync(fs);
+            await file.OpenReadStream(maxAllowedSize:_maxAllowedSize).CopyToAsync(fs);
             var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
             Transaction.TransactionAttachments.Add(transaction);
         }
