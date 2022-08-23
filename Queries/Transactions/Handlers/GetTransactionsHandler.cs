@@ -1,11 +1,8 @@
 ﻿using System.Linq.Expressions;
 
-using AutoMapper;
 using AutoMapper.QueryableExtensions;
 
 using Domain;
-
-using MediatR;
 
 using Microsoft.EntityFrameworkCore;
 
