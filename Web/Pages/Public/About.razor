@@ -1,7 +1,20 @@
 @page "/about"
+@using System.Reflection
 
 <h3 class="my-6">About</h3>
 
+<MudText Typo="Typo.body1">Version: @_version</MudText>
+
 @code {
     
+    private string _version
+    {
+        get
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var gitVersionInformationType = assembly.GetType("GitVersionInformation");
+            var fullSemVerField = gitVersionInformationType?.GetField("FullSemVer");
+            return fullSemVerField?.GetValue(null)?.ToString() ?? "0.0.0";
+        }
+    }
 }
