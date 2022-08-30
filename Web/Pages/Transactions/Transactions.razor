@@ -116,6 +116,7 @@
     private async Task<TableData<TransactionSummary>> ServerReload(TableState state)
     {
         loading = true;
+        StateHasChanged();
 
         TransactionSummaryOrderOption orderBy = state.SortLabel switch
         {

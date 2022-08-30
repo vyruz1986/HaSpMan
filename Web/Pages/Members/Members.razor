@@ -115,6 +115,7 @@
     private async Task<TableData<MemberSummary>> ServerReload(TableState state)
     {
         loading = true;
+        StateHasChanged();
         MemberSummaryOrderOption orderBy = state.SortLabel switch
         {
             "name" => MemberSummaryOrderOption.Name,

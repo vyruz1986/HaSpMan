@@ -90,6 +90,7 @@
     private async Task<TableData<BankAccountDetail>> ServerReload(TableState state)
     {
         loading = true;
+        StateHasChanged();
 
         BankAccountDetailOrderOption orderBy = state.SortLabel switch
         {
