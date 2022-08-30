@@ -1,0 +1,20 @@
+<MudCard Class="card">
+    <MudCardContent Class="pa-0">
+        <div class="pa-9 button" @onclick="OnClick">
+            <MudIcon Icon="@Icon"></MudIcon>
+            <MudText Class="mt-3" Typo="Typo.h6">@ChildContent</MudText>
+        </div>
+    </MudCardContent>
+</MudCard>
+
+@code {
+
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}
