@@ -135,4 +135,14 @@ public class Member
 
         AuditEvents.AddEvent($"Changed membership fee to {MembershipFee}", performedBy);
     }
+
+    public bool IsActive()
+    {
+        if (MembershipExpiryDate == null)
+        {
+            return true;
+        }
+
+        return MembershipExpiryDate.Value.Date > DateTimeOffset.Now;
+    }
 }
