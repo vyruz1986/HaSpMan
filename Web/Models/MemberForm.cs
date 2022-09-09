@@ -4,21 +4,22 @@ namespace Web.Models;
 
 public class MemberForm
 {
+    private string? _email;
+
     [Required]
     [StringLength(50)]
     public string? FirstName { get; set; }
-
 
     [Required]
     [StringLength(50)]
     public string? LastName { get; set; }
 
-    [Required]
+    [RequiredIfStringEqualsAttribute(nameof(PhoneNumber), "", ErrorMessage = "Either email or phone number is required")]
     [StringLength(100)]
     [EmailAddress]
-    public string? Email { get; set; }
+    public string? Email { get => _email; set => _email = value == string.Empty ? null : value; }
 
-    [Required]
+    [RequiredIfStringEqualsAttribute(nameof(Email), "", ErrorMessage = "Either email or phone number is required")]
     [StringLength(50)]
     public string? PhoneNumber { get; set; }
 

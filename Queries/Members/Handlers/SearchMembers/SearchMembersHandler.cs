@@ -101,10 +101,10 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
                    m.Address.HouseNumber.ToLower().Contains(lowerCaseSearchString) ||
                    m.Address.Street.ToLower().Contains(lowerCaseSearchString) ||
                    m.Address.ZipCode.ToLower().Contains(lowerCaseSearchString) ||
-                   m.Email.ToLower().Contains(lowerCaseSearchString) ||
+                   (m.Email != null && m.Email.ToLower().Contains(lowerCaseSearchString)) ||
                    m.FirstName.ToLower().Contains(lowerCaseSearchString) ||
                    m.LastName.ToLower().Contains(lowerCaseSearchString) ||
-                   m.PhoneNumber.ToLower().Contains(lowerCaseSearchString);
+                   (m.PhoneNumber != null && m.PhoneNumber.ToLower().Contains(lowerCaseSearchString));
 
     }
 }
