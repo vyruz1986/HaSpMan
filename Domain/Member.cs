@@ -60,8 +60,8 @@ public class Member
     public Guid Id { get; private set; }
     public string FirstName { get; private set; }
     public string LastName { get; private set; }
-    public string Email { get; private set; }
-    public string PhoneNumber { get; private set; }
+    public string? Email { get; private set; }
+    public string? PhoneNumber { get; private set; }
     public Address Address { get; private set; }
     public DateTimeOffset? MembershipExpiryDate { get; private set; }
     public double MembershipFee { get; private set; }
