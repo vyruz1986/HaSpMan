@@ -63,6 +63,12 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
+            <MudTableSortLabel SortLabel="isActive"
+                               T="MemberSummary">
+                Active
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
             Action
         </MudTh>
     </HeaderContent>
@@ -71,6 +77,9 @@
         <MudTd DataLabel="Address">@context.Address</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="IsActive">
+            <MudIcon Icon="@GetActiveIcon(context)" Title="@GetExpiryDate(context)" Color="@GetActiveIconColor(context)" />
+        </MudTd>
         <MudTd>
             <MudGrid >
                 <MudItem xs="6">
@@ -122,6 +131,7 @@
             "address" => MemberSummaryOrderOption.Address,
             "email" => MemberSummaryOrderOption.Email,
             "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
+            "isActive"=> MemberSummaryOrderOption.IsActive,
             _ => MemberSummaryOrderOption.Name
         };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
@@ -158,5 +168,13 @@
             table?.ReloadServerData();
         }
     }
+    private string GetActiveIcon(MemberSummary member) => member.IsActive
+        ? Icons.Filled.CheckBox
+        : Icons.Filled.CheckBoxOutlineBlank;
+        
+    private Color GetActiveIconColor(MemberSummary member) => member.IsActive
+        ? Color.Success
+        : Color.Error;
 
+    private string GetExpiryDate(MemberSummary member) => member.MembershipExpiryDate.Date.ToString("dd/MM/yyyy");
 }

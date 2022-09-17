@@ -6,5 +6,6 @@ public record MemberSummary(
     string Address,
     string Email,
     string PhoneNumber,
-    bool IsActive
+    bool IsActive,
+    DateTimeOffset MembershipExpiryDate
 );

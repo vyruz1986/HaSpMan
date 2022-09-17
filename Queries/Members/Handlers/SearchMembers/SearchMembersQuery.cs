@@ -18,5 +18,6 @@ public enum MemberSummaryOrderOption
     Name,
     Address,
     Email,
-    PhoneNumber
+    PhoneNumber,
+    IsActive
 }
