@@ -36,3 +36,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+
+**Priority**
+If possible, assign a milestone to the feature request. This indicates priority. The milestones follow the [semver](https://semver.org) rules: in short, 1.0.1 is a higher priority than 1.1.0
