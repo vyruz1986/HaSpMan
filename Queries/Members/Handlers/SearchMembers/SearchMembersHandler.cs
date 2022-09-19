@@ -33,7 +33,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
 
         if(!request.ShowActive)
         {
-            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate == null || m.MembershipExpiryDate!.Value <= DateTimeOffset.Now);
+            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate != null && m.MembershipExpiryDate.Value <= DateTimeOffset.Now);
         }
 
         if(!request.ShowInactive)
