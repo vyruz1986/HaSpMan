@@ -7,6 +7,8 @@ namespace Queries.Members.Handlers.SearchMembers;
 
 public record SearchMembersQuery(
     string SearchString,
+    bool ShowActive,
+    bool ShowInactive,
     int PageIndex,
     int PageSize,
     MemberSummaryOrderOption OrderBy,
