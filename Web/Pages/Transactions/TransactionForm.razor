@@ -17,7 +17,7 @@
 @inject IJSRuntime JS;
 
 <div class="d-flex flex-column justify-start align-start mw-13">
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudCardHeader>
         <MudText Typo="Typo.h5">Type</MudText>
     </MudCardHeader>
@@ -43,13 +43,13 @@
     </MudCardContent>
 </MudCard>
 
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudCardHeader>
         <MudText Typo="Typo.h5">Involved parties</MudText>
     </MudCardHeader>
     <MudCardContent>
-        <MudGrid Justify="Justify.SpaceBetween"
-                 Class="flex-wrap"
+        <MudGrid Class="flex-wrap"
+                 Justify="Justify.SpaceBetween"
                  Spacing="2">
             <MudItem xs="2">
                 <MudRadioGroup @bind-SelectedOption="IsSearchForMembership">
@@ -120,7 +120,7 @@
     </MudCardContent>
 </MudCard>
 
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudCardHeader>
         <MudText Typo="Typo.h5">
             Transaction
@@ -139,7 +139,10 @@
                      xs="12">
                 <MudDatePicker AutoClose="true"
                                @bind-Date="Transaction.ReceivedDateTime"
+                               DateFormat="dd/MM/yyyy"
+                               Editable="true"
                                Label="Transaction date"
+                               Mask="@(new DateMask("dd/MM/yyyy"))"
                                MaxDate="DateTime.Now"
                                @ref="_picker">
                     <PickerActions>
@@ -153,7 +156,7 @@
         </MudGrid>
     </MudCardContent>
 </MudCard>
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudCardHeader>
         <MudText Typo="Typo.h5">Amount</MudText>
     </MudCardHeader>
@@ -188,7 +191,7 @@
         </MudText>
     </MudCardContent>
 </MudCard>
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudList Clickable="true">
         <MudListSubheader>
             Attachments
@@ -203,7 +206,7 @@
         }
     </MudList>
 </MudCard>
-<MudCard  class="mb-6 mt-2 pb-3 expand">
+<MudCard class="mb-6 mt-2 pb-3 expand">
     <MudCardHeader>
         <MudText Type="Typo.h5">Attachments</MudText>
     </MudCardHeader>
@@ -293,6 +296,7 @@
     }
 
     MudDatePicker _picker = new();
+    private int _maxAllowedSize = 1024 * 1024 * 10;
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
@@ -350,7 +354,7 @@
             var path = Path.Combine(directory, trustedFileNameForFileStorage);
 
             await using FileStream fs = new(path, FileMode.Create);
-            await file.OpenReadStream().CopyToAsync(fs);
+            await file.OpenReadStream(maxAllowedSize: _maxAllowedSize).CopyToAsync(fs);
             var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
             Transaction.TransactionAttachments.Add(transaction);
         }

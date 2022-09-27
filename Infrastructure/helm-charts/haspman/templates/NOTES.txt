@@ -1,9 +1,11 @@
-1. Get the application URL by running these commands:
+Thanks for deploying the {{ .Chart.Name }} chart!
+
+Release '{{ .Release.Name }}' has been deployed successfully with version {{ .Chart.Version }}
+
+To access the application you just deployed:
 {{- if .Values.ingress.enabled }}
-{{- range $host := .Values.ingress.hosts }}
-  {{- range .paths }}
-  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
-  {{- end }}
+{{- range $host := .Values.ingress.hostnames }}
+  https://{{ $host }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "haspman.fullname" . }})

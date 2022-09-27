@@ -12,7 +12,7 @@
 <MudTable Class="mt-10 mw-13"
           Dense="true"
           Hover="true"
-          @ref="table"
+          @ref="_table"
           ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))"
           Loading="@loading">
     <ToolBarContent>
@@ -20,12 +20,14 @@
         <MudSpacer />
         <MudTextField Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
+                      @bind-Value="@SearchString"
                       Class="mt-0"
                       IconSize="Size.Medium"
                       Placeholder="Search"
-                      T="string"
-                      ValueChanged="@(s => OnSearch(s))">
+                      T="string">
         </MudTextField>
+        <MudSwitch @bind-Checked="@ShowActive" Label="Active" Color="Color.Success" T="bool" />
+        <MudSwitch @bind-Checked="@ShowInactive" Label="Inactive" Color="Color.Error" T="bool" />
         <MudSpacer />
         <MudButton Class="ma-2"
                    Color="Color.Primary"
@@ -63,6 +65,12 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
+            <MudTableSortLabel SortLabel="isActive"
+                               T="MemberSummary">
+                Active
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
             Action
         </MudTh>
     </HeaderContent>
@@ -71,6 +79,9 @@
         <MudTd DataLabel="Address">@context.Address</MudTd>
         <MudTd DataLabel="Email">@context.Email</MudTd>
         <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="IsActive">
+            <MudIcon Icon="@GetActiveIcon(context)" Title="@GetExpiryDate(context)" Color="@GetActiveIconColor(context)" />
+        </MudTd>
         <MudTd>
             <MudGrid >
                 <MudItem xs="6">
@@ -104,8 +115,35 @@
 </MudTable>
 
 @code {
-    private MudTable<MemberSummary>? table;
-    private string searchString = "";
+    private MudTable<MemberSummary>? _table;
+    private string _searchString = "";
+    public string SearchString
+    {
+        get => _searchString;
+        set
+        {
+            _searchString = value;
+            _table?.ReloadServerData();
+        }
+    }
+    private bool _showActive = true;
+    public bool ShowActive {
+        get => _showActive;
+        set
+        {
+            _showActive = value;
+            _table?.ReloadServerData();
+        }
+    }
+
+    private bool _showInactive = true;
+    public bool ShowInactive {
+        get => _showInactive;
+        set{
+            _showInactive = value;
+            _table?.ReloadServerData();
+        }
+    }
 
     // TODO: Keeping this local variable shouldn't be necessary 
     // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
@@ -115,16 +153,18 @@
     private async Task<TableData<MemberSummary>> ServerReload(TableState state)
     {
         loading = true;
+        StateHasChanged();
         MemberSummaryOrderOption orderBy = state.SortLabel switch
         {
             "name" => MemberSummaryOrderOption.Name,
             "address" => MemberSummaryOrderOption.Address,
             "email" => MemberSummaryOrderOption.Email,
             "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
+            "isActive"=> MemberSummaryOrderOption.IsActive,
             _ => MemberSummaryOrderOption.Name
         };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
-        var query = new SearchMembersQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
+        var query = new SearchMembersQuery(_searchString,ShowActive, _showInactive, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
         loading = false;
@@ -133,12 +173,6 @@
             TotalItems = data.Total,
             Items = data.Items
         };
-    }
-
-    private void OnSearch(string text)
-    {
-        searchString = text;
-        table?.ReloadServerData();
     }
 
     private async Task OpenDeleteMemberDialog(MemberSummary member)
@@ -154,8 +188,16 @@
         {
             Snackbar.Clear();
             Snackbar.Add($"Removed {member.Name} as a member");
-            table?.ReloadServerData();
+            _table?.ReloadServerData();
         }
     }
+    private string GetActiveIcon(MemberSummary member) => member.IsActive
+        ? Icons.Filled.CheckBox
+        : Icons.Filled.CheckBoxOutlineBlank;
+        
+    private Color GetActiveIconColor(MemberSummary member) => member.IsActive
+        ? Color.Success
+        : Color.Error;
 
+    private string GetExpiryDate(MemberSummary member) => member.MembershipExpiryDate.Date.ToString("dd/MM/yyyy");
 }

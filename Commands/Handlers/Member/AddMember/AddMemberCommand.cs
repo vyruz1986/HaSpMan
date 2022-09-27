@@ -27,12 +27,12 @@ public class AddMemberCommandValidator : AbstractValidator<AddMemberCommand>
            .MaximumLength(50);
 
         RuleFor(x => x.Email)
-           .NotEmpty()
+           .NotEmpty().When(x => string.IsNullOrWhiteSpace(x.PhoneNumber))
            .MaximumLength(100)
            .EmailAddress();
 
         RuleFor(x => x.PhoneNumber)
-           .NotEmpty()
+           .NotEmpty().When(x => string.IsNullOrWhiteSpace(x.Email))
            .MaximumLength(50);
 
         RuleFor(x => x.Address)
