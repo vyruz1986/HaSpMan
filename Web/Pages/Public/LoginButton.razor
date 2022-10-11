@@ -1,0 +1,12 @@
+﻿@inject NavigationManager Navigation
+
+<div class="button-row">
+    <CardButton Icon="@Icons.Filled.Login" OnClick="@(Login)">Login</CardButton>
+</div>
+@code {
+
+    void Login()
+    {
+        Navigation.NavigateTo("Account/Login", true);
+    }
+}
