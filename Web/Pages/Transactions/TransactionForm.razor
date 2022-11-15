@@ -222,6 +222,10 @@
                    Variant="Variant.Filled">
             Upload new attachment(s)
         </MudButton>
+        @if (FileErrorMessage != null)
+        {   
+            <p>@FileErrorMessage</p>
+        }
     </MudCardContent>
 </MudCard>
 <ValidationSummary></ValidationSummary>
@@ -261,6 +265,8 @@
     [Parameter]
     public bool IsNew { get; set; }
 
+    public string? FileErrorMessage { get; set; }
+
     private IReadOnlyList<BankAccountInfo> _bankAccounts = new List<BankAccountInfo>();
 
     private IReadOnlyList<TransactionType> _transactionTypes = new List<TransactionType>();
@@ -297,6 +303,7 @@
 
     MudDatePicker _picker = new();
     private int _maxAllowedSize = 1024 * 1024 * 10;
+    private IReadOnlyList<string> _allowedFileTypes = new List<string> { "pdf", "doc", "docx", "jpg", "jpeg", "png", "gif" };
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
@@ -344,8 +351,25 @@
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
     {
+        FileErrorMessage = string.Empty;
         var entries = e.GetMultipleFiles();
-        foreach (var file in entries)
+        var notAllowedFileTypes = entries.Any(x => !_allowedFileTypes.Any(fileType => x.Name.EndsWith(fileType)));
+        if (notAllowedFileTypes)
+        {
+            var joinedFileTypes = string.Join(", ", _allowedFileTypes);
+            FileErrorMessage = $"Some of the files are not of the supported file types ({joinedFileTypes})";
+            return;
+        }
+        var overMaxFileSize = entries.Any(x => x.Size > _maxAllowedSize);
+        if (overMaxFileSize)
+        {
+            FileErrorMessage = "Some of the files are too large (max 10mb)";
+            return;
+        }
+        var existingFileNames = Transaction.TransactionAttachments.Select(x => x.FileName).ToList();
+        var duplicateEntries = entries.Where(x => existingFileNames.All(fileName => fileName != x.Name));
+
+        foreach (var file in duplicateEntries)
         {
             var trustedFileNameForFileStorage = Path.GetRandomFileName();
             var directory = Path.Combine(Environment.ContentRootPath,
