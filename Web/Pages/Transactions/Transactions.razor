@@ -155,7 +155,9 @@
             
         }
         var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
-        return transactionTypeGroup == TransactionTypeGroup.Credit ? "background-color: rgba(255,0,0,0.2)" : "background-color: rgba(0,255,0,0.2)";
+        return transactionTypeGroup == TransactionTypeGroup.Credit 
+            ? $"background-color: {Colors.Red.Lighten4}" 
+            : $"background-color: {Colors.Green.Lighten4}";
     }
 
     private string GetPlusOrMinus(ICollection<TransactionTypeAmount> transactionTypeAmounts)
