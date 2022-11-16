@@ -258,7 +258,7 @@
         set
         {
             _transactionTypeGroup = value;
-            _transactionTypes = GetScopedTransactionTypes();
+            _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
         }
     }
 
@@ -274,32 +274,10 @@
     protected override async Task OnInitializedAsync()
     {
         await GetAllBankAccounts();
-        _transactionTypes = GetScopedTransactionTypes();
+        _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
     }
 
-    private IReadOnlyList<TransactionType> GetScopedTransactionTypes()
-    {
-        if (TransactionTypeGroup == TransactionTypeGroup.Debit)
-        {
-            return new List<TransactionType>
-            {
-                TransactionType.DebitWorkshopFee,
-                TransactionType.DebitDonation,
-                TransactionType.DebitMemberFee,
-                TransactionType.InternalBank,
-                TransactionType.DebitSaleConsumables,
-                TransactionType.DebitSaleGoodsAndServices
-            }.OrderBy(x => x.GetDescription()).ToList();
-        }
-        return new List<TransactionType>
-        {
-            TransactionType.CreditAcquisitionConsumables,
-            TransactionType.CreditAcquisitionGoodsAndServices,
-            TransactionType.CreditBankCosts,
-            TransactionType.CreditFixedCosts,
-            TransactionType.InternalBank
-        }.OrderBy(x => x.GetDescription()).ToList();
-    }
+    
 
     MudDatePicker _picker = new();
     private int _maxAllowedSize = 1024 * 1024 * 10;
@@ -340,7 +318,7 @@
 
     private void TransactionTypeChanged()
     {
-        _transactionTypes = GetScopedTransactionTypes();
+        _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
     }
 
     Converter<AutocompleteCounterparty> counterPartyConverter = new Converter<AutocompleteCounterparty>

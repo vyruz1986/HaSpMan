@@ -51,20 +51,10 @@
         var query = new GetTransactionByIdQuery(TransactionId);
         var transactionDetail = await _mediator.Send(query);
         Transaction = _mapper.Map<Models.TransactionForm>(transactionDetail);
-        _transactionTypeGroup = GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
+        _transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType);
     }
 
-    private TransactionTypeGroup GetTransactionTypeGroup(TransactionType transactionType)
-    {
-        return new List<TransactionType>
-        {
-            TransactionType.DebitWorkshopFee,
-            TransactionType.DebitDonation,
-            TransactionType.DebitMemberFee,
-            TransactionType.InternalBank
-        }.Contains(transactionType) ? TransactionTypeGroup.Debit : TransactionTypeGroup.Credit;
-    }
-
+    
 
     private async Task SubmitTransaction()
     {
