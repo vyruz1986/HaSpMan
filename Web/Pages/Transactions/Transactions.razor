@@ -5,6 +5,8 @@
 @using Queries.Transactions.Handlers
 @using Queries.Transactions.ViewModels
 @using Types
+@using Domain
+@using TransactionTypeAmount = Queries.Transactions.ViewModels.TransactionTypeAmount
 
 @inject IMediator _mediator
 
@@ -14,6 +16,7 @@
           Hover="true"
           @ref="table"
           ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))"
+          RowStyleFunc="RowStyleFunc"
           Loading="@loading">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
@@ -24,7 +27,7 @@
                       IconSize="Size.Medium"
                       Placeholder="Search"
                       T="string"
-                      ValueChanged="@(s => OnSearch(s))">
+                      ValueChanged="@(OnSearch)">
         </MudTextField>
         <MudSpacer />
         <MudButton Class="ma-2"
@@ -54,7 +57,7 @@
             <MudTableSortLabel InitialDirection="SortDirection.Descending"
                                SortLabel="receivedDateTime"
                                T="TransactionSummary">
-                Received
+                Transaction date
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
@@ -75,7 +78,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="From">@context.CounterPartyName</MudTd>
-        <MudTd DataLabel="Amount">€@context.Amount</MudTd>
+        <MudTd DataLabel="Amount">@GetPlusOrMinus(context.TransactionTypeAmounts) €@context.Amount</MudTd>
         <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="Description">@context.Description</MudTd>
         <MudTd DataLabel="Transaction types">
@@ -142,4 +145,30 @@
         searchString = text;
         table?.ReloadServerData();
     }
+
+    private string RowStyleFunc(TransactionSummary transactionSummary, int index)
+    {
+        var transactionType = transactionSummary.TransactionTypeAmounts.FirstOrDefault();
+        if (transactionType == null)
+        {
+            return string.Empty;
+            
+        }
+        var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
+        return transactionTypeGroup == TransactionTypeGroup.Credit 
+            ? $"background-color: {Colors.Red.Lighten4}" 
+            : $"background-color: {Colors.Green.Lighten4}";
+    }
+
+    private string GetPlusOrMinus(ICollection<TransactionTypeAmount> transactionTypeAmounts)
+    {
+        var transactionType = transactionTypeAmounts.FirstOrDefault();
+        if (transactionType == null)
+        {
+            return string.Empty;
+        }
+        var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
+        return transactionTypeGroup == TransactionTypeGroup.Credit ? "-" : "+";
+    }
+
 }
