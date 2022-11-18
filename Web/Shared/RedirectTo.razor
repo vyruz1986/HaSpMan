@@ -3,9 +3,10 @@
 @code {
     [Parameter]
     public string Uri { get; set; } = string.Empty;
-    
-    protected override void OnInitialized()
+
+    protected override void OnAfterRender(bool firstRender)
     {
+        base.OnAfterRender(firstRender);
         Navigation.NavigateTo(Uri, true);
     }
 }
