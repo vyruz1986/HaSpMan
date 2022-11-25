@@ -5,8 +5,12 @@
 @using Queries.Members.Handlers.SearchMembers
 @using Web.Models
 @using Commands.Handlers.BankAccount
+@using Commands.Handlers.Member.ExtendMembership
 @using Commands.Handlers.Transaction.GetAttachment
 @using LinqKit
+@using Queries.Members.Handlers.GetMemberById
+@using Queries.Members.ViewModels
+@using System.Windows.Input
 
 @inject IWebHostEnvironment Environment
 
@@ -60,9 +64,10 @@
             <MudItem xs="3">
                 @if (IsSearchForMembership)
                 {
-                    <MudAutocomplete @bind-Value="Transaction.Counterparty"
+                    <MudAutocomplete ValueChanged="OnChangeMember"
                                      Label="Members"
                                      SearchFunc="SearchForMembers"
+                                     Value="Transaction.Counterparty"
                                      T="AutocompleteCounterparty"
                                      ToStringFunc="ac => ac?.Name"
                                      Variant="Variant.Outlined">
@@ -165,7 +170,8 @@
             @foreach (var transactionType in Transaction.TransactionTypeAmounts)
             {
                 <MudItem xs="6">
-                    <MudNumericField @bind-Value="transactionType.Amount"
+                    <MudNumericField Value="transactionType.Amount"
+                                     ValueChanged="(value) => OnAmountChanged(transactionType, value)"
                                      Label="Amount (€)"
                                      Min="0"
                                      T="decimal">
@@ -189,6 +195,29 @@
             Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
             This value should match the total amount of the transaction
         </MudText>
+        @if (CanExtendMembership && SelectedMember != null)
+        {
+            <MudDivider Class="my-2"></MudDivider>
+            <MudText>Extend membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths more month(s) of membership</MudText>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudDatePicker Label="New expiration month" 
+                                   @bind-Date="_newExpirationDate" 
+                                   DisableToolbar="true"
+                                   OpenTo="OpenTo.Month" 
+                                   DateFormat="MM/yyyy"
+                                   MinDate="DateTime.Today"
+                                   FixDay="@DateTime.Today.Day"/>
+                </MudItem>
+                <MudItem xs="6">
+                    <MudButton 
+                        Size="Size.Small"
+                        Variant="Variant.Filled"
+                        Color="Color.Secondary" OnClick="ChangeMembershipFee">Change membership expiration date</MudButton>
+                </MudItem>
+            </MudGrid>
+        }
+        
     </MudCardContent>
 </MudCard>
 <MudCard class="mb-6 mt-2 pb-3 expand">
@@ -271,20 +300,31 @@
 
     private IReadOnlyList<TransactionType> _transactionTypes = new List<TransactionType>();
 
+    private DateTime? _newExpirationDate;
+
+    private int AmountOfMonths { get; set; }
+
+    private MemberDetail? SelectedMember { get; set; }
+
+    private bool CanExtendMembership =>
+        Transaction.TransactionTypeAmounts.Any(x => x.TransactionType == TransactionType.DebitMemberFee) &&
+        Transaction.Counterparty.MemberId.HasValue;
+
     protected override async Task OnInitializedAsync()
     {
         await GetAllBankAccounts();
         _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
     }
-
-    
-
     MudDatePicker _picker = new();
     private int _maxAllowedSize = 1024 * 1024 * 10;
     private IReadOnlyList<string> _allowedFileTypes = new List<string> { "pdf", "doc", "docx", "jpg", "jpeg", "png", "gif" };
 
     private async Task<IEnumerable<AutocompleteCounterparty>> SearchForMembers(string searchString)
     {
+        if (string.IsNullOrEmpty(searchString))
+        {
+            return new List<AutocompleteCounterparty>();
+        }
         var response = await mediator.Send(new AutocompleteCounterpartyQuery(searchString, true));
         return response.Counterparties;
     }
@@ -314,11 +354,6 @@
         {
             await GetAllBankAccounts();
         }
-    }
-
-    private void TransactionTypeChanged()
-    {
-        _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
     }
 
     Converter<AutocompleteCounterparty> counterPartyConverter = new Converter<AutocompleteCounterparty>
@@ -369,5 +404,48 @@
         using var streamRef = new DotNetStreamReference(fileStream);
         await JS.InvokeVoidAsync("downloadFileFromStream", attachment.Name, streamRef); // THIS FEELS SOOOO DIRTY
     }
+
+    private async Task OnChangeMember(AutocompleteCounterparty counterparty)
+    {
+        Transaction.Counterparty = counterparty;
+        await CalculateMembershipExpirationDate();
+    }
+
+    private async Task OnAmountChanged(TransactionTypeAmountForm transactionTypeAmount, decimal value)
+    {
+        transactionTypeAmount.Amount = value;
+        await CalculateMembershipExpirationDate();
+    }
+
+    private async Task ChangeMembershipFee()
+    {
+        if (!Transaction.Counterparty.MemberId.HasValue || SelectedMember == null || _newExpirationDate == null)
+        {
+            return;
+        }
+        await mediator.Send(new ExtendMembershipCommand(SelectedMember.Id, _newExpirationDate.Value));
+    }
+
+    private async Task CalculateMembershipExpirationDate()
+    {
+        if (!Transaction.Counterparty.MemberId.HasValue)
+        {
+            return;
+        }
+        var memberId = Transaction.Counterparty.MemberId.Value;
+        var member = await mediator.Send(new GetMemberByIdQuery(memberId));
+        SelectedMember = member;
+        var transactionTypeForMembershipFee =
+            Transaction.TransactionTypeAmounts.SingleOrDefault(x => x.TransactionType == TransactionType.DebitMemberFee);
+        if (transactionTypeForMembershipFee != null && 
+            transactionTypeForMembershipFee.Amount != 0 && 
+            SelectedMember.MembershipExpiryDate.HasValue)
+        {
+            AmountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / SelectedMember.MembershipFee);
+            _newExpirationDate = SelectedMember.MembershipExpiryDate.Value.AddMonths(AmountOfMonths).Date;
+        }
+    }
+
+
 
 }

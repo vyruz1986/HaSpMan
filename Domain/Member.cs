@@ -121,6 +121,13 @@ public class Member
         if (expiryDate == MembershipExpiryDate)
             return;
 
+        // We calculate memberships per month, so we'll use the last second of the month as an expiry date
+
+        if (expiryDate.HasValue)
+        {
+            expiryDate = expiryDate.Value.EndOfMonth();
+        }
+
         MembershipExpiryDate = expiryDate;
 
         AuditEvents.AddEvent($"Changed membership expiry date to {MembershipExpiryDate}", performedBy);
@@ -143,6 +150,6 @@ public class Member
             return true;
         }
 
-        return MembershipExpiryDate.Value.Date > DateTimeOffset.Now;
+        return MembershipExpiryDate.Value.Date >= DateTimeOffset.Now.Date;
     }
 }

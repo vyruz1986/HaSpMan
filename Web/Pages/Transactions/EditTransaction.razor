@@ -3,8 +3,10 @@
 @using MediatR
 @using AutoMapper
 @using Commands.Handlers
+@using Commands.Handlers.Member.ExtendMembership
 @using Commands.Handlers.Transaction.EditTransaction
 @using Domain
+@using Queries.Members.Handlers.GetMemberById
 @using Queries.Transactions.Handlers
 @using Types
 @using AttachmentFile = Commands.Handlers.AttachmentFile
@@ -81,5 +83,24 @@
         _snackbar.Clear();
         _snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
-
+    private async Task ChangeMembershipFee()
+    {
+        if (!Transaction.Counterparty.MemberId.HasValue)
+        {
+            return;
+        }
+        var memberId = Transaction.Counterparty.MemberId.Value;
+        var member = await _mediator.Send(new GetMemberByIdQuery(memberId));
+        var transactionTypeForMembershipFee =
+            Transaction.TransactionTypeAmounts.SingleOrDefault(x => x.TransactionType == TransactionType.DebitMemberFee);
+        if (transactionTypeForMembershipFee != null && transactionTypeForMembershipFee.Amount != 0)
+        {
+            var amountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / member.MembershipFee);
+            if (member.MembershipExpiryDate.HasValue)
+            {
+                //Transaction.NewExpirationDate = member.MembershipExpiryDate.Value.AddMonths(amountOfMonths).Date;
+                //await _mediator.Send(new ExtendMembershipCommand(memberId, _newExpirationDate));
+            }
+        }
+    }
 }
