@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Commands.Handlers.Member.ExtendMembership;
 
@@ -14,6 +8,8 @@ public class ExtendMembershipCommandValidator : AbstractValidator<ExtendMembersh
 {
     public ExtendMembershipCommandValidator()
     {
+        RuleFor(x => x.Id)
+            .NotEmpty();
         RuleFor(x => x.NewMembershipExpirationDate)
             .NotEmpty()
             .GreaterThan(DateTime.Now);

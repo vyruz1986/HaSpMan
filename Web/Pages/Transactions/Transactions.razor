@@ -1,11 +1,8 @@
 @page "/transactions"
 @attribute [Authorize]
-
-@using MediatR
 @using Queries.Transactions.Handlers
 @using Queries.Transactions.ViewModels
 @using Types
-@using Domain
 @using TransactionTypeAmount = Queries.Transactions.ViewModels.TransactionTypeAmount
 
 @inject IMediator _mediator

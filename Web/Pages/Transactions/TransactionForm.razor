@@ -197,24 +197,16 @@
         </MudText>
         @if (CanExtendMembership && SelectedMember != null)
         {
-            <MudDivider Class="my-2"></MudDivider>
-            <MudText>Extend membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths more month(s) of membership</MudText>
+            <MudCheckBox Color="Color.Secondary" @bind-Checked="_applyMembershipCalculation">Extend membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths more month(s) of membership</MudCheckBox>
+            
             <MudGrid>
-                <MudItem xs="6">
-                    <MudDatePicker Label="New expiration month" 
-                                   @bind-Date="_newExpirationDate" 
-                                   DisableToolbar="true"
-                                   OpenTo="OpenTo.Month" 
-                                   DateFormat="MM/yyyy"
-                                   MinDate="DateTime.Today"
-                                   FixDay="@DateTime.Today.Day"/>
-                </MudItem>
-                <MudItem xs="6">
-                    <MudButton 
-                        Size="Size.Small"
-                        Variant="Variant.Filled"
-                        Color="Color.Secondary" OnClick="ChangeMembershipFee">Change membership expiration date</MudButton>
-                </MudItem>
+                <MudDatePicker Label="New expiration month" 
+                               @bind-Date="_newExpirationDate" 
+                               DisableToolbar="true"
+                               OpenTo="OpenTo.Month" 
+                               DateFormat="MM/yyyy"
+                               MinDate="DateTime.Today"
+                               FixDay="@DateTime.Today.Day"/>
             </MudGrid>
         }
         
@@ -305,7 +297,7 @@
     private int AmountOfMonths { get; set; }
 
     private MemberDetail? SelectedMember { get; set; }
-
+    
     private bool CanExtendMembership =>
         Transaction.TransactionTypeAmounts.Any(x => x.TransactionType == TransactionType.DebitMemberFee) &&
         Transaction.Counterparty.MemberId.HasValue;
@@ -416,15 +408,7 @@
         transactionTypeAmount.Amount = value;
         await CalculateMembershipExpirationDate();
     }
-
-    private async Task ChangeMembershipFee()
-    {
-        if (!Transaction.Counterparty.MemberId.HasValue || SelectedMember == null || _newExpirationDate == null)
-        {
-            return;
-        }
-        await mediator.Send(new ExtendMembershipCommand(SelectedMember.Id, _newExpirationDate.Value));
-    }
+    
 
     private async Task CalculateMembershipExpirationDate()
     {
@@ -443,9 +427,9 @@
         {
             AmountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / SelectedMember.MembershipFee);
             _newExpirationDate = SelectedMember.MembershipExpiryDate.Value.AddMonths(AmountOfMonths).Date;
+            Transaction.NewMembershipExpirationDate = _newExpirationDate;
         }
     }
 
-
-
+    private bool _applyMembershipCalculation;
 }

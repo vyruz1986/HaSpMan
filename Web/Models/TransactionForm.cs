@@ -31,12 +31,12 @@ public class TransactionForm
     public DateTime? ReceivedDateTime { get; set; }
 
     public string? Description { get; set; }
-
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
 
 
     public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
+    public DateTime? NewMembershipExpirationDate { get; set; }
 }
 
 public class TransactionTypeAmountForm

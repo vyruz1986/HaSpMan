@@ -5,8 +5,7 @@ using Domain.Interfaces;
 
 namespace Commands.Handlers.Member.EditMember;
 
-public class
-    EditMemberHandler : IRequestHandler<EditMemberCommand>
+public class EditMemberHandler : IRequestHandler<EditMemberCommand>
 {
     private readonly IMemberRepository _memberRepository;
     private readonly IUserAccessor _userAccessor;
