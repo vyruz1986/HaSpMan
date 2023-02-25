@@ -5,17 +5,14 @@ using Domain.Interfaces;
 
 namespace Commands.Handlers.Member.EditMember;
 
-public class
-    EditMemberHandler : IRequestHandler<EditMemberCommand>
+public class EditMemberHandler : IRequestHandler<EditMemberCommand>
 {
     private readonly IMemberRepository _memberRepository;
-    private readonly IMapper _mapper;
     private readonly IUserAccessor _userAccessor;
 
-    public EditMemberHandler(IMemberRepository memberRepository, IMapper mapper, IUserAccessor userAccessor)
+    public EditMemberHandler(IMemberRepository memberRepository, IUserAccessor userAccessor)
     {
         _memberRepository = memberRepository;
-        _mapper = mapper;
         _userAccessor = userAccessor;
     }
 

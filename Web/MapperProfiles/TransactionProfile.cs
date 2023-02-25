@@ -10,6 +10,8 @@ using Domain;
 using Queries.Members.Handlers.AutocompleteMember;
 using Queries.Transactions.ViewModels;
 
+using Types;
+
 using Web.Models;
 
 using AttachmentFile = Commands.Handlers.AttachmentFile;
@@ -51,7 +53,8 @@ public class TransactionProfile : Profile
                     o.MapFrom(x => x.ReceivedDateTime.DateTime))
             .ForMember(x => x.Counterparty,
                 o => o.MapFrom(x => new AutocompleteCounterparty(x.CounterPartyName, x.MemberId)))
-            .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments));
+            .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments))
+            .ForMember(x => x.NewMembershipExpirationDate, o => o.Ignore());
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
         
@@ -78,5 +81,8 @@ public class TransactionProfile : Profile
             .ForCtorParam(nameof(TransactionTypeAmountForm.TransactionType), o => o.MapFrom(x => x.TransactionType))
             .ForMember(x => x.Amount, o => o.MapFrom(x => x.Amount))
             .ForMember(x => x.TransactionType, o => o.MapFrom(x => x.TransactionType));
+
+
+
     }
 }

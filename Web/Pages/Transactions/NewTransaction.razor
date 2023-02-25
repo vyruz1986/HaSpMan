@@ -1,11 +1,10 @@
 ﻿@page "/transactions/new"
 @attribute [Authorize]
-@using MediatR
-@using AutoMapper
+@using Commands.Handlers.Member.ExtendMembership
 @using Commands.Handlers.Transaction.AddCreditTransaction
 @using Commands.Handlers.Transaction.AddDebitTransaction
-@inject IMediator _mediator
-@inject IMapper _mapper
+@inject IMediator Mediator
+@inject IMapper Mapper
 @inject ISnackbar Snackbar
 @inject NavigationManager NavManager
 
@@ -40,26 +39,33 @@
 
     private async Task AddTransaction()
     {
+        var memberId = _newTransaction.Counterparty.MemberId;
+        var expirationDate = _newTransaction.NewMembershipExpirationDate;
         switch (_selectedTransactionTypeGroup)
         {
             case TransactionTypeGroup.Credit:
             {
-                var command = _mapper.Map<AddCreditTransactionCommand>(_newTransaction);
-                await _mediator.Send(command);
+                var command = Mapper.Map<AddCreditTransactionCommand>(_newTransaction);
+                await Mediator.Send(command);
                 break;
             }
             case TransactionTypeGroup.Debit:
             {
-                var command = _mapper.Map<AddDebitTransactionCommand>(_newTransaction);
-                await _mediator.Send(command);
+                var command = Mapper.Map<AddDebitTransactionCommand>(_newTransaction);
+                await Mediator.Send(command);
                 break;
             }
         }
-
+        if (memberId.HasValue && expirationDate.HasValue)
+        {
+            await Mediator.Send(new ExtendMembershipCommand(memberId.Value, expirationDate.Value));
+        }
         Snackbar.Clear();
         Snackbar.Add($"Transaction for {_newTransaction.Counterparty.Name} added successfully!", Severity.Success);
         NavManager.NavigateTo("/transactions");
     }
+
+    
 
     private void ShowError()
     {
@@ -67,4 +73,5 @@
         Snackbar.Add("Please correct all errors on the form", Severity.Error);
     }
 
+   
 }

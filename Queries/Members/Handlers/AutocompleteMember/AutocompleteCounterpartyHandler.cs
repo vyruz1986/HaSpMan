@@ -16,7 +16,7 @@ public class AutocompleteCounterpartyHandler : IRequestHandler<AutocompleteCount
     }
     public async Task<AutocompleteCounterpartyResponse> Handle(AutocompleteCounterpartyQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
         if (request.IsMemberSearch)
         {

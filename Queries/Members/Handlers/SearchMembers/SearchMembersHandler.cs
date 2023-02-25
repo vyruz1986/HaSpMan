@@ -26,27 +26,28 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
 
     public async Task<Paginated<MemberSummary>> Handle(SearchMembersQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var memberQueryable = context.Members
+           
             .AsNoTracking()
             .Where(GetTextFilterCriteria(request.SearchString));
 
         if(!request.ShowActive)
         {
-            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate != null && m.MembershipExpiryDate.Value <= DateTimeOffset.Now);
+            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate != null && m.MembershipExpiryDate.Value.Date < DateTimeOffset.Now.Date);
         }
 
         if(!request.ShowInactive)
         {
-            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate == null || m.MembershipExpiryDate!.Value > DateTimeOffset.Now);
+            memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate == null || m.MembershipExpiryDate!.Value.Date >= DateTimeOffset.Now.Date);
         }
 
         var total = await memberQueryable.CountAsync(cancellationToken);
 
-        memberQueryable = GetOrderedQueryable(request, memberQueryable);
+        var orderedQueryable = GetOrderedQueryable(request, memberQueryable);
 
-        var memberSummaryQueryable = memberQueryable
-            .ProjectTo<MemberSummary>(_mapper.ConfigurationProvider)
+        var memberSummaryQueryable = orderedQueryable
+            .Select(x => new MemberSummary(x.Id, x.Name, x.Address.ToString(), x.Email!, x.PhoneNumber!, x.IsActive(), x.MembershipExpiryDate!.Value))
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);
 
