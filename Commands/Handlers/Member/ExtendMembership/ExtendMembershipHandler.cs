@@ -23,6 +23,11 @@ public class ExtendMembershipHandler : IRequestHandler<ExtendMembershipCommand>
         if (member == null)
             throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
 
+        if (member.MembershipFee == 0)
+        {
+            throw new Exception($"Member {member.Id} has no set membership fee set.");
+        }
+
         var performingUser = _userAccessor.User.GetName()!;
 
         member.ChangeMembershipExpiryDate(request.NewMembershipExpirationDate, performingUser);
