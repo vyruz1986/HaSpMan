@@ -300,7 +300,9 @@
     
     private bool CanExtendMembership =>
         Transaction.TransactionTypeAmounts.Any(x => x.TransactionType == TransactionType.DebitMemberFee) &&
-        Transaction.Counterparty.MemberId.HasValue;
+        Transaction.Counterparty.MemberId.HasValue &&
+        SelectedMember != null && 
+        SelectedMember.MembershipFee != 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -423,7 +425,7 @@
             Transaction.TransactionTypeAmounts.SingleOrDefault(x => x.TransactionType == TransactionType.DebitMemberFee);
         if (transactionTypeForMembershipFee != null && 
             transactionTypeForMembershipFee.Amount != 0 && 
-            SelectedMember.MembershipExpiryDate.HasValue)
+            SelectedMember.MembershipExpiryDate.HasValue && SelectedMember.MembershipFee != 0)
         {
             AmountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / SelectedMember.MembershipFee);
             _newExpirationDate = SelectedMember.MembershipExpiryDate.Value.AddMonths(AmountOfMonths).Date;
