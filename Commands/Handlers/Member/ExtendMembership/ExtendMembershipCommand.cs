@@ -11,7 +11,6 @@ public class ExtendMembershipCommandValidator : AbstractValidator<ExtendMembersh
         RuleFor(x => x.Id)
             .NotEmpty();
         RuleFor(x => x.NewMembershipExpirationDate)
-            .NotEmpty()
-            .GreaterThan(DateTime.Now);
+            .NotEmpty();
     }
 }
