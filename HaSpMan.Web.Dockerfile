@@ -12,7 +12,7 @@ COPY . ./
 WORKDIR /src/Web
 RUN dotnet publish -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 COPY --from=build /app .
 
