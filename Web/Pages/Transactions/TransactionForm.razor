@@ -91,9 +91,9 @@
             <MudItem xs="2" sm="1">
                 @{
                     var icon = TransactionTypeGroup switch {
-                        TransactionTypeGroup.Debit => Icons.Filled.ArrowForward,
-                        TransactionTypeGroup.Credit => Icons.Filled.ArrowBack,
-                        _ => Icons.Filled.Block
+                        TransactionTypeGroup.Debit => Icons.Material.Filled.ArrowForward,
+                        TransactionTypeGroup.Credit => Icons.Material.Filled.ArrowBack,
+                        _ => Icons.Material.Filled.Block
                     };
                     <MudIcon Class="mt-4" Icon="@icon" />
                 }
@@ -219,7 +219,7 @@
         </MudListSubheader>
         @foreach (var attachment in Transaction.TransactionAttachments)
         {
-            <MudListItem Icon="@Icons.Outlined.Save"
+            <MudListItem Icon="@Icons.Material.Outlined.Save"
                          OnClick="(() => Download(attachment.FileName))">
                 @attachment.FileName
 
@@ -239,7 +239,7 @@
         <MudButton Color="Color.Primary"
                    for="attachmentFilePicker"
                    HtmlTag="label"
-                   StartIcon="@Icons.Filled.CloudUpload"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
                    Variant="Variant.Filled">
             Upload new attachment(s)
         </MudButton>
@@ -344,7 +344,7 @@
     {
         var dialog = dialogService.Show<AddBankAccountDialog>("Add bank account");
         var result = await dialog.Result;
-        if (!result.Cancelled && result.Data is true)
+        if (!result.Canceled && result.Data is true)
         {
             await GetAllBankAccounts();
         }
