@@ -257,31 +257,11 @@
     [Parameter]
     public Models.TransactionForm Transaction { get; set; } = new();
 
-    private bool _isSearchForMembership = false;
+    [Parameter]
+    public bool IsSearchForMembership {get;set;}
 
     [Parameter]
-    public bool IsSearchForMembership
-    {
-        get => _isSearchForMembership;
-        set
-        {
-            _isSearchForMembership = value;
-            Transaction.Counterparty = new AutocompleteCounterparty(string.Empty, null);
-        }
-    }
-
-    private TransactionTypeGroup _transactionTypeGroup;
-
-    [Parameter]
-    public TransactionTypeGroup TransactionTypeGroup
-    {
-        get => _transactionTypeGroup;
-        set
-        {
-            _transactionTypeGroup = value;
-            _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
-        }
-    }
+    public TransactionTypeGroup TransactionTypeGroup {get;set;}
 
     [Parameter]
     public bool IsNew { get; set; }
@@ -307,8 +287,14 @@
     protected override async Task OnInitializedAsync()
     {
         await GetAllBankAccounts();
-        _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
     }
+
+    protected override void OnParametersSet()
+    {
+        _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
+        Transaction.Counterparty = new AutocompleteCounterparty(string.Empty, null);
+    }
+
     MudDatePicker _picker = new();
     private int _maxAllowedSize = 1024 * 1024 * 10;
     private IReadOnlyList<string> _allowedFileTypes = new List<string> { "pdf", "doc", "docx", "jpg", "jpeg", "png", "gif" };
