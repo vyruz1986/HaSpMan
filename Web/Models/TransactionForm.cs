@@ -14,14 +14,14 @@ public class TransactionForm
         Counterparty = new AutocompleteCounterparty(string.Empty, null);
         TransactionTypeAmounts = new List<TransactionTypeAmountForm>()
         {
-            new(TransactionType.DebitMemberFee, 0)
+            new(TransactionType.DebitMemberFee, null)
         };
         TransactionAttachments = new List<TransactionAttachment>();
     }
 
     public Guid Id { get; set; }
 
-    [NotMapped]
+    [ValidateComplexType, Required]
     public AutocompleteCounterparty Counterparty { get; set; }
 
     [Required]
@@ -30,7 +30,9 @@ public class TransactionForm
     [Required]
     public DateTime? ReceivedDateTime { get; set; }
 
+    [Required(AllowEmptyStrings = false), StringLength(1000)]
     public string? Description { get; set; }
+
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
 
@@ -41,18 +43,18 @@ public class TransactionForm
 
 public class TransactionTypeAmountForm
 {
-    public TransactionTypeAmountForm(TransactionType transactionType, decimal amount)
+    public TransactionTypeAmountForm(TransactionType transactionType, decimal? amount)
     {
         TransactionType = transactionType;
         Amount = amount;
     }
-    [Required]
-    public TransactionType TransactionType { get; set; }
+    [Required, EnumDataType(typeof(TransactionType))]
+    public TransactionType? TransactionType { get; set; } = null;
 
 
     [Required]
-    [Range(0, 10000000)]
-    public decimal Amount { get; set; }
+    [Range(0.01, 10000000)]
+    public decimal? Amount { get; set; }
 }
 
 public class TransactionAttachment

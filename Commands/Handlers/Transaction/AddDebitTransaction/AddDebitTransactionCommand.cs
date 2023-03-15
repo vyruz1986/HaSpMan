@@ -18,11 +18,16 @@ public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTra
     public AddDebitTransactionCommandValidator()
     {
         RuleFor(x => x.CounterPartyName)
+            .NotEmpty()
             .MaximumLength(120);
+
         RuleFor(x => x.Description)
+            .NotEmpty()
             .MaximumLength(1000);
+
         RuleFor(x => x.BankAccountId)
             .NotEmpty();
+
         When(x => x.MemberId != null, () =>
         {
             RuleFor(x => x.MemberId)
@@ -30,7 +35,9 @@ public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTra
         });
 
         RuleFor(x => x.ReceivedDateTime)
-            .LessThanOrEqualTo(x => DateTimeOffset.Now);
+            .LessThanOrEqualTo(x => DateTimeOffset.Now)
+            .NotEmpty();
+
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
     }
