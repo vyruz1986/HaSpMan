@@ -12,18 +12,17 @@ public class DeleteMemberHandler : IRequestHandler<DeleteMemberCommand>
     {
         _memberRepository = memberRepository;
     }
-    public async Task<Unit> Handle(DeleteMemberCommand request, CancellationToken cancellationToken)
+
+    public async Task Handle(DeleteMemberCommand request, CancellationToken cancellationToken)
     {
         var member = await _memberRepository.GetById(request.Id);
 
         if (member == null)
             throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
-        
+
         _memberRepository.Remove(member);
 
         await _memberRepository.Save(cancellationToken);
-        
-        return Unit.Value;
     }
 }
 

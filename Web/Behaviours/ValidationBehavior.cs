@@ -15,8 +15,8 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
     }
 
     public Task<TResponse> Handle(TRequest request
-        , CancellationToken cancellationToken
         , RequestHandlerDelegate<TResponse> next
+        , CancellationToken cancellationToken
     )
     {
         var failures = _validators
@@ -25,11 +25,8 @@ public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TReques
             .Where(f => f != null)
             .ToList();
 
-        if (failures.Any())
-        {
-            throw new ValidationException(failures);
-        }
-
-        return next();
+        return failures.Any()
+            ? throw new ValidationException(failures)
+            : next();
     }
 }

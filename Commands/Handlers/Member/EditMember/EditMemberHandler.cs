@@ -16,7 +16,7 @@ public class EditMemberHandler : IRequestHandler<EditMemberCommand>
         _userAccessor = userAccessor;
     }
 
-    public async Task<Unit> Handle(EditMemberCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditMemberCommand request, CancellationToken cancellationToken)
     {
         var member = await _memberRepository.GetById(request.Id);
 
@@ -32,7 +32,5 @@ public class EditMemberHandler : IRequestHandler<EditMemberCommand>
         member.ChangePhoneNumber(request.PhoneNumber, performingUser);
 
         await _memberRepository.Save(cancellationToken);
-
-        return Unit.Value;
     }
 }

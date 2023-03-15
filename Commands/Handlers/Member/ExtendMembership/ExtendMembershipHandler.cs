@@ -16,7 +16,7 @@ public class ExtendMembershipHandler : IRequestHandler<ExtendMembershipCommand>
         _userAccessor = userAccessor;
     }
 
-    public async Task<Unit> Handle(ExtendMembershipCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ExtendMembershipCommand request, CancellationToken cancellationToken)
     {
         var member = await _repository.GetById(request.Id);
 
@@ -28,7 +28,5 @@ public class ExtendMembershipHandler : IRequestHandler<ExtendMembershipCommand>
         member.ChangeMembershipExpiryDate(request.NewMembershipExpirationDate, performingUser);
 
         await _repository.Save(cancellationToken);
-
-        return Unit.Value;
     }
 }
