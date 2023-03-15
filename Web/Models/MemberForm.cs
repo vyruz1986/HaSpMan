@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+using Web.Validators;
+
 namespace Web.Models;
 
 public class MemberForm
@@ -14,12 +16,12 @@ public class MemberForm
     [StringLength(50)]
     public string? LastName { get; set; }
 
-    [RequiredIfStringEqualsAttribute(nameof(PhoneNumber), "", ErrorMessage = "Either email or phone number is required")]
+    [RequiredIfStringIsNullOrWhitespace(nameof(PhoneNumber), ErrorMessage = "Either email or phone number is required")]
     [StringLength(100)]
     [EmailAddress]
     public string? Email { get => _email; set => _email = value == string.Empty ? null : value; }
 
-    [RequiredIfStringEqualsAttribute(nameof(Email), "", ErrorMessage = "Either email or phone number is required")]
+    [RequiredIfStringIsNullOrWhitespace(nameof(Email), ErrorMessage = "Either email or phone number is required")]
     [StringLength(50)]
     public string? PhoneNumber { get; set; }
 
