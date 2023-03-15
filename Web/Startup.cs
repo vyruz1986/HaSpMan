@@ -66,7 +66,7 @@ public class Startup
         // Add query and command assemblies to mediatr
         var queryAssembly = typeof(SearchMembersQuery).Assembly;
         var commandAssembly = typeof(AddDebitTransactionCommand).Assembly;
-        services.AddMediatR(new[] { queryAssembly, commandAssembly });
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(new[] { queryAssembly, commandAssembly }));
 
         // For all the validators, register them with dependency injection as scoped
         AssemblyScanner.FindValidatorsInAssembly(commandAssembly)

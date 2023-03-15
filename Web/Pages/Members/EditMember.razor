@@ -61,7 +61,7 @@
             MembershipExpiryDate: member.MembershipExpiryDate == null ? (DateTimeOffset?)null : new
                 DateTimeOffset(member.MembershipExpiryDate!.Value)
             );
-        var response = await _mediator.Send(command);
+        await _mediator.Send(command);
         Snackbar.Clear();
         Snackbar.Add($"Member {member.FirstName} {member.LastName} edited successfully!", Severity.Success);
         NavManager.NavigateTo("/members");
