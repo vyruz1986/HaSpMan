@@ -13,7 +13,7 @@ public record EditTransactionCommand(
     Guid BankAccountId,
     DateTimeOffset ReceivedDateTime,
     string Description,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts, 
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts,
     ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
 
 
@@ -22,11 +22,16 @@ public class EditTransactionCommandValidator : AbstractValidator<EditTransaction
     public EditTransactionCommandValidator()
     {
         RuleFor(x => x.CounterPartyName)
+            .NotEmpty()
             .MaximumLength(120);
+
         RuleFor(x => x.Description)
+            .NotEmpty()
             .MaximumLength(1000);
+
         RuleFor(x => x.BankAccountId)
             .NotEmpty();
+
         When(x => x.MemberId != null, () =>
         {
             RuleFor(x => x.MemberId)
@@ -37,7 +42,9 @@ public class EditTransactionCommandValidator : AbstractValidator<EditTransaction
             .NotEmpty();
 
         RuleFor(x => x.ReceivedDateTime)
+            .NotEmpty()
             .LessThanOrEqualTo(x => DateTimeOffset.Now);
+
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
 

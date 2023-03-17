@@ -22,11 +22,16 @@ public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditT
     public AddCreditTransactionCommandValidator()
     {
         RuleFor(x => x.CounterPartyName)
+            .NotEmpty()
             .MaximumLength(120);
+
         RuleFor(x => x.Description)
+            .NotEmpty()
             .MaximumLength(1000);
+
         RuleFor(x => x.BankAccountId)
             .NotEmpty();
+
         When(x => x.MemberId != null, () =>
         {
             RuleFor(x => x.MemberId)
@@ -34,7 +39,9 @@ public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditT
         });
 
         RuleFor(x => x.ReceivedDateTime)
+            .NotEmpty()
             .LessThanOrEqualTo(x => DateTimeOffset.Now);
+
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
 

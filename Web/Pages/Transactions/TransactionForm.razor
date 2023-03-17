@@ -2,15 +2,10 @@
 @using MediatR
 @using Queries.Members.Handlers.AutocompleteMember
 @using Queries.Members.Handlers.GetBankAccountInfos
-@using Queries.Members.Handlers.SearchMembers
 @using Web.Models
-@using Commands.Handlers.BankAccount
-@using Commands.Handlers.Member.ExtendMembership
 @using Commands.Handlers.Transaction.GetAttachment
-@using LinqKit
 @using Queries.Members.Handlers.GetMemberById
 @using Queries.Members.ViewModels
-@using System.Windows.Input
 
 @inject IWebHostEnvironment Environment
 
@@ -30,7 +25,7 @@
         {
             <MudGrid>
                 <MudItem xs="6">
-                    <MudRadioGroup @bind-SelectedOption="TransactionTypeGroup">
+                    <MudRadioGroup SelectedOption="TransactionTypeGroup" SelectedOptionChanged="OnChangeTypeGroup" T="TransactionTypeGroup">
                         @foreach (var transactionTypeGroup in Enum.GetValues<TransactionTypeGroup>())
                         {
                             <MudRadio Option="transactionTypeGroup">@transactionTypeGroup.GetDescription()</MudRadio>
@@ -70,7 +65,8 @@
                                      Value="Transaction.Counterparty"
                                      T="AutocompleteCounterparty"
                                      ToStringFunc="ac => ac?.Name"
-                                     Variant="Variant.Outlined">
+                                     Variant="Variant.Outlined"
+                                     For="@(() => Transaction.Counterparty)">
                     </MudAutocomplete>
                 }
                 else
@@ -83,7 +79,8 @@
                                      SearchFunc="SearchForNonMembers"
                                      T="AutocompleteCounterparty"
                                      ToStringFunc="ac => ac?.Name"
-                                     Variant="Variant.Outlined">
+                                     Variant="Variant.Outlined"
+                                     For="@(() => Transaction.Counterparty)">
                     </MudAutocomplete>
                 }
             </MudItem>
@@ -149,6 +146,7 @@
                                Label="Transaction date"
                                Mask="@(new DateMask("dd/MM/yyyy"))"
                                MaxDate="DateTime.Now"
+                               For="@(() => Transaction.ReceivedDateTime)"
                                @ref="_picker">
                     <PickerActions>
                         <MudButton Class="mr-auto align-self-start"
@@ -174,17 +172,22 @@
                                      ValueChanged="(value) => OnAmountChanged(transactionType, value)"
                                      Label="Amount (€)"
                                      Min="0"
-                                     T="decimal">
+                                     For="@(() => transactionType.Amount)"
+                                     T="decimal?">
                     </MudNumericField>
                 </MudItem>
 
                 <MudItem xs="6">
                     <MudSelect @bind-Value="transactionType.TransactionType"
                                Label="Select transaction type"
-                               Variant="Variant.Outlined">
+                               Variant="Variant.Outlined"
+                               T="TransactionType?"
+                               For="@(() => transactionType.TransactionType)">
+                               
+                        <MudSelectItem T="TransactionType?" Value="@null"></MudSelectItem>
                         @foreach (var item in _transactionTypes)
                         {
-                            <MudSelectItem Value="@item">@item.GetDescription()</MudSelectItem>
+                            <MudSelectItem T="TransactionType?" Value="@item">@item.GetDescription()</MudSelectItem>
                         }
                     </MudSelect>
                 </MudItem>
@@ -287,9 +290,10 @@
     protected override async Task OnInitializedAsync()
     {
         await GetAllBankAccounts();
+        SetTransactionTypes();
     }
 
-    protected override void OnParametersSet()
+    private void SetTransactionTypes()
     {
         _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
         Transaction.Counterparty = new AutocompleteCounterparty(string.Empty, null);
@@ -391,7 +395,20 @@
         await CalculateMembershipExpirationDate();
     }
 
-    private async Task OnAmountChanged(TransactionTypeAmountForm transactionTypeAmount, decimal value)
+    private Task OnChangeTypeGroup(TransactionTypeGroup typeGroup)
+    {
+        if(TransactionTypeGroup == typeGroup)
+            return Task.CompletedTask;
+
+        TransactionTypeGroup = typeGroup;
+        SetTransactionTypes();
+        foreach(var transactionTypeAmount in Transaction.TransactionTypeAmounts)
+            transactionTypeAmount.TransactionType = null;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnAmountChanged(TransactionTypeAmountForm transactionTypeAmount, decimal? value)
     {
         transactionTypeAmount.Amount = value;
         await CalculateMembershipExpirationDate();
@@ -410,7 +427,7 @@
         var transactionTypeForMembershipFee =
             Transaction.TransactionTypeAmounts.SingleOrDefault(x => x.TransactionType == TransactionType.DebitMemberFee);
         if (transactionTypeForMembershipFee != null && 
-            transactionTypeForMembershipFee.Amount != 0 && 
+            transactionTypeForMembershipFee.Amount is not null or 0 && 
             SelectedMember.MembershipExpiryDate.HasValue && SelectedMember.MembershipFee != 0)
         {
             AmountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / SelectedMember.MembershipFee);

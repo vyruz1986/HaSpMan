@@ -13,7 +13,7 @@
 <EditForm Model="@_newTransaction"
           OnInvalidSubmit="@ShowError"
           OnValidSubmit="@AddTransaction">
-    <DataAnnotationsValidator />
+    <ObjectGraphDataAnnotationsValidator  />
 
     <TransactionForm IsNew="true"
                      IsSearchForMembership="false"
@@ -64,8 +64,6 @@
         Snackbar.Add($"Transaction for {_newTransaction.Counterparty.Name} added successfully!", Severity.Success);
         NavManager.NavigateTo("/transactions");
     }
-
-    
 
     private void ShowError()
     {
