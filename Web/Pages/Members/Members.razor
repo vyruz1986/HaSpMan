@@ -184,7 +184,7 @@
         };
         var reference = DialogService.Show<DeleteMemberDialog>($"Remove member", parameters, options);
         var dialog = await reference.Result;
-        if (!dialog.Cancelled)
+        if (!dialog.Canceled)
         {
             Snackbar.Clear();
             Snackbar.Add($"Removed {member.Name} as a member");
@@ -192,8 +192,8 @@
         }
     }
     private string GetActiveIcon(MemberSummary member) => member.IsActive
-        ? Icons.Filled.CheckBox
-        : Icons.Filled.CheckBoxOutlineBlank;
+        ? Icons.Material.Filled.CheckBox
+        : Icons.Material.Filled.CheckBoxOutlineBlank;
         
     private Color GetActiveIconColor(MemberSummary member) => member.IsActive
         ? Color.Success

@@ -11,8 +11,9 @@ public static class AuthExtensions
     public static IServiceCollection AddCustomAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
         var configurationSection = configuration.GetSection(OidcConfig.SectionName);
-        var oidcConfig = configurationSection.Get<OidcConfig>();
-        
+        var oidcConfig = configurationSection.Get<OidcConfig>()
+            ?? throw new Exception("OIDC config cannot be null");
+
         services.Configure<OidcConfig>(configurationSection);
 
         services.AddAuthentication(options =>
@@ -28,7 +29,7 @@ public static class AuthExtensions
             options.ClientSecret = oidcConfig.ClientSecret;
             options.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
             options.CallbackPath = new PathString("/callback");
-            
+
             options.Resource = oidcConfig.Audience;
             options.RequireHttpsMetadata = false; //TODO
             options.SaveTokens = true;
@@ -48,7 +49,7 @@ public static class AuthExtensions
                             var request = context.Request;
                             postLogoutUri = request.Scheme + "://" + request.Host + request.PathBase + postLogoutUri;
                         }
-                        logoutUri += $"&returnTo={ Uri.EscapeDataString(postLogoutUri)}";
+                        logoutUri += $"&returnTo={Uri.EscapeDataString(postLogoutUri)}";
                     }
 
                     context.Response.Redirect(logoutUri);

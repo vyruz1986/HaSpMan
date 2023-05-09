@@ -35,7 +35,8 @@ public class Startup
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
     {
-        var dbConnectionString = Configuration.GetConnectionString("HaSpMan");
+        var dbConnectionString = Configuration.GetConnectionString("HaSpMan")
+            ?? throw new Exception("DB connection string cannot be null");
 
         services.AddCustomAuthentication(Configuration);
         services.Configure<ForwardedHeadersOptions>(options =>
@@ -65,7 +66,7 @@ public class Startup
         // Add query and command assemblies to mediatr
         var queryAssembly = typeof(SearchMembersQuery).Assembly;
         var commandAssembly = typeof(AddDebitTransactionCommand).Assembly;
-        services.AddMediatR(new[] { queryAssembly, commandAssembly });
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(new[] { queryAssembly, commandAssembly }));
 
         // For all the validators, register them with dependency injection as scoped
         AssemblyScanner.FindValidatorsInAssembly(commandAssembly)
