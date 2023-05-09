@@ -39,6 +39,7 @@ public class TransactionForm
 
     public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
     public DateTime? NewMembershipExpirationDate { get; set; }
+    public bool ApplyMembershipCalculation { get; set; }
 }
 
 public class TransactionTypeAmountForm

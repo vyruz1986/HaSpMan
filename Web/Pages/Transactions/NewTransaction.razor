@@ -56,7 +56,7 @@
                 break;
             }
         }
-        if (memberId.HasValue && expirationDate.HasValue)
+        if (memberId.HasValue && expirationDate.HasValue && _newTransaction.ApplyMembershipCalculation)
         {
             await Mediator.Send(new ExtendMembershipCommand(memberId.Value, expirationDate.Value));
         }
