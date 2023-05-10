@@ -23,5 +23,7 @@ public enum TransactionType
     [Description("Sale of consumables")]
     DebitSaleConsumables,
     [Description("Sale of goods and services")]
-    DebitSaleGoodsAndServices
+    DebitSaleGoodsAndServices,
+    [Description("Refund")]
+    DebitRefund
 }

@@ -17,7 +17,8 @@ public class TransactionTypes
                 TransactionType.DebitMemberFee,
                 TransactionType.InternalBank,
                 TransactionType.DebitSaleConsumables,
-                TransactionType.DebitSaleGoodsAndServices
+                TransactionType.DebitSaleGoodsAndServices,
+                TransactionType.DebitRefund
             }.OrderBy(x => x.GetDescription()).ToList();
         }
         return new List<TransactionType>
@@ -37,7 +38,10 @@ public class TransactionTypes
             TransactionType.DebitWorkshopFee,
             TransactionType.DebitDonation,
             TransactionType.DebitMemberFee,
-            TransactionType.InternalBank
+            TransactionType.InternalBank,
+            TransactionType.DebitSaleConsumables,
+            TransactionType.DebitSaleGoodsAndServices,
+            TransactionType.DebitRefund
         }.Contains(transactionType) ? TransactionTypeGroup.Debit : TransactionTypeGroup.Credit;
     }
 
