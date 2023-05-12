@@ -6,6 +6,7 @@ public static class ClaimsPrincipalExtensions
 {
     public static string? GetName(this ClaimsPrincipal user)
     {
-        return user.FindFirstValue(ClaimTypes.Name);
+        return user.FindFirstValue(ClaimTypes.Name) 
+               ?? user.FindFirstValue(CustomClaimTypes.Name);
     }
 }
