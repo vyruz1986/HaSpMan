@@ -296,7 +296,6 @@
     private void SetTransactionTypes()
     {
         _transactionTypes = TransactionTypes.GetScopedTransactionTypes(TransactionTypeGroup);
-        Transaction.Counterparty = new AutocompleteCounterparty(string.Empty, null);
     }
 
     MudDatePicker _picker = new();
