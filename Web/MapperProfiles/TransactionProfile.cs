@@ -54,7 +54,8 @@ public class TransactionProfile : Profile
             .ForMember(x => x.Counterparty,
                 o => o.MapFrom(x => new AutocompleteCounterparty(x.CounterPartyName, x.MemberId)))
             .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments))
-            .ForMember(x => x.NewMembershipExpirationDate, o => o.Ignore());
+            .ForMember(x => x.NewMembershipExpirationDate, o => o.Ignore())
+            .ForMember(x => x.ApplyMembershipCalculation, o => o.Ignore());
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
         

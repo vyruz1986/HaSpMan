@@ -55,6 +55,7 @@
     {
         var memberId = Transaction.Counterparty.MemberId;
         var expirationDate = Transaction.NewMembershipExpirationDate;
+        var applyCalculation = Transaction.ApplyMembershipCalculation;
         var command = new EditTransactionCommand(
             Id: TransactionId,
             CounterPartyName: Transaction.Counterparty.Name!,
@@ -70,7 +71,7 @@
                 .ToList()
                 );
         var response = await Mediator.Send(command);
-        if (memberId.HasValue && expirationDate.HasValue)
+        if (memberId.HasValue && expirationDate.HasValue && applyCalculation)
         {
             await Mediator.Send(new ExtendMembershipCommand(memberId.Value, expirationDate.Value));
         }

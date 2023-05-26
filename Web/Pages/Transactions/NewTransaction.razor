@@ -41,6 +41,7 @@
     {
         var memberId = _newTransaction.Counterparty.MemberId;
         var expirationDate = _newTransaction.NewMembershipExpirationDate;
+        var newTransactionApplyMembershipCalculation = _newTransaction.ApplyMembershipCalculation;
         switch (_selectedTransactionTypeGroup)
         {
             case TransactionTypeGroup.Credit:
@@ -56,7 +57,7 @@
                 break;
             }
         }
-        if (memberId.HasValue && expirationDate.HasValue)
+        if (memberId.HasValue && expirationDate.HasValue && newTransactionApplyMembershipCalculation)
         {
             await Mediator.Send(new ExtendMembershipCommand(memberId.Value, expirationDate.Value));
         }
