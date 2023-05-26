@@ -65,8 +65,10 @@
             TransactionTypeAmounts: Transaction.TransactionTypeAmounts
                 .Select(x => new TransactionTypeAmount(x.TransactionType!.Value, x.Amount!.Value))
                 .ToList(),
-            AttachmentFiles: new List<AttachmentFile>()
-            );
+            AttachmentFiles: Transaction.TransactionAttachments
+                .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.UnsafePath))
+                .ToList()
+                );
         var response = await Mediator.Send(command);
         if (memberId.HasValue && expirationDate.HasValue)
         {
