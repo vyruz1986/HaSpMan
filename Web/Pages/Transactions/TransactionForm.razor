@@ -1,12 +1,10 @@
 ﻿@using Types
-@using MediatR
-@using Queries.Members.Handlers.AutocompleteMember
-@using Queries.Members.Handlers.GetBankAccountInfos
 @using Web.Models
-@using Commands.Handlers.Transaction.GetAttachment
+@using Queries.Members.Handlers.GetBankAccountInfos
 @using Queries.Members.Handlers.GetMemberById
 @using Queries.Members.ViewModels
-
+@using Queries.Members.Handlers.AutocompleteMember
+@using Commands.Handlers.Transaction.GetAttachment
 @inject IWebHostEnvironment Environment
 
 @inject IDialogService dialogService
@@ -91,8 +89,8 @@
                         TransactionTypeGroup.Debit => Icons.Material.Filled.ArrowForward,
                         TransactionTypeGroup.Credit => Icons.Material.Filled.ArrowBack,
                         _ => Icons.Material.Filled.Block
-                    };
-                    <MudIcon Class="mt-4" Icon="@icon" />
+                        };
+                    <MudIcon Class="mt-4" Icon="@icon"/>
                 }
             </MudItem>
             <MudItem xs="6" sm="3">
@@ -132,9 +130,9 @@
         <MudGrid Justify="Justify.FlexStart">
             <MudItem xs="12">
                 <MudTextField @bind-Text="Transaction.Description"
-                              For="(() => Transaction.Description)"
+                              For="() => Transaction.Description"
                               Label="Description"
-                              T="string" />
+                              T="string"/>
             </MudItem>
             <MudItem md="4"
                      sm="6"
@@ -169,7 +167,7 @@
             {
                 <MudItem xs="6">
                     <MudNumericField Value="transactionType.Amount"
-                                     ValueChanged="(value) => OnAmountChanged(transactionType, value)"
+                                     ValueChanged="value => OnAmountChanged(transactionType, value)"
                                      Label="Amount (€)"
                                      Min="0"
                                      For="@(() => transactionType.Amount)"
@@ -183,7 +181,7 @@
                                Variant="Variant.Outlined"
                                T="TransactionType?"
                                For="@(() => transactionType.TransactionType)">
-                               
+
                         <MudSelectItem T="TransactionType?" Value="@null"></MudSelectItem>
                         @foreach (var item in _transactionTypes)
                         {
@@ -201,18 +199,17 @@
         @if (CanExtendMembership && SelectedMember != null)
         {
             <MudCheckBox Color="Color.Secondary" @bind-Checked="Transaction.ApplyMembershipCalculation">Extend membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths more month(s) of membership</MudCheckBox>
-            
+
             <MudGrid>
-                <MudDatePicker Label="New expiration month" 
-                               @bind-Date="Transaction.NewMembershipExpirationDate" 
+
+                <MudDatePicker Label="New expiration month"
+                               @bind-Date="Transaction.NewMembershipExpirationDate"
                                DisableToolbar="true"
-                               OpenTo="OpenTo.Month" 
-                               DateFormat="MM/yyyy"
-                               MinDate="DateTime.Today"
-                               FixDay="@DateTime.Today.Day"/>
+                               DateFormat="dd/MM/yyyy"
+                               MinDate="DateTime.Today"/>
             </MudGrid>
         }
-        
+
     </MudCardContent>
 </MudCard>
 <MudCard class="mb-6 mt-2 pb-3 expand">
@@ -223,7 +220,7 @@
         @foreach (var attachment in Transaction.TransactionAttachments)
         {
             <MudListItem Icon="@Icons.Material.Outlined.Save"
-                         OnClick="(() => Download(attachment.FileName))">
+                         OnClick="() => Download(attachment.FileName)">
                 @attachment.FileName
 
             </MudListItem>
@@ -238,7 +235,7 @@
         <InputFile hidden
                    id="attachmentFilePicker"
                    multiple
-                   OnChange="UploadFiles" />
+                   OnChange="UploadFiles"/>
         <MudButton Color="Color.Primary"
                    for="attachmentFilePicker"
                    HtmlTag="label"
@@ -247,7 +244,7 @@
             Upload new attachment(s)
         </MudButton>
         @if (FileErrorMessage != null)
-        {   
+        {
             <p class="pa red-text text-darken-2">@FileErrorMessage</p>
         }
     </MudCardContent>
@@ -261,10 +258,10 @@
     public Models.TransactionForm Transaction { get; set; } = new();
 
     [Parameter]
-    public bool IsSearchForMembership {get;set;}
+    public bool IsSearchForMembership { get; set; }
 
     [Parameter]
-    public TransactionTypeGroup TransactionTypeGroup {get;set;}
+    public TransactionTypeGroup TransactionTypeGroup { get; set; }
 
     [Parameter]
     public bool IsNew { get; set; }
@@ -280,11 +277,11 @@
     private int AmountOfMonths { get; set; }
 
     private MemberDetail? SelectedMember { get; set; }
-    
+
     private bool CanExtendMembership =>
         Transaction.TransactionTypeAmounts.Any(x => x.TransactionType == TransactionType.DebitMemberFee) &&
         Transaction.Counterparty.MemberId.HasValue &&
-        SelectedMember != null && 
+        SelectedMember != null &&
         SelectedMember.MembershipFee != 0;
 
     protected override async Task OnInitializedAsync()
@@ -339,7 +336,7 @@
         }
     }
 
-    Converter<AutocompleteCounterparty> counterPartyConverter = new Converter<AutocompleteCounterparty>
+    Converter<AutocompleteCounterparty> counterPartyConverter = new()
     {
         SetFunc = value => value?.Name,
         GetFunc = text => new AutocompleteCounterparty(text, null)
@@ -374,7 +371,7 @@
             var path = Path.Combine(directory, trustedFileNameForFileStorage);
 
             await using FileStream fs = new(path, FileMode.Create);
-            await file.OpenReadStream(maxAllowedSize: _maxAllowedSize).CopyToAsync(fs);
+            await file.OpenReadStream(_maxAllowedSize).CopyToAsync(fs);
             var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
             Transaction.TransactionAttachments.Add(transaction);
         }
@@ -396,12 +393,12 @@
 
     private Task OnChangeTypeGroup(TransactionTypeGroup typeGroup)
     {
-        if(TransactionTypeGroup == typeGroup)
+        if (TransactionTypeGroup == typeGroup)
             return Task.CompletedTask;
 
         TransactionTypeGroup = typeGroup;
         SetTransactionTypes();
-        foreach(var transactionTypeAmount in Transaction.TransactionTypeAmounts)
+        foreach (var transactionTypeAmount in Transaction.TransactionTypeAmounts)
             transactionTypeAmount.TransactionType = null;
 
         return Task.CompletedTask;
@@ -412,7 +409,7 @@
         transactionTypeAmount.Amount = value;
         await CalculateMembershipExpirationDate();
     }
-    
+
 
     private async Task CalculateMembershipExpirationDate()
     {
@@ -425,8 +422,8 @@
         SelectedMember = member;
         var transactionTypeForMembershipFee =
             Transaction.TransactionTypeAmounts.SingleOrDefault(x => x.TransactionType == TransactionType.DebitMemberFee);
-        if (transactionTypeForMembershipFee != null && 
-            transactionTypeForMembershipFee.Amount is not null or 0 && 
+        if (transactionTypeForMembershipFee != null &&
+            transactionTypeForMembershipFee.Amount is not null or 0 &&
             SelectedMember.MembershipExpiryDate.HasValue && SelectedMember.MembershipFee != 0)
         {
             AmountOfMonths = (int)Math.Floor((double)transactionTypeForMembershipFee.Amount / SelectedMember.MembershipFee);
@@ -434,5 +431,6 @@
             Transaction.NewMembershipExpirationDate = _newExpirationDate;
         }
     }
+
 
 }
