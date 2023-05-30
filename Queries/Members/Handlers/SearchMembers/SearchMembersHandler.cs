@@ -28,7 +28,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
     {
         var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var memberQueryable = context.Members
-           
+
             .AsNoTracking()
             .Where(GetTextFilterCriteria(request.SearchString));
 
@@ -47,7 +47,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
         var orderedQueryable = GetOrderedQueryable(request, memberQueryable);
 
         var memberSummaryQueryable = orderedQueryable
-            .Select(x => new MemberSummary(x.Id, x.Name, x.Address.ToString(), x.Email!, x.PhoneNumber!, x.IsActive(), x.MembershipExpiryDate!.Value))
+            .Select(x => new MemberSummary(x.Id, x.Name, x.Address.ToString(), x.Email!, x.PhoneNumber!, x.IsActive(), x.MembershipExpiryDate))
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);
 

@@ -199,5 +199,6 @@
         ? Color.Success
         : Color.Error;
 
-    private string GetExpiryDate(MemberSummary member) => member.MembershipExpiryDate.Date.ToString("dd/MM/yyyy");
+    private string GetExpiryDate(MemberSummary member) => member.MembershipExpiryDate?.Date.ToString("dd/MM/yyyy")
+        ?? "Never";
 }
