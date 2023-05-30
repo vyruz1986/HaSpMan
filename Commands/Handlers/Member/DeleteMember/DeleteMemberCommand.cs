@@ -15,10 +15,8 @@ public class DeleteMemberHandler : IRequestHandler<DeleteMemberCommand>
 
     public async Task Handle(DeleteMemberCommand request, CancellationToken cancellationToken)
     {
-        var member = await _memberRepository.GetById(request.Id);
-
-        if (member == null)
-            throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
+        var member = await _memberRepository.GetById(request.Id)
+            ?? throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
 
         _memberRepository.Remove(member);
 

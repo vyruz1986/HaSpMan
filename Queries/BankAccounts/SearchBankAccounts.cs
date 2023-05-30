@@ -65,6 +65,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
     private static IQueryable<BankAccount> GetOrderedQueryable(SearchBankAccountsQuery request, IQueryable<BankAccount> memberQueryable)
     {
         if (request.SortDirection == SortDirection.Ascending)
+        {
             memberQueryable = request.OrderBy switch
             {
                 BankAccountDetailOrderOption.Name => memberQueryable
@@ -74,8 +75,10 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
                 _ => memberQueryable
                     .OrderBy(m => m.Name)
             };
+        }
 
         if (request.SortDirection == SortDirection.Descending)
+        {
             memberQueryable = request.OrderBy switch
             {
                 BankAccountDetailOrderOption.Name => memberQueryable
@@ -85,6 +88,8 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
                 _ => memberQueryable
                     .OrderByDescending(m => m.Name)
             };
+        }
+
         return memberQueryable;
     }
 

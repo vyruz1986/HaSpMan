@@ -22,17 +22,11 @@ public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachme
     {
         
         var transactionId = request.TransactionId;
-        var transaction = await _transactionRepository.GetByIdAsync(transactionId, cancellationToken);
-        if (transaction == null)
-        {
-            throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
-        }
+        var transaction = await _transactionRepository.GetByIdAsync(transactionId, cancellationToken)
+            ?? throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
 
-        var attachment = transaction.Attachments.SingleOrDefault(x => x.Name == request.FileName);
-        if (attachment == null)
-        {
-            throw new ArgumentException($"No attachment found with name {request.FileName}", nameof(request.FileName));
-        }
+        var attachment = transaction.Attachments.SingleOrDefault(x => x.Name == request.FileName)
+            ?? throw new ArgumentException($"No attachment found with name {request.FileName}", nameof(request.FileName));
 
         var file = await _attachmentStorage.GetAsync(attachment.FullPath, cancellationToken);
         return file;        

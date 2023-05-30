@@ -18,11 +18,8 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Gu
     }
     public async Task<Guid> Handle(EditTransactionCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (transaction == null)
-        {
-            throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
-        }
+        var transaction = await _transactionRepository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
 
 
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);

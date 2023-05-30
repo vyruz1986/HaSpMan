@@ -32,12 +32,12 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
             .AsNoTracking()
             .Where(GetTextFilterCriteria(request.SearchString));
 
-        if(!request.ShowActive)
+        if (!request.ShowActive)
         {
             memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate != null && m.MembershipExpiryDate.Value.Date < DateTimeOffset.Now.Date);
         }
 
-        if(!request.ShowInactive)
+        if (!request.ShowInactive)
         {
             memberQueryable = memberQueryable.Where(m => m.MembershipExpiryDate == null || m.MembershipExpiryDate!.Value.Date >= DateTimeOffset.Now.Date);
         }

@@ -28,7 +28,7 @@ public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTra
 
     }
 
-    private Action<OwnedNavigationBuilder<CreditTransaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
+    private static Action<OwnedNavigationBuilder<CreditTransaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
     {
         return cfg =>
         {
