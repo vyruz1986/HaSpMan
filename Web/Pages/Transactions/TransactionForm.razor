@@ -201,7 +201,6 @@
             <MudCheckBox Color="Color.Secondary" @bind-Checked="Transaction.ApplyMembershipCalculation">Extend membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths more month(s) of membership</MudCheckBox>
 
             <MudGrid>
-
                 <MudDatePicker Label="New expiration month"
                                @bind-Date="Transaction.NewMembershipExpirationDate"
                                DisableToolbar="true"
@@ -217,12 +216,18 @@
         <MudListSubheader>
             Attachments
         </MudListSubheader>
+        @foreach (var attachment in Transaction.NewTransactionAttachments)
+        {
+            <MudListItem Icon="@Icons.Material.Outlined.SaveAs"
+                         OnClick="() => Download(attachment.FileName)">
+                @attachment.FileName
+            </MudListItem>
+        }
         @foreach (var attachment in Transaction.TransactionAttachments)
         {
             <MudListItem Icon="@Icons.Material.Outlined.Save"
                          OnClick="() => Download(attachment.FileName)">
                 @attachment.FileName
-
             </MudListItem>
         }
     </MudList>
@@ -360,9 +365,9 @@
             return;
         }
         var existingFileNames = Transaction.TransactionAttachments.Select(x => x.FileName).ToList();
-        var duplicateEntries = entries.Where(x => existingFileNames.All(fileName => fileName != x.Name));
+        var newFiles = entries.Where(x => existingFileNames.All(fileName => fileName != x.Name));
 
-        foreach (var file in duplicateEntries)
+        foreach (var file in newFiles)
         {
             var trustedFileNameForFileStorage = Path.GetRandomFileName();
             var directory = Path.Combine(Environment.ContentRootPath,
@@ -372,8 +377,8 @@
 
             await using FileStream fs = new(path, FileMode.Create);
             await file.OpenReadStream(_maxAllowedSize).CopyToAsync(fs);
-            var transaction = new TransactionAttachment(file.Name, file.ContentType, path);
-            Transaction.TransactionAttachments.Add(transaction);
+            var transaction = new NewTransactionAttachment(file.Name, file.ContentType, path);
+            Transaction.NewTransactionAttachments.Add(transaction);
         }
     }
 

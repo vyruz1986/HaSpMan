@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 using Queries.Members.Handlers.AutocompleteMember;
 
@@ -17,6 +16,7 @@ public class TransactionForm
             new(TransactionType.DebitMemberFee, null)
         };
         TransactionAttachments = new List<TransactionAttachment>();
+        NewTransactionAttachments = new List<NewTransactionAttachment>();
     }
 
     public Guid Id { get; set; }
@@ -36,8 +36,8 @@ public class TransactionForm
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
 
-
     public ICollection<TransactionAttachment> TransactionAttachments { get; set; }
+    public ICollection<NewTransactionAttachment> NewTransactionAttachments { get; set; }
     public DateTime? NewMembershipExpirationDate { get; set; }
     public bool ApplyMembershipCalculation { get; set; }
 }
@@ -60,7 +60,17 @@ public class TransactionTypeAmountForm
 
 public class TransactionAttachment
 {
-    public TransactionAttachment(string fileName, string contentType, string unsafePath)
+    public TransactionAttachment(string fileName)
+    {
+        FileName = fileName;
+    }
+    public string FileName { get; set; }
+}
+
+
+public class NewTransactionAttachment
+{
+    public NewTransactionAttachment(string fileName, string contentType, string unsafePath)
     {
         FileName = fileName;
         ContentType = contentType;

@@ -20,15 +20,15 @@ public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCom
     {
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new DebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
-            request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), 
-            request.MemberId, 
+            request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(),
+            request.MemberId,
             request.TransactionTypeAmounts);
 
         _transactionRepository.Add(transaction);
         await _transactionRepository.SaveAsync(cancellationToken);
 
 
-        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.AttachmentFiles), cancellationToken);
+        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
 
         return transaction.Id;
     }
