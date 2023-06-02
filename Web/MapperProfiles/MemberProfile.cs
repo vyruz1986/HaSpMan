@@ -2,6 +2,7 @@ using AutoMapper;
 
 using Commands.Handlers.Member.AddMember;
 
+using Queries.Members;
 using Queries.Members.ViewModels;
 
 using Types;
@@ -32,6 +33,10 @@ public class MemberProfile : Profile
             .ForMember(m => m.MembershipFee, o => o.Ignore())
             .ForMember(m => m.PhoneNumber, o => o.Ignore())
             .ForMember(m => m.Email, o => o.Ignore());
+
+        CreateMap<MemberForm, MemberExistsByNameAndAddressQuery>()
+            .ForCtorParam(nameof(MemberExistsByNameAndAddressQuery.ExcludeId), o =>
+                o.MapFrom((_, context) => context.Items[MemberProfileItems.MemberId]));
     }
     private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
     {
@@ -40,4 +45,9 @@ public class MemberProfile : Profile
 
         return dateTimeOffset!.Value.DateTime;
     }
+}
+
+public static class MemberProfileItems
+{
+    public const string MemberId = nameof(MemberId);
 }

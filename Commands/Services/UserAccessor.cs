@@ -6,7 +6,7 @@ namespace Commands.Services;
 
 public class UserAccessor : IUserAccessor
 {
-    private IHttpContextAccessor _accessor;
+    private readonly IHttpContextAccessor _accessor;
     public UserAccessor(IHttpContextAccessor accessor)
     {
         _accessor = accessor ?? throw new ArgumentException("Valid IHttpContextAccessor is needed", nameof(accessor));

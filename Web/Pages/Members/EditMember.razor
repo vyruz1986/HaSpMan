@@ -4,6 +4,8 @@
 
 @using Commands.Handlers.Member.EditMember
 @using Queries.Members.Handlers.GetMemberById
+@using Queries.Members;
+@using MapperProfiles;
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
@@ -11,18 +13,14 @@
 
 <h1 class="my-6">Edit member</h1>
 
-<EditForm Model="@member" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowError">
+<EditForm Model="@member" OnValidSubmit="@SubmitMember" OnInvalidSubmit="@ShowFormError">
     <DataAnnotationsValidator />
 
     <MemberForm Member="@member" />
 
     <MudItem Class="d-flex justify-start" xs="12">
-        <MudButton ButtonType="ButtonType.Submit"
-                   Class="my-8"
-                   Color="Color.Primary"
-                   DisableElevation="true"
-                   Size="Size.Large"
-                   Variant="Variant.Filled">
+        <MudButton ButtonType="ButtonType.Submit" Class="my-8" Color="Color.Primary" DisableElevation="true"
+            Size="Size.Large" Variant="Variant.Filled">
             Save member
         </MudButton>
     </MudItem>
@@ -44,6 +42,9 @@
 
     private async Task SubmitMember()
     {
+        if (await EnsureMemberDoesNotBecomeDuplicate())
+            return;
+
         var command = new EditMemberCommand(
             Id: MemberId,
             FirstName: member.FirstName!,
@@ -53,23 +54,47 @@
                 City: member.City!,
                 Country: member.Country!,
                 ZipCode: member.ZipCode!,
-                HouseNumber: member.HouseNumber!
-                ),
+                HouseNumber: member.HouseNumber!),
             Email: member.Email!,
             PhoneNumber: member.PhoneNumber!,
             MembershipFee: member.MembershipFee,
-            MembershipExpiryDate: member.MembershipExpiryDate == null ? (DateTimeOffset?)null : new
-                DateTimeOffset(member.MembershipExpiryDate!.Value)
-            );
+            MembershipExpiryDate: member.MembershipExpiryDate == null
+                ? (DateTimeOffset?)null
+                : new DateTimeOffset(member.MembershipExpiryDate!.Value));
+
         await _mediator.Send(command);
         Snackbar.Clear();
         Snackbar.Add($"Member {member.FirstName} {member.LastName} edited successfully!", Severity.Success);
         NavManager.NavigateTo("/members");
     }
 
-    private void ShowError()
+    private void ShowFormError()
+    {
+        ShowError("Please correct all errors on the form");
+    }
+
+    private void ShowError(string reason)
     {
         Snackbar.Clear();
-        Snackbar.Add("Please correct all errors on the form", Severity.Error);
+        Snackbar.Add(reason, Severity.Error);
+    }
+
+    private async Task<bool> EnsureMemberDoesNotBecomeDuplicate()
+    {
+        if (member.Email is not null && await _mediator.Send(new MemberExistsByEmailQuery(member.Email, MemberId)))
+        {
+            ShowError("Member with same email already exists");
+            return true;
+        }
+
+        var memberExistsByNameAndAddressQuery = _mapper.Map<MemberExistsByNameAndAddressQuery>(member,
+            o => o.Items[MemberProfileItems.MemberId] = MemberId);
+        if (await _mediator.Send(memberExistsByNameAndAddressQuery))
+        {
+            ShowError("Member with same name and address already exists");
+            return true;
+        }
+
+        return false;
     }
 }

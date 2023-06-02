@@ -145,11 +145,7 @@ public class Member
 
     public bool IsActive()
     {
-        if (MembershipExpiryDate == null)
-        {
-            return true;
-        }
-
-        return MembershipExpiryDate.Value.Date >= DateTimeOffset.Now.Date;
+        return MembershipExpiryDate == null
+            || MembershipExpiryDate.Value.Date >= DateTimeOffset.Now.Date;
     }
 }

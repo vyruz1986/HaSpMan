@@ -18,10 +18,8 @@ public class ExtendMembershipHandler : IRequestHandler<ExtendMembershipCommand>
 
     public async Task Handle(ExtendMembershipCommand request, CancellationToken cancellationToken)
     {
-        var member = await _repository.GetById(request.Id);
-
-        if (member == null)
-            throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
+        var member = await _repository.GetById(request.Id)
+            ?? throw new ArgumentException($"No member found by Id {request.Id}", nameof(request.Id));
 
         var performingUser = _userAccessor.User.GetName()!;
 

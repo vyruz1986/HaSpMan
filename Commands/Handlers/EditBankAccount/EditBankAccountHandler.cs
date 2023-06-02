@@ -18,11 +18,8 @@ public class EditBankAccountHandler : IRequestHandler<EditBankAccountCommand, Gu
 
     public async Task<Guid> Handle(EditBankAccountCommand request, CancellationToken cancellationToken)
     {
-        var bankAccount = await _repository.GetByIdAsync(request.Id, cancellationToken);
-        if (bankAccount is null)
-        {
-            throw new ArgumentException($"No bankaccount found for Id {request.Id}", nameof(request.Id));
-        }
+        var bankAccount = await _repository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new ArgumentException($"No bankaccount found for Id {request.Id}", nameof(request.Id));
 
         var performingUser = _userAccessor.User.GetName()!;
 
