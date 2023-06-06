@@ -4,6 +4,8 @@
 
 @using Commands.Handlers.Member.AddMember
 @using Queries.Members;
+@using Web.MapperProfiles;
+
 @inject IMediator _mediator
 @inject IMapper _mapper
 @inject ISnackbar Snackbar
@@ -62,7 +64,10 @@
             return true;
         }
 
-        if (await _mediator.Send(_mapper.Map<MemberExistsByNameAndAddressQuery>(_newMember)))
+        var query = _mapper.Map<MemberExistsByNameAndAddressQuery>(_newMember,
+                o => o.Items[MemberProfileItems.MemberId] = null);
+
+        if (await _mediator.Send(query))
         {
             ShowError("Member with same name and address already exists");
             return true;
