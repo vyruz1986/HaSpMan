@@ -14,8 +14,7 @@ public record AddCreditTransactionCommand(
     string Description,
     Guid? MemberId,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
-
+    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest<Guid>;
 
 public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditTransactionCommand>
 {
@@ -45,7 +44,7 @@ public class AddCreditTransactionCommandValidator : AbstractValidator<AddCreditT
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
 
-        RuleForEach(x => x.AttachmentFiles)
+        RuleForEach(x => x.NewAttachmentFiles)
             .SetValidator(new AttachmentValidator());
     }
 }

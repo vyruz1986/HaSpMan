@@ -1,4 +1,6 @@
-﻿using Domain;
+﻿using Commands.Handlers.Transaction.AddAttachments;
+
+using Domain;
 
 using FluentValidation;
 
@@ -11,7 +13,7 @@ public record AddDebitTransactionCommand(
     string Description,
     Guid? MemberId,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    ICollection<AttachmentFile> AttachmentFiles) : IRequest<Guid>;
+    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest<Guid>;
 
 public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTransactionCommand>
 {
@@ -40,5 +42,8 @@ public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTra
 
         RuleForEach(x => x.TransactionTypeAmounts)
             .SetValidator(new TransactionTypeValidator());
+
+        RuleForEach(x => x.NewAttachmentFiles)
+            .SetValidator(new AttachmentValidator());
     }
 }

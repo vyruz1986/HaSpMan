@@ -29,3 +29,12 @@ services:
       - 5202:8080
     volumes:
       - ./Infrastructure/Keycloak/DevRealm.json:/tmp/DevRealm.json
+ 
+  azurerite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+    volumes:
+      - ./.dev/azurite:/data

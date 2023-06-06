@@ -19,7 +19,6 @@ public class MemberProfile : Profile
            .ForCtorParam(nameof(AddMemberCommand.Address), o => o.MapFrom(src => src))
            .ForMember(m => m.Address, o => o.MapFrom(src => src));
 
-
         CreateMap<MemberForm, Address>();
 
         CreateMap<MemberDetail, MemberForm>()

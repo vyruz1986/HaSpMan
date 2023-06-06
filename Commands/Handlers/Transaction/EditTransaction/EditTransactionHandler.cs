@@ -16,11 +16,11 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Gu
         _mapper = mapper;
         _mediator = mediator;
     }
+
     public async Task<Guid> Handle(EditTransactionCommand request, CancellationToken cancellationToken)
     {
         var transaction = await _transactionRepository.GetByIdAsync(request.Id, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
-
 
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
 
@@ -30,11 +30,9 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Gu
         transaction.ChangeAmount(totalAmount, request.TransactionTypeAmounts);
         transaction.ChangeDescription(request.Description);
 
-
         await _transactionRepository.SaveAsync(cancellationToken);
 
-        
-        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.AttachmentFiles), cancellationToken);
+        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
 
         return transaction.Id;
     }
