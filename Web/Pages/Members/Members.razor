@@ -13,8 +13,7 @@
           Dense="true"
           Hover="true"
           @ref="_table"
-          ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))"
-          Loading="@loading">
+          ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Members</MudText>
         <MudSpacer />
@@ -34,8 +33,7 @@
                    DisableElevation="true"
                    Link="/members/new"
                    Size="Size.Small"
-                   Variant="Variant.Filled"
-                   Disabled="@loading">
+                   Variant="Variant.Filled">
             Add member
         </MudButton>
     </ToolBarContent>
@@ -71,6 +69,12 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
+            <MudTableSortLabel SortLabel="membershipExpiryDate"
+                               T="MemberSummary">
+                Expiry date
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
             Action
         </MudTh>
     </HeaderContent>
@@ -82,6 +86,7 @@
         <MudTd DataLabel="IsActive">
             <MudIcon Icon="@GetActiveIcon(context)" Title="@GetExpiryDate(context)" Color="@GetActiveIconColor(context)" />
         </MudTd>
+        <MudTd DataLabel="MembershipExpiryDate">@GetExpiryDate(context)</MudTd>
         <MudTd>
             <MudGrid >
                 <MudItem xs="6">
@@ -127,7 +132,8 @@
         }
     }
     private bool _showActive = true;
-    public bool ShowActive {
+    public bool ShowActive
+    {
         get => _showActive;
         set
         {
@@ -137,22 +143,18 @@
     }
 
     private bool _showInactive = true;
-    public bool ShowInactive {
+    public bool ShowInactive
+    {
         get => _showInactive;
-        set{
+        set
+        {
             _showInactive = value;
             _table?.ReloadServerData();
         }
     }
 
-    // TODO: Keeping this local variable shouldn't be necessary 
-    // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
-    // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
-    private bool loading = true;
-
     private async Task<TableData<MemberSummary>> ServerReload(TableState state)
     {
-        loading = true;
         StateHasChanged();
         MemberSummaryOrderOption orderBy = state.SortLabel switch
         {
@@ -160,28 +162,28 @@
             "address" => MemberSummaryOrderOption.Address,
             "email" => MemberSummaryOrderOption.Email,
             "phoneNumber" => MemberSummaryOrderOption.PhoneNumber,
-            "isActive"=> MemberSummaryOrderOption.IsActive,
+            "isActive" => MemberSummaryOrderOption.IsActive,
+            "membershipExpiryDate" => MemberSummaryOrderOption.MembershipExpiryDate,
             _ => MemberSummaryOrderOption.Name
         };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
-        var query = new SearchMembersQuery(_searchString,ShowActive, _showInactive, state.Page, state.PageSize, orderBy, sortDirection);
+        var query = new SearchMembersQuery(_searchString, ShowActive, _showInactive, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
-        loading = false;
         return new TableData<MemberSummary>()
-        {
-            TotalItems = data.Total,
-            Items = data.Items
-        };
+            {
+                TotalItems = data.Total,
+                Items = data.Items
+            };
     }
 
     private async Task OpenDeleteMemberDialog(MemberSummary member)
     {
         var options = new DialogOptions { };
         var parameters = new DialogParameters()
-        {
-            ["member"] = member
-        };
+            {
+                ["member"] = member
+            };
         var reference = DialogService.Show<DeleteMemberDialog>($"Remove member", parameters, options);
         var dialog = await reference.Result;
         if (!dialog.Canceled)
@@ -194,7 +196,7 @@
     private string GetActiveIcon(MemberSummary member) => member.IsActive
         ? Icons.Material.Filled.CheckBox
         : Icons.Material.Filled.CheckBoxOutlineBlank;
-        
+
     private Color GetActiveIconColor(MemberSummary member) => member.IsActive
         ? Color.Success
         : Color.Error;

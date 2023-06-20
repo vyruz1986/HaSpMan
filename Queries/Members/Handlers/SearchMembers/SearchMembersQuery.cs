@@ -21,5 +21,6 @@ public enum MemberSummaryOrderOption
     Address,
     Email,
     PhoneNumber,
-    IsActive
+    IsActive,
+    MembershipExpiryDate
 }
