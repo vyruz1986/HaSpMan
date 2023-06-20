@@ -30,12 +30,7 @@ public static class DbContextExtensions
             throw new ArgumentException("The value cannot be empty or whitespace.", nameof(connectionString));
         }
         var optionsBuilder = new DbContextOptionsBuilder<HaSpManContext>()
-            .UseSqlServer(connectionString, b =>
-            {
-                b.MigrationsAssembly("Persistence")
-                    .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan");
-                b.EnableRetryOnFailure();
-            });
+            .UseSqlServer(connectionString);
 
         var context = new HaSpManContext(optionsBuilder.Options);
         context.Database.Migrate();

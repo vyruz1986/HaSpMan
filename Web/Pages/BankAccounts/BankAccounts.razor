@@ -9,8 +9,7 @@
           Dense="true"
           Hover="true"
           @ref="table"
-          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetail>>>(ServerReload))"
-          Loading="@loading">
+          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetail>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Bankaccounts</MudText>
         <MudSpacer />
@@ -28,8 +27,7 @@
                    DisableElevation="true"
                    Link="/bankaccounts/new"
                    Size="Size.Small"
-                   Variant="Variant.Filled"
-                   Disabled="@loading">
+                   Variant="Variant.Filled">
             Add bankaccount
         </MudButton>
     </ToolBarContent>
@@ -47,12 +45,20 @@
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
+            Total amount
+        </MudTh>
+        <MudTh>
+            # of Transactions
+        </MudTh>
+        <MudTh>
             Action
         </MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>
         <MudTd DataLabel="AccountNumber">@context.AccountNumber</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.TotalAmount</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.NumberOfTransactions</MudTd>
         <MudTd>
             <MudGrid >
                 <MudItem xs="6">
@@ -82,14 +88,8 @@
     private MudTable<BankAccountDetail>? table;
     private string searchString = "";
 
-    // TODO: Keeping this local variable shouldn't be necessary 
-    // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
-    // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
-    private bool loading = true;
-
     private async Task<TableData<BankAccountDetail>> ServerReload(TableState state)
     {
-        loading = true;
         StateHasChanged();
 
         BankAccountDetailOrderOption orderBy = state.SortLabel switch
@@ -102,7 +102,6 @@
         var query = new SearchBankAccountsQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
-        loading = false;
         return new TableData<BankAccountDetail>()
         {
             TotalItems = data.Total,
