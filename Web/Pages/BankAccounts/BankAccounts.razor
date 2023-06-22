@@ -9,7 +9,7 @@
           Dense="true"
           Hover="true"
           @ref="table"
-          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetail>>>(ServerReload))">
+          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetailWithTotal>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Bankaccounts</MudText>
         <MudSpacer />
@@ -85,10 +85,10 @@
 </MudTable>
 
 @code {
-    private MudTable<BankAccountDetail>? table;
+    private MudTable<BankAccountDetailWithTotal>? table;
     private string searchString = "";
 
-    private async Task<TableData<BankAccountDetail>> ServerReload(TableState state)
+    private async Task<TableData<BankAccountDetailWithTotal>> ServerReload(TableState state)
     {
         StateHasChanged();
 
@@ -102,7 +102,7 @@
         var query = new SearchBankAccountsQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
-        return new TableData<BankAccountDetail>()
+        return new TableData<BankAccountDetailWithTotal>()
         {
             TotalItems = data.Total,
             Items = data.Items

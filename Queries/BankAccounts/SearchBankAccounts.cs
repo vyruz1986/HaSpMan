@@ -17,7 +17,7 @@ public record SearchBankAccountsQuery(
     int PageSize,
     BankAccountDetailOrderOption OrderBy,
     SortDirection SortDirection
-) : IRequest<Paginated<BankAccountDetail>>;
+) : IRequest<Paginated<BankAccountDetailWithTotal>>;
 
 public enum BankAccountDetailOrderOption
 {
@@ -25,7 +25,7 @@ public enum BankAccountDetailOrderOption
     AccountNumber,
 }
 
-public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery, Paginated<BankAccountDetail>>
+public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery, Paginated<BankAccountDetailWithTotal>>
 {
     private readonly IDbContextFactory<HaSpManContext> _contextFactory;
     private readonly IMapper _mapper;
@@ -36,7 +36,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
         _mapper = mapper;
     }
 
-    public async Task<Paginated<BankAccountDetail>> Handle(SearchBankAccountsQuery request, CancellationToken cancellationToken)
+    public async Task<Paginated<BankAccountDetailWithTotal>> Handle(SearchBankAccountsQuery request, CancellationToken cancellationToken)
     {
         var context = _contextFactory.CreateDbContext();
         var bankAccountsQueryable = context.BankAccountsWithTotals
@@ -48,13 +48,13 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
         bankAccountsQueryable = GetOrderedQueryable(request, bankAccountsQueryable);
 
         var bankAccountsDetailQueryable = bankAccountsQueryable
-            .ProjectTo<BankAccountDetail>(_mapper.ConfigurationProvider)
+            .ProjectTo<BankAccountDetailWithTotal>(_mapper.ConfigurationProvider)
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);
 
         var items = await bankAccountsDetailQueryable.ToListAsync(cancellationToken: cancellationToken);
 
-        return new Paginated<BankAccountDetail>
+        return new Paginated<BankAccountDetailWithTotal>
         {
             Items = items,
             Total = total
