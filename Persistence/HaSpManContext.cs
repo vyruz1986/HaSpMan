@@ -1,14 +1,18 @@
 using Domain;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
-using Types;
+using Persistence.Constants;
+using Persistence.Views;
 
 namespace Persistence;
 
 public class HaSpManContext : DbContext
 {
+    public HaSpManContext()
+    {
+    }
+
     public HaSpManContext(DbContextOptions<HaSpManContext> options)
        : base(options)
     {
@@ -16,14 +20,17 @@ public class HaSpManContext : DbContext
 
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<BankAccount> BankAccounts { get; set; } = null!;
+    public DbSet<BankAccountsWithTotals> BankAccountsWithTotals { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
-    
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.HasDefaultSchema("HaSpMan");
+        builder.HasDefaultSchema(Schema.HaSpMan);
         builder.ApplyConfigurationsFromAssembly(
-           typeof(Persistence.EntityConfigurations.MemberConfiguration).Assembly
+           typeof(EntityConfigurations.MemberConfiguration).Assembly
 
         );
         base.OnModelCreating(builder);

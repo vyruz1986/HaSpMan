@@ -12,14 +12,12 @@ namespace Commands.Handlers.Member.AddMember;
 public class AddMemberHandler : IRequestHandler<AddMemberCommand, Guid>
 {
     private readonly IMemberRepository _memberRepository;
-    private readonly IMapper _mapper;
     private readonly IUserAccessor _userAccessor;
     private readonly HaSpManContext _dbContext;
 
-    public AddMemberHandler(IMemberRepository memberRepository, IMapper mapper, IUserAccessor userAccessor, HaSpManContext dbContext)
+    public AddMemberHandler(IMemberRepository memberRepository, IUserAccessor userAccessor, HaSpManContext dbContext)
     {
         _memberRepository = memberRepository;
-        _mapper = mapper;
         _userAccessor = userAccessor;
         _dbContext = dbContext;
     }

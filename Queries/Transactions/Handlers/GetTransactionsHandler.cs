@@ -49,7 +49,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
 
     }
 
-    private IQueryable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IQueryable<Transaction> transactions)
+    private static IQueryable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IQueryable<Transaction> transactions)
     {
         transactions = request.SortDirection switch
         {
@@ -74,7 +74,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
         return transactions;
     }
 
-    public Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
+    public static Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
     {
         return t => t.CounterPartyName.ToLower().Contains(searchString) ||
                     t.Amount.ToString().Contains(searchString);

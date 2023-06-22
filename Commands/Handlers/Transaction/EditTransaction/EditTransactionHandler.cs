@@ -7,13 +7,11 @@ namespace Commands.Handlers.Transaction.EditTransaction;
 public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Guid>
 {
     private readonly ITransactionRepository _transactionRepository;
-    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
-    public EditTransactionHandler(ITransactionRepository transactionRepository, IMapper mapper, IMediator mediator)
+    public EditTransactionHandler(ITransactionRepository transactionRepository, IMediator mediator)
     {
         _transactionRepository = transactionRepository;
-        _mapper = mapper;
         _mediator = mediator;
     }
 

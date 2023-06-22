@@ -16,12 +16,10 @@ namespace Queries.Members.Handlers.SearchMembers;
 public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
 {
     private readonly IDbContextFactory<HaSpManContext> _contextFactory;
-    private readonly IMapper _mapper;
 
-    public SearchMembersHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
+    public SearchMembersHandler(IDbContextFactory<HaSpManContext> contextFactory)
     {
         _contextFactory = contextFactory;
-        _mapper = mapper;
     }
 
     public async Task<Paginated<MemberSummary>> Handle(SearchMembersQuery request, CancellationToken cancellationToken)

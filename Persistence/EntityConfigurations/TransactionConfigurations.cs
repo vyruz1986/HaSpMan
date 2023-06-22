@@ -38,7 +38,7 @@ public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTra
         };
     }
 
-    private Action<OwnedNavigationBuilder<CreditTransaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
+    private static Action<OwnedNavigationBuilder<CreditTransaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
     {
         return cfg =>
         {
@@ -78,7 +78,7 @@ public class DebitTransactionConfiguration : IEntityTypeConfiguration<DebitTrans
 
     }
 
-    private Action<OwnedNavigationBuilder<DebitTransaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
+    private static Action<OwnedNavigationBuilder<DebitTransaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
     {
         return cfg =>
         {
@@ -88,7 +88,7 @@ public class DebitTransactionConfiguration : IEntityTypeConfiguration<DebitTrans
         };
     }
 
-    private Action<OwnedNavigationBuilder<DebitTransaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
+    private static Action<OwnedNavigationBuilder<DebitTransaction, TransactionAttachment>> AttachmentConfiguration(string tableName)
     {
         return cfg =>
         {

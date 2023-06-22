@@ -39,10 +39,9 @@ public class MemberProfile : Profile
     }
     private static DateTime? ToDateTime(DateTimeOffset? dateTimeOffset)
     {
-        if (dateTimeOffset == null)
-            return null;
-
-        return dateTimeOffset!.Value.DateTime;
+        return dateTimeOffset == null
+            ? null
+            : dateTimeOffset!.Value.DateTime;
     }
 }
 

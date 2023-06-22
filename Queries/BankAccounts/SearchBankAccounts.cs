@@ -2,11 +2,10 @@ using System.Linq.Expressions;
 
 using AutoMapper.QueryableExtensions;
 
-using Domain;
-
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
+using Persistence.Views;
 
 using Queries.Enums;
 
@@ -40,7 +39,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
     public async Task<Paginated<BankAccountDetail>> Handle(SearchBankAccountsQuery request, CancellationToken cancellationToken)
     {
         var context = _contextFactory.CreateDbContext();
-        var bankAccountsQueryable = context.BankAccounts
+        var bankAccountsQueryable = context.BankAccountsWithTotals
             .AsNoTracking()
             .Where(GetFilterCriteria(request.SearchString));
 
@@ -54,7 +53,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
             .Take(request.PageSize);
 
         var items = await bankAccountsDetailQueryable.ToListAsync(cancellationToken: cancellationToken);
-        
+
         return new Paginated<BankAccountDetail>
         {
             Items = items,
@@ -62,18 +61,18 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
         };
     }
 
-    private static IQueryable<BankAccount> GetOrderedQueryable(SearchBankAccountsQuery request, IQueryable<BankAccount> memberQueryable)
+    private static IQueryable<BankAccountsWithTotals> GetOrderedQueryable(SearchBankAccountsQuery request, IQueryable<BankAccountsWithTotals> memberQueryable)
     {
         if (request.SortDirection == SortDirection.Ascending)
         {
             memberQueryable = request.OrderBy switch
             {
                 BankAccountDetailOrderOption.Name => memberQueryable
-                    .OrderBy(m => m.Name),
+                    .OrderBy(m => m.Account.Name),
                 BankAccountDetailOrderOption.AccountNumber => memberQueryable
-                    .OrderBy(m => m.AccountNumber),
+                    .OrderBy(m => m.Account.AccountNumber),
                 _ => memberQueryable
-                    .OrderBy(m => m.Name)
+                    .OrderBy(m => m.Account.Name)
             };
         }
 
@@ -82,21 +81,21 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
             memberQueryable = request.OrderBy switch
             {
                 BankAccountDetailOrderOption.Name => memberQueryable
-                    .OrderByDescending(m => m.Name),
+                    .OrderByDescending(m => m.Account.Name),
                 BankAccountDetailOrderOption.AccountNumber => memberQueryable
-                    .OrderByDescending(m => m.AccountNumber),
+                    .OrderByDescending(m => m.Account.AccountNumber),
                 _ => memberQueryable
-                    .OrderByDescending(m => m.Name)
+                    .OrderByDescending(m => m.Account.Name)
             };
         }
 
         return memberQueryable;
     }
 
-    private static Expression<Func<BankAccount, bool>> GetFilterCriteria(string searchString)
+    private static Expression<Func<BankAccountsWithTotals, bool>> GetFilterCriteria(string searchString)
     {
         var lowerCaseSearchString = searchString.ToLower();
-        return m => m.Name.ToLower().Contains(lowerCaseSearchString) ||
-                   m.AccountNumber.ToLower().Contains(lowerCaseSearchString);
+        return m => m.Account.Name.ToLower().Contains(lowerCaseSearchString) ||
+                   m.Account.AccountNumber.ToLower().Contains(lowerCaseSearchString);
     }
 }
