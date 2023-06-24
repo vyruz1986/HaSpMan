@@ -3,7 +3,7 @@
 using Persistence;
 using Persistence.Repositories;
 
-namespace Commands.Handlers.FinancialYear;
+namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 
 public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Guid>
 {

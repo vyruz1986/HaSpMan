@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistence.Repositories;
 
@@ -13,7 +15,12 @@ public class FinancialYearRepository : IFinancialYearRepository
         _context = contextFactory.CreateDbContext();
     }
 
-    public void Add(Domain.FinancialYear financialYear)
+    public Task<FinancialYear?> GetById(Guid id, CancellationToken cancellationToken)
+    {
+        return _context.FinancialYears.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
+
+    public void Add(FinancialYear financialYear)
     {
         _context.FinancialYears.Add(financialYear);
     }
@@ -26,6 +33,7 @@ public class FinancialYearRepository : IFinancialYearRepository
 
 public interface IFinancialYearRepository
 {
-    void Add(Domain.FinancialYear financialYear);
+    Task<FinancialYear?> GetById(Guid id, CancellationToken cancellationToken);
+    void Add(FinancialYear financialYear);
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }

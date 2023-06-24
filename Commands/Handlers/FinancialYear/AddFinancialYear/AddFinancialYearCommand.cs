@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Commands.Handlers.FinancialYear;
+namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 
 public record AddFinancialYearCommand(DateOnly StartDate) : IRequest<Guid>;
 
