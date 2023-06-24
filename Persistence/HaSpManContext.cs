@@ -22,7 +22,8 @@ public class HaSpManContext : DbContext
     public DbSet<BankAccount> BankAccounts { get; set; } = null!;
     public DbSet<BankAccountsWithTotals> BankAccountsWithTotals { get; set; } = null!;
     public DbSet<Transaction> Transactions { get; set; } = null!;
-    public DbSet<FinancialYear> FinancialYears { get; set; } = null!;
+
+    public DbSet<FinancialYear> FinancialYears { get;set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

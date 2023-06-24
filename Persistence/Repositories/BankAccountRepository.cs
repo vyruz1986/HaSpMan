@@ -1,4 +1,5 @@
 using Domain;
+using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -39,13 +40,4 @@ public class BankAccountRepository : IBankAccountRepository
 
         await _context.SaveChangesAsync(ct);
     }
-}
-
-public interface IBankAccountRepository
-{
-    Task<BankAccount?> GetByIdAsync(Guid id, CancellationToken ct);
-    Task<IEnumerable<BankAccount>> GetAllAsync(CancellationToken ct);
-    void Add(BankAccount account);
-    void Remove(BankAccount account);
-    Task SaveAsync(CancellationToken ct);
 }

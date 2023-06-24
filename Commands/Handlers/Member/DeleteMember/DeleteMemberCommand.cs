@@ -1,4 +1,4 @@
-﻿using Persistence.Repositories;
+﻿using Domain.Interfaces;
 
 namespace Commands.Handlers.Member.DeleteMember;
 

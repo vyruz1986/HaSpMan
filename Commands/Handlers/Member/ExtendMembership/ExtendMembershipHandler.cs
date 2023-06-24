@@ -1,7 +1,7 @@
 ﻿using Commands.Extensions;
 using Commands.Services;
 
-using Persistence.Repositories;
+using Domain.Interfaces;
 
 namespace Commands.Handlers.Member.ExtendMembership;
 

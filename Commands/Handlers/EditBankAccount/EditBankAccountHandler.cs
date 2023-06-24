@@ -1,10 +1,9 @@
 using Commands.Extensions;
-using Commands.Handlers.BankAccount.EditBankAccount;
 using Commands.Services;
 
-using Persistence.Repositories;
+using Domain.Interfaces;
 
-namespace Commands.Handlers.EditBankAccount;
+namespace Commands.Handlers.BankAccount.EditBankAccount;
 
 public class EditBankAccountHandler : IRequestHandler<EditBankAccountCommand, Guid>
 {

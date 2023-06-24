@@ -1,4 +1,5 @@
 using Domain;
+using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -43,14 +44,4 @@ public class MemberRepository : IMemberRepository
         await _context.SaveChangesAsync(cancellationToken);
     }
 
-}
-
-public interface IMemberRepository
-{
-    Task<Member?> GetById(Guid id);
-    Task<Member?> GetByEmail(string email);
-    Task<IEnumerable<Member>> GetAllAsync();
-    void Add(Member member);
-    void Remove(Member member);
-    Task Save(CancellationToken cancellationToken);
 }
