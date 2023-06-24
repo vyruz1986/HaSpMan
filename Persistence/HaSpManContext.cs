@@ -25,7 +25,13 @@ public class HaSpManContext : DbContext
     public DbSet<FinancialYear> FinancialYears { get; set; } = null!;
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
+        }
+        
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
