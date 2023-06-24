@@ -1,11 +1,10 @@
 using Commands.Extensions;
 using Commands.Services;
 
-using Domain.Interfaces;
-
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
+using Persistence.Repositories;
 
 namespace Commands.Handlers.Member.AddMember;
 

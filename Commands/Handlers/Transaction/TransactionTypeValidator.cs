@@ -2,8 +2,6 @@
 
 using FluentValidation;
 
-using Types;
-
 namespace Commands.Handlers.Transaction;
 
 public class TransactionTypeValidator : AbstractValidator<TransactionTypeAmount>

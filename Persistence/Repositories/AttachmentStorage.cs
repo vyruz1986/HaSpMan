@@ -2,8 +2,6 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 
-using Domain.Interfaces;
-
 using Microsoft.Extensions.Options;
 
 using Persistence.Configuration;
@@ -49,4 +47,12 @@ public class AttachmentStorage : IAttachmentStorage
     {
         throw new NotImplementedException();
     }
+}
+
+public interface IAttachmentStorage
+{
+    Task AddAsync(string path, string contentType, byte[] bytes, CancellationToken cancellationToken);
+
+    Task<Attachment> GetAsync(string blobUri, CancellationToken cancellationToken);
+    void Delete(string blobUri, CancellationToken cancellationToken);
 }

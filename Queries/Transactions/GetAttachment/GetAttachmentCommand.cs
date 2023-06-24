@@ -1,10 +1,8 @@
-﻿using Domain.Interfaces;
-
-using Persistence.Repositories;
+﻿using Persistence.Repositories;
 
 using Types;
 
-namespace Commands.Handlers.Transaction.GetAttachment;
+namespace Queries.Transactions.GetAttachment;
 
 public record GetAttachmentQuery(Guid TransactionId, string FileName) : IRequest<Attachment>;
 

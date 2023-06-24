@@ -1,8 +1,6 @@
 using Commands.Handlers.Transaction.AddDebitTransaction;
 using Commands.Services;
 
-using Domain.Interfaces;
-
 using FluentValidation;
 
 using MediatR;

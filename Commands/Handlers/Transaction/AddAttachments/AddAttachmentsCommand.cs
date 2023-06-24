@@ -1,5 +1,4 @@
 ﻿using Domain;
-using Domain.Interfaces;
 
 using FluentValidation;
 
@@ -43,7 +42,7 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
     {
         var transaction = await _transactionRepository.GetByIdAsync(request.TransactionId, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
-
+        
         var transactionAttachments = await StoreAttachmentsAsync(request, cancellationToken);
         
         transaction.AddAttachments(transactionAttachments);

@@ -61,6 +61,10 @@ public abstract class Transaction
 
     public void ChangeCounterParty(string counterPartyName, Guid? memberId)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         if (memberId == MemberId && counterPartyName == CounterPartyName)
         {
             return;
@@ -72,6 +76,10 @@ public abstract class Transaction
 
     public void ChangeBankAccountId(Guid bankAccountId)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         if (bankAccountId == BankAccountId)
         {
             return;
@@ -82,6 +90,10 @@ public abstract class Transaction
 
     public void ChangeReceivedDateTime(DateTimeOffset receivedDateTime)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         if (receivedDateTime > DateTimeOffset.Now)
         {
             throw new ArgumentException($"Received date is set to be in the future: {receivedDateTime}",
@@ -98,6 +110,10 @@ public abstract class Transaction
 
     public void ChangeAmount(decimal amount, ICollection<TransactionTypeAmount> transactionTypeAmounts)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         var sumOfTransactionTypeAmounts = transactionTypeAmounts.Sum(x => x.Amount);
         if (amount != sumOfTransactionTypeAmounts)
         {
@@ -116,6 +132,10 @@ public abstract class Transaction
 
     public void ChangeDescription(string description)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         if (description == Description)
         {
             return;
@@ -126,11 +146,22 @@ public abstract class Transaction
 
     public void AddAttachments(ICollection<TransactionAttachment> attachments)
     {
+        if (Locked)
+        {
+            throw new Exception("Transaction is locked");
+        }
         foreach (var attachment in attachments)
         {
             Attachments.Add(attachment);
         }
     }
+
+    public void Lock()
+    {
+        Locked = true;
+    }
+
+    public bool Locked { get; set; }
 }
 public class DebitTransaction : Transaction
 {
