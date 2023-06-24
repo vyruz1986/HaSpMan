@@ -34,7 +34,7 @@ public class When_closing_a_financial_year
     public async Task It_should_mark_the_year_as_closed()
     {
         var financialYear = new Domain.FinancialYear(DateOnly.FromDateTime(DateTime.Now),
-            new List<Transaction>());
+            new List<Domain.Transaction>());
         _financialYearRepositoryMock
             .Setup(x => x.GetById(financialYear.Id, CancellationToken.None))
             .ReturnsAsync(financialYear);
@@ -47,7 +47,7 @@ public class When_closing_a_financial_year
     public async Task It_should_mark_all_related_transactions_as_as_locked()
     {
         var financialYear = new Domain.FinancialYear(DateOnly.FromDateTime(DateTime.Now),
-            new List<Transaction>()
+            new List<Domain.Transaction>()
             {
                 new CreditTransaction("Random counter party", Guid.NewGuid(), 20,DateTimeOffset.Now, "A description", new List<TransactionAttachment>(), null, new List<TransactionTypeAmount>())
             });
