@@ -1,31 +1,35 @@
 ﻿using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain;
-
-using Persistence.Repositories;
+using Domain.Interfaces;
 
 namespace Commands.Handlers.Transaction.AddDebitTransaction;
 
 public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCommand, Guid>
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IFinancialYearRepository _financialYearRepository;
     private readonly IMediator _mediator;
 
-    public AddDebitTransactionHandler(ITransactionRepository transactionRepository, IMediator mediator)
+    public AddDebitTransactionHandler(IFinancialYearRepository financialYearRepository, IMediator mediator)
     {
-        _transactionRepository = transactionRepository;
+        _financialYearRepository = financialYearRepository;
         _mediator = mediator;
     }
     public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
     {
+        var financialYear =
+            await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
+            ?? throw new ArgumentException($"No financial year found for date {request.ReceivedDateTime}", nameof(request.ReceivedDateTime));
+        
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new DebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
             request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(),
             request.MemberId,
             request.TransactionTypeAmounts);
 
-        _transactionRepository.Add(transaction);
-        await _transactionRepository.SaveAsync(cancellationToken);
+        financialYear.AddTransaction(transaction);
+
+        await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
 
         await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);

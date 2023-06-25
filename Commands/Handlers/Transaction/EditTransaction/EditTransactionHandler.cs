@@ -1,37 +1,45 @@
 ﻿using Commands.Handlers.Transaction.AddAttachments;
 
+using Domain.Interfaces;
+
 using Persistence.Repositories;
 
 namespace Commands.Handlers.Transaction.EditTransaction;
 
-public class EditTransactionHandler : IRequestHandler<EditTransactionCommand, Guid>
+public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IFinancialYearRepository _financialYearRepository;
     private readonly IMediator _mediator;
 
-    public EditTransactionHandler(ITransactionRepository transactionRepository, IMediator mediator)
+    public EditTransactionHandler(IFinancialYearRepository financialYearRepository, IMediator mediator)
     {
-        _transactionRepository = transactionRepository;
+        _financialYearRepository = financialYearRepository;
         _mediator = mediator;
     }
 
-    public async Task<Guid> Handle(EditTransactionCommand request, CancellationToken cancellationToken)
+    public async Task Handle(EditTransactionCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(request.Id, cancellationToken)
-            ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
+        var financialYear =
+            await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
+            ?? throw new ArgumentException($"No financial year found for date {request.ReceivedDateTime}", nameof(request.ReceivedDateTime));
+        
+        if(financialYear.StartDate >= request.ReceivedDateTime && 
+           financialYear.EndDate <= request.ReceivedDateTime)
+        {
+            financialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
+                request.ReceivedDateTime, request.TransactionTypeAmounts, request.Description);
+        }
+        else
+        {
+            var transaction = financialYear.Transactions.First(x => x.Id == request.Id);
+            financialYear.AddTransaction(transaction);
+            financialYear.Transactions.Remove(transaction);
+        }
 
-        var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
 
-        transaction.ChangeCounterParty(request.CounterPartyName, request.MemberId);
-        transaction.ChangeBankAccountId(request.BankAccountId);
-        transaction.ChangeReceivedDateTime(request.ReceivedDateTime);
-        transaction.ChangeAmount(totalAmount, request.TransactionTypeAmounts);
-        transaction.ChangeDescription(request.Description);
+        await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
-        await _transactionRepository.SaveAsync(cancellationToken);
-
-        await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
-
-        return transaction.Id;
+        await _mediator.Send(new AddAttachmentsCommand(request.Id, request.NewAttachmentFiles), cancellationToken);
+        
     }
 }

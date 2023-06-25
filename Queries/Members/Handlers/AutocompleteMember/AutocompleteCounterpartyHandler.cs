@@ -31,6 +31,7 @@ public class AutocompleteCounterpartyHandler : IRequestHandler<AutocompleteCount
 
 
         var counterParties = await context.Transactions
+            .AsNoTracking()
             .Where(x =>
                 x.MemberId == null &&
                 x.CounterPartyName.ToLower().Contains(request.SearchString.ToLower()))

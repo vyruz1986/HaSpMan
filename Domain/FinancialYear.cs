@@ -1,4 +1,6 @@
-﻿namespace Domain;
+﻿using Azure.Core;
+
+namespace Domain;
 
 public class FinancialYear
 {
@@ -18,13 +20,13 @@ public class FinancialYear
 
     public bool IsClosed { get; private set; }
 
-    public ICollection<Transaction> Transactions { get; set; }
+    public ICollection<Transaction> Transactions { get; private set; }
 
     public void Close()
     {
         if (IsClosed)
         {
-            throw new Exception("Financial year is already closed");
+            throw new InvalidOperationException("Financial year is already closed");
         }
         IsClosed = true;
         foreach (var transaction in Transactions)
@@ -37,8 +39,26 @@ public class FinancialYear
     {
         if (IsClosed)
         {
-            throw new Exception("Financial year is closed");
+            throw new InvalidOperationException("Financial year is closed");
         }
         Transactions.Add(transaction);
+    }
+
+    public void ChangeTransaction(Guid transactionId, string counterPartyName, Guid? memberId, Guid bankAccountId,
+        DateTimeOffset receivedDateTime, ICollection<TransactionTypeAmount> transactionTypeAmounts, string description)
+    {
+        if (IsClosed)
+        {
+            throw new InvalidOperationException("Financial year is already closed");
+        }
+
+        var transaction = Transactions.First(x => x.Id == transactionId);
+        var totalAmount = transactionTypeAmounts.Sum(x => x.Amount);
+
+        transaction.ChangeCounterParty(counterPartyName, memberId);
+        transaction.ChangeBankAccountId(bankAccountId);
+        transaction.ChangeReceivedDateTime(receivedDateTime);
+        transaction.ChangeAmount(totalAmount, transactionTypeAmounts);
+        transaction.ChangeDescription(description);
     }
 }

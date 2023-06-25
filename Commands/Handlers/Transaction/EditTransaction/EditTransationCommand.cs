@@ -14,7 +14,7 @@ public record EditTransactionCommand(
     DateTimeOffset ReceivedDateTime,
     string Description,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest<Guid>;
+    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest;
 
 
 public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>

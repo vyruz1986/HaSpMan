@@ -25,7 +25,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
     }
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var transactions = context.Transactions.AsNoTracking()
             .Where(GetFilterCriteria(request.SearchString));
 

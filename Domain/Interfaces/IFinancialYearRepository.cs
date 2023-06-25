@@ -13,4 +13,7 @@ public interface IFinancialYearRepository
     void Add(FinancialYear financialYear);
     Task SaveChangesAsync(CancellationToken cancellationToken);
     Task<FinancialYear?> GetMostRecentAsync(CancellationToken cancellationToken);
+
+    Task<FinancialYear?> GetFinancialYearByTransactionId(Guid transactionId, CancellationToken cancellationToken);
+    Task<FinancialYear?> GetFinancialYearByDateAsync(DateTimeOffset dateTime, CancellationToken cancellationToken);
 }

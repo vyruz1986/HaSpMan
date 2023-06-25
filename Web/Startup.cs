@@ -54,7 +54,6 @@ public class Startup
         services.Configure<StorageOptions>(Configuration.GetSection("Storage"));
 
         services.AddScoped<IMemberRepository, MemberRepository>();
-        services.AddScoped<ITransactionRepository, TransactionRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();
         services.AddScoped<IAttachmentStorage, AttachmentStorage>();
         services.AddAutoMapper(
