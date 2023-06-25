@@ -1,7 +1,5 @@
 ﻿using Domain.Interfaces;
 
-using Microsoft.EntityFrameworkCore;
-
 using Persistence;
 using Persistence.Repositories;
 
@@ -10,29 +8,39 @@ namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Guid>
 {
     private readonly IFinancialYearRepository _financialYearRepository;
+    private readonly IFinancialYearConfigurationRepository _financialYearConfigurationRepository;
+
     private readonly HaSpManContext _haSpManContext;
 
-    public AddFinancialYearHandler(IFinancialYearRepository financialYearRepository, HaSpManContext haSpManContext)
+    public AddFinancialYearHandler(IFinancialYearRepository financialYearRepository, 
+        IFinancialYearConfigurationRepository financialYearConfigurationRepository,
+        HaSpManContext haSpManContext)
     {
         _financialYearRepository = financialYearRepository;
+        _financialYearConfigurationRepository = financialYearConfigurationRepository;
         _haSpManContext = haSpManContext;
     }
     public async Task<Guid> Handle(AddFinancialYearCommand request, CancellationToken cancellationToken)
     {
-        await EnsureStartDateNotInExistingFinancialYear(request, cancellationToken);
-        var financialYear = new Domain.FinancialYear(request.StartDate, new List<Domain.Transaction>());
+        var configuration = await _financialYearConfigurationRepository.Get(cancellationToken) 
+            ?? throw new InvalidOperationException("Financial year configuration is missing");
+
+        
+        var lastFinancialYear = await _financialYearRepository.GetMostRecentAsync(cancellationToken);
+
+        // In case this is the first year we create, assume we want it to be this year.
+        // Otherwise, just add a new year
+        var year = lastFinancialYear == null ? DateTime.Now.Year : lastFinancialYear.EndDate.Year;
+
+        var startDate = new DateTimeOffset(new DateTime(year, configuration.StartDate.Month, configuration.StartDate.Day));
+
+        var financialYear = new Domain.FinancialYear(
+            startDate, 
+            startDate.AddYears(1).AddDays(-1),
+            new List<Domain.Transaction>());
+        
         _financialYearRepository.Add(financialYear);
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
         return financialYear.Id;
-    }
-
-    private async Task EnsureStartDateNotInExistingFinancialYear(AddFinancialYearCommand request, CancellationToken cancellationToken)
-    {
-        var financialYearAlreadyInExistingYear = await _haSpManContext.FinancialYears
-            .AsNoTracking()
-            .AnyAsync(x => x.EndDate <= request.StartDate, cancellationToken);
-
-        if (financialYearAlreadyInExistingYear)
-            throw new InvalidOperationException("Start date of year is in already existing year");
     }
 }

@@ -16,7 +16,7 @@ public class FinancialYearRepository : IFinancialYearRepository
         _context = contextFactory.CreateDbContext();
     }
 
-    public Task<FinancialYear?> GetById(Guid id, CancellationToken cancellationToken)
+    public Task<FinancialYear?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _context.FinancialYears.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
@@ -29,5 +29,10 @@ public class FinancialYearRepository : IFinancialYearRepository
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<FinancialYear?> GetMostRecentAsync(CancellationToken cancellationToken)
+    {
+        return _context.FinancialYears.OrderByDescending(x => x.StartDate).FirstOrDefaultAsync(cancellationToken);
     }
 }

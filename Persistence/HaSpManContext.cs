@@ -25,6 +25,8 @@ public class HaSpManContext : DbContext
 
     public DbSet<FinancialYear> FinancialYears { get;set; } = null!;
 
+    public DbSet<FinancialYearConfiguration> FinancialYearConfigurations { get; set; } = null!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)

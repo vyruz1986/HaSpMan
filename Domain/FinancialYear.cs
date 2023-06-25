@@ -5,18 +5,18 @@ public class FinancialYear
 #pragma warning disable CS8618
     public FinancialYear(){ } // Make EFCore happy
 #pragma warning restore CS8618
-    public FinancialYear(DateOnly startDate, ICollection<Transaction> transactions)
+    public FinancialYear(DateTimeOffset startDate, DateTimeOffset endDate, ICollection<Transaction> transactions)
     {
         StartDate = startDate;
-        EndDate = startDate.AddYears(1).AddDays(-1);
+        EndDate = endDate;
         Transactions = transactions;
     }
 
     public Guid Id { get; private set; }
-    public DateOnly StartDate { get; set; }
-    public DateOnly EndDate { get; private set;}
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset EndDate { get; private set;}
 
-    public bool IsClosed { get; set; }
+    public bool IsClosed { get; private set; }
 
     public ICollection<Transaction> Transactions { get; set; }
 
