@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Commands.Handlers.FinancialYear.CloseFinancialYear;
 
 using Domain;
+using Domain.Interfaces;
 
 using FluentAssertions;
 

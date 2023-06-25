@@ -1,4 +1,6 @@
-﻿using Persistence.Repositories;
+﻿using Domain.Interfaces;
+
+using Persistence.Repositories;
 
 namespace Commands.Handlers.FinancialYear.CloseFinancialYear;
 

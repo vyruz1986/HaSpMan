@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -29,11 +30,4 @@ public class FinancialYearRepository : IFinancialYearRepository
     {
         await _context.SaveChangesAsync(cancellationToken);
     }
-}
-
-public interface IFinancialYearRepository
-{
-    Task<FinancialYear?> GetById(Guid id, CancellationToken cancellationToken);
-    void Add(FinancialYear financialYear);
-    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

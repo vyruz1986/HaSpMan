@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Interfaces;
+
+using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 using Persistence.Repositories;
