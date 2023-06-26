@@ -61,8 +61,6 @@ public abstract class Transaction
 
     public void ChangeCounterParty(string counterPartyName, Guid? memberId)
     {
-
-        AssertTransactionIsNotLocked();
         if (memberId == MemberId && counterPartyName == CounterPartyName)
         {
             return;
@@ -74,8 +72,6 @@ public abstract class Transaction
 
     public void ChangeBankAccountId(Guid bankAccountId)
     {
-
-        AssertTransactionIsNotLocked();
         if (bankAccountId == BankAccountId)
         {
             return;
@@ -86,8 +82,6 @@ public abstract class Transaction
 
     public void ChangeReceivedDateTime(DateTimeOffset receivedDateTime)
     {
-
-        AssertTransactionIsNotLocked();
         if (receivedDateTime > DateTimeOffset.Now)
         {
             throw new ArgumentException($"Received date is set to be in the future: {receivedDateTime}",
@@ -104,8 +98,6 @@ public abstract class Transaction
 
     public void ChangeAmount(decimal amount, ICollection<TransactionTypeAmount> transactionTypeAmounts)
     {
-
-        AssertTransactionIsNotLocked();
         var sumOfTransactionTypeAmounts = transactionTypeAmounts.Sum(x => x.Amount);
         if (amount != sumOfTransactionTypeAmounts)
         {
@@ -124,8 +116,6 @@ public abstract class Transaction
 
     public void ChangeDescription(string description)
     {
-
-        AssertTransactionIsNotLocked();
         if (description == Description)
         {
             return;
@@ -136,27 +126,12 @@ public abstract class Transaction
 
     public void AddAttachments(ICollection<TransactionAttachment> attachments)
     {
-        AssertTransactionIsNotLocked();
         foreach (var attachment in attachments)
         {
             Attachments.Add(attachment);
         }
     }
-
-    private void AssertTransactionIsNotLocked()
-    {
-        if (Locked)
-        {
-            throw new InvalidOperationException("Transaction is locked");
-        }
-    }
-
-    public void Lock()
-    {
-        Locked = true;
-    }
-
-    public bool Locked { get; private set; }
+    
 }
 public class DebitTransaction : Transaction
 {

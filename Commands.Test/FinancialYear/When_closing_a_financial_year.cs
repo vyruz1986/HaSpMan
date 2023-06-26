@@ -59,7 +59,6 @@ public class When_closing_a_financial_year
         await SUT.Handle(new CloseFinancialYearCommand(financialYear.Id), CancellationToken.None);
 
         financialYear.IsClosed.Should().BeTrue();
-        financialYear.Transactions.Should().OnlyContain(x => x.Locked);
     }
 
     [Fact]

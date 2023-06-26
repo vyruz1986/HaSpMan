@@ -29,10 +29,6 @@ public class FinancialYear
             throw new InvalidOperationException("Financial year is already closed");
         }
         IsClosed = true;
-        foreach (var transaction in Transactions)
-        {
-            transaction.Lock();
-        }
     }
 
     public void AddTransaction(Transaction transaction)

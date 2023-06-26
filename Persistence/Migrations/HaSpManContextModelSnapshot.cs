@@ -44,40 +44,6 @@ namespace Persistence.Migrations
                     b.ToTable("BankAccounts", "HaSpMan");
                 });
 
-            modelBuilder.Entity("Domain.FinancialYear", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("EndDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsClosed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FinancialYears", "HaSpMan");
-                });
-
-            modelBuilder.Entity("Domain.FinancialYearConfiguration", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("StartDate")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FinancialYearConfigurations", "HaSpMan");
-                });
-
             modelBuilder.Entity("Domain.Member", b =>
                 {
                     b.Property<Guid>("Id")
@@ -142,12 +108,6 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("FinancialYearId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Locked")
-                        .HasColumnType("bit");
-
                     b.Property<Guid?>("MemberId")
                         .HasColumnType("uniqueidentifier");
 
@@ -156,31 +116,11 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FinancialYearId");
-
                     b.ToTable("Transactions", "HaSpMan");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Transaction");
 
                     b.UseTphMappingStrategy();
-                });
-
-            modelBuilder.Entity("Persistence.Views.BankAccountsWithTotals", b =>
-                {
-                    b.Property<Guid>("BankAccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("NumberOfTransactions")
-                        .HasColumnType("bigint");
-
-                    b.Property<decimal>("Total")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("BankAccountId");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("vwBankAccountTotals", "HaSpMan");
                 });
 
             modelBuilder.Entity("Domain.CreditTransaction", b =>
@@ -199,7 +139,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.BankAccount", b =>
                 {
-                    b.OwnsMany("Types.AuditEvent", "AuditEvents", b1 =>
+                    b.OwnsMany("Domain.BankAccount.AuditEvents#Types.AuditEvent", "AuditEvents", b1 =>
                         {
                             b1.Property<Guid>("BankAccountId")
                                 .HasColumnType("uniqueidentifier");
@@ -236,39 +176,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Member", b =>
                 {
-                    b.OwnsMany("Types.AuditEvent", "AuditEvents", b1 =>
-                        {
-                            b1.Property<Guid>("MemberId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<int>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
-
-                            b1.Property<string>("Description")
-                                .IsRequired()
-                                .HasMaxLength(1000)
-                                .HasColumnType("varchar");
-
-                            b1.Property<string>("PerformedBy")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("varchar");
-
-                            b1.Property<DateTimeOffset>("Timestamp")
-                                .HasColumnType("datetimeoffset");
-
-                            b1.HasKey("MemberId", "Id");
-
-                            b1.ToTable("Member_AuditEvents", "HaSpMan");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MemberId");
-                        });
-
-                    b.OwnsOne("Types.Address", "Address", b1 =>
+                    b.OwnsOne("Domain.Member.Address#Types.Address", "Address", b1 =>
                         {
                             b1.Property<Guid>("MemberId")
                                 .HasColumnType("uniqueidentifier");
@@ -306,6 +214,38 @@ namespace Persistence.Migrations
                                 .HasForeignKey("MemberId");
                         });
 
+                    b.OwnsMany("Domain.Member.AuditEvents#Types.AuditEvent", "AuditEvents", b1 =>
+                        {
+                            b1.Property<Guid>("MemberId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int");
+
+                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+
+                            b1.Property<string>("Description")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("varchar");
+
+                            b1.Property<string>("PerformedBy")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("varchar");
+
+                            b1.Property<DateTimeOffset>("Timestamp")
+                                .HasColumnType("datetimeoffset");
+
+                            b1.HasKey("MemberId", "Id");
+
+                            b1.ToTable("Member_AuditEvents", "HaSpMan");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MemberId");
+                        });
+
                     b.Navigation("Address")
                         .IsRequired();
 
@@ -314,11 +254,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Transaction", b =>
                 {
-                    b.HasOne("Domain.FinancialYear", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("FinancialYearId");
-
-                    b.OwnsMany("Domain.TransactionAttachment", "Attachments", b1 =>
+                    b.OwnsMany("Domain.Transaction.Attachments#Domain.TransactionAttachment", "Attachments", b1 =>
                         {
                             b1.Property<Guid>("TransactionId")
                                 .HasColumnType("uniqueidentifier");
@@ -347,7 +283,7 @@ namespace Persistence.Migrations
                                 .HasForeignKey("TransactionId");
                         });
 
-                    b.OwnsMany("Domain.TransactionTypeAmount", "TransactionTypeAmounts", b1 =>
+                    b.OwnsMany("Domain.Transaction.TransactionTypeAmounts#Domain.TransactionTypeAmount", "TransactionTypeAmounts", b1 =>
                         {
                             b1.Property<Guid>("TransactionId")
                                 .HasColumnType("uniqueidentifier");
@@ -375,22 +311,6 @@ namespace Persistence.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("TransactionTypeAmounts");
-                });
-
-            modelBuilder.Entity("Persistence.Views.BankAccountsWithTotals", b =>
-                {
-                    b.HasOne("Domain.BankAccount", "Account")
-                        .WithOne()
-                        .HasForeignKey("Persistence.Views.BankAccountsWithTotals", "BankAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
-            modelBuilder.Entity("Domain.FinancialYear", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }
