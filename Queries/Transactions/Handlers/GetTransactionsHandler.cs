@@ -26,7 +26,10 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
         var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var transactions = context.Transactions.AsNoTracking()
+        var transactions = 
+            context.FinancialYears
+            .SelectMany(x => x.Transactions)
+            .AsNoTracking()
             .Where(GetFilterCriteria(request.SearchString));
 
         var totalCount = await transactions.CountAsync(cancellationToken);

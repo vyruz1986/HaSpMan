@@ -30,7 +30,8 @@ public class AutocompleteCounterpartyHandler : IRequestHandler<AutocompleteCount
         }
 
 
-        var counterParties = await context.Transactions
+        var counterParties = await context.FinancialYears
+            .SelectMany(x => x.Transactions)
             .AsNoTracking()
             .Where(x =>
                 x.MemberId == null &&

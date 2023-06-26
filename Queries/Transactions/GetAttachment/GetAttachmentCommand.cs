@@ -22,10 +22,11 @@ public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachme
     }
     public async Task<Attachment> Handle(GetAttachmentQuery request, CancellationToken cancellationToken)
     {
-        var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var transactionId = request.TransactionId;
-        var transaction = 
-            await dbContext.Transactions
+        var transaction =
+            await context.FinancialYears
+                .SelectMany(x => x.Transactions)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == transactionId, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
