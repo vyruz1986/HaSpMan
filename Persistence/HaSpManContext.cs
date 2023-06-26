@@ -28,11 +28,8 @@ public class HaSpManContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
-        }
-        
+        optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
+
     }
 
     protected override void OnModelCreating(ModelBuilder builder)

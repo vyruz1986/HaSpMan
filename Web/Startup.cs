@@ -56,6 +56,8 @@ public class Startup
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();
         services.AddScoped<IAttachmentStorage, AttachmentStorage>();
+        services.AddScoped<IFinancialYearConfigurationRepository, FinancialYearConfigurationRepository>();
+        services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
         services.AddAutoMapper(
             typeof(MapperProfiles.MemberProfile),
             typeof(MapperProfiles.TransactionProfile),
