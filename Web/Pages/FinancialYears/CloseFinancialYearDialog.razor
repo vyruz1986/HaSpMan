@@ -1,0 +1,32 @@
+﻿@using Commands.Handlers.FinancialYear.CloseFinancialYear
+@using Queries.FinancialYears
+
+@inject IMediator _mediatr
+
+<MudDialog>
+    <DialogContent>
+        Are you sure you want to close financial year <strong>@FinancialYear.StartDateTimeOffset.Year - @FinancialYear.EndDateTimeOffset.Year</strong>?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public FinancialYear FinancialYear { get; set; } = null!;
+
+    private async Task Submit()
+    {
+
+        await _mediatr.Send(new CloseFinancialYearCommand(FinancialYear.Id));
+        MudDialog.Close(true);
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

@@ -38,7 +38,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
 
     public async Task<Paginated<BankAccountDetailWithTotal>> Handle(SearchBankAccountsQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var bankAccountsQueryable = context.BankAccountsWithTotals
             .AsNoTracking()
             .Where(GetFilterCriteria(request.SearchString));
