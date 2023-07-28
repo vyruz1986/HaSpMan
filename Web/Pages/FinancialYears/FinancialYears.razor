@@ -1,0 +1,103 @@
+@page "/financialyears"
+@attribute [Authorize]
+@using Queries.FinancialYears
+@using Commands.Handlers.FinancialYear.CloseFinancialYear
+
+@inject IMediator _mediator
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+<MudTable Class="mt-10 mw-9"
+          Dense="true"
+          Hover="true"
+          @ref="table"
+          ServerData="@(new Func<TableState, Task<TableData<FinancialYear>>>(ServerReload))">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Financial years</MudText>
+       
+    </ToolBarContent>
+    <HeaderContent>
+        
+        <MudTh>
+            Start date
+        </MudTh>
+        <MudTh>
+            End date
+        </MudTh>
+        <MudTh>
+            Is closed
+        </MudTh>
+        <MudTh>
+            
+        </MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.StartDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.IsCloded</MudTd>
+        <MudTd>
+            <MudGrid >
+                <MudItem xs="6">
+                    <MudTooltip Text="Close">
+                        <MudIconButton aria-label="Close"
+                                       Icon="@Icons.Material.Filled.Close" OnClick="() => CloseFinancialYear(context)">
+                        </MudIconButton>
+
+                    </MudTooltip>
+                </MudItem>
+            </MudGrid>
+        </MudTd>
+    </RowTemplate>
+    <NoRecordsContent>
+        <MudText>No matching records found</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>Loading...</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private MudTable<FinancialYear>? table;
+
+    private async Task<TableData<FinancialYear>> ServerReload(TableState state)
+    {
+        StateHasChanged();
+        
+        var query = new GetFinancialYearsQuery();
+        var data = await _mediator.Send(query);
+
+        return new TableData<FinancialYear>()
+        {
+            TotalItems = data.Count,
+            Items = data
+        };
+    }
+
+    private void OnSearch(string text)
+    {
+        table?.ReloadServerData();
+    }
+
+    private async Task CloseFinancialYear(FinancialYear financialYear)
+    {
+
+        var options = new DialogOptions { };
+        var parameters = new DialogParameters()
+        {
+            ["financialYear"] = financialYear
+        };
+        var reference = await DialogService.ShowAsync<CloseFinancialYearDialog>($"Close financial year", parameters, options);
+        var dialog = await reference.Result;
+        if (!dialog.Canceled)
+        {
+
+            Snackbar.Clear();
+            Snackbar.Add($"Closed financial year {financialYear.StartDateTimeOffset.Year} - {financialYear.EndDateTimeOffset.Year}");
+            table?.ReloadServerData();
+        }
+    }
+
+}

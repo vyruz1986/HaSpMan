@@ -1,7 +1,9 @@
 ﻿
+using Commands.Handlers.FinancialYear.AddFinancialYear;
 using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain;
+using Domain.Interfaces;
 
 using Persistence.Repositories;
 
@@ -9,22 +11,29 @@ namespace Commands.Handlers.Transaction.AddCreditTransaction;
 
 public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionCommand, Guid>
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IFinancialYearRepository _financialYearRepository;
     private readonly IMediator _mediator;
 
-    public AddCreditTransactionHandler(ITransactionRepository transactionRepository, IMediator mediator)
+    public AddCreditTransactionHandler(IFinancialYearRepository financialYearRepository, IMediator mediator)
     {
-        _transactionRepository = transactionRepository;
+        _financialYearRepository = financialYearRepository;
         _mediator = mediator;
     }
     public async Task<Guid> Handle(AddCreditTransactionCommand request, CancellationToken cancellationToken)
     {
+        
+        var financialYear = 
+            await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
+            ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new CreditTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
             request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId,
             request.TransactionTypeAmounts);
-        _transactionRepository.Add(transaction);
-        await _transactionRepository.SaveAsync(cancellationToken);
+
+        financialYear.AddTransaction(transaction);
+;
+        await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
         await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
 

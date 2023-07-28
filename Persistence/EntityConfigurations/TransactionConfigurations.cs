@@ -5,6 +5,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.EntityConfigurations;
 
+public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
+{
+    public void Configure(EntityTypeBuilder<Transaction> builder)
+    {
+
+        builder.ToTable("Transactions");
+        builder.HasDiscriminator<string>("Discriminator")
+            .HasValue<DebitTransaction>(nameof(DebitTransaction))
+            .HasValue<CreditTransaction>(nameof(CreditTransaction));
+    }
+}
+
 public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTransaction>
 {
 
@@ -58,7 +70,6 @@ public class DebitTransactionConfiguration : IEntityTypeConfiguration<DebitTrans
 
     public void Configure(EntityTypeBuilder<DebitTransaction> builder)
     {
-
 
         builder.Property(x => x.Amount).IsRequired();
         builder.Property(x => x.BankAccountId).IsRequired();

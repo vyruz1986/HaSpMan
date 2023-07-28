@@ -30,25 +30,27 @@ public class AttachmentValidator : AbstractValidator<AttachmentFile>
 
 public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit>
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IFinancialYearRepository _financialYearRepository;
     private readonly IAttachmentStorage _attachmentStorage;
 
-    public AddAttachmentsHandler(ITransactionRepository transactionRepository, IAttachmentStorage attachmentStorage)
+    public AddAttachmentsHandler(IFinancialYearRepository financialYearRepository, IAttachmentStorage attachmentStorage)
     {
-        _transactionRepository = transactionRepository;
+        _financialYearRepository = financialYearRepository;
         _attachmentStorage = attachmentStorage;
     }
 
     public async Task<Unit> Handle(AddAttachmentsCommand request, CancellationToken cancellationToken)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(request.TransactionId, cancellationToken)
-            ?? throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
+        var financialYear = await _financialYearRepository.GetFinancialYearByTransactionId(request.TransactionId, cancellationToken)
+            ?? throw new ArgumentException($"No financial year found for transactionId {request.TransactionId}", nameof(request.TransactionId));
+
+        var transaction = financialYear.Transactions.First(x => x.Id == request.TransactionId);
 
         var transactionAttachments = await StoreAttachmentsAsync(request, cancellationToken);
-        
+
         transaction.AddAttachments(transactionAttachments);
 
-        await _transactionRepository.SaveAsync(cancellationToken);
+        await _financialYearRepository.SaveChangesAsync(cancellationToken);
         
         return Unit.Value;
     }

@@ -1,28 +1,34 @@
 ﻿using Domain.Interfaces;
 
-using Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+
+using Persistence;
 
 using Types;
 
-namespace Commands.Handlers.Transaction.GetAttachment;
+namespace Queries.Transactions.GetAttachment;
 
 public record GetAttachmentQuery(Guid TransactionId, string FileName) : IRequest<Attachment>;
 
 public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachment>
 {
-    private readonly ITransactionRepository _transactionRepository;
+    private readonly IDbContextFactory<HaSpManContext> _dbContextFactory;
     private readonly IAttachmentStorage _attachmentStorage;
 
-    public GetAttachmentHandler(ITransactionRepository transactionRepository, IAttachmentStorage attachmentStorage)
+    public GetAttachmentHandler(IDbContextFactory<HaSpManContext> dbContextFactory, IAttachmentStorage attachmentStorage)
     {
-        _transactionRepository = transactionRepository;
+        _dbContextFactory = dbContextFactory;
         _attachmentStorage = attachmentStorage;
     }
     public async Task<Attachment> Handle(GetAttachmentQuery request, CancellationToken cancellationToken)
     {
-        
+        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var transactionId = request.TransactionId;
-        var transaction = await _transactionRepository.GetByIdAsync(transactionId, cancellationToken)
+        var transaction =
+            await context.FinancialYears
+                .SelectMany(x => x.Transactions)
+                .AsNoTracking()
+                .SingleOrDefaultAsync(x => x.Id == transactionId, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.TransactionId}", nameof(request.TransactionId));
 
         var attachment = transaction.Attachments.SingleOrDefault(x => x.Name == request.FileName)

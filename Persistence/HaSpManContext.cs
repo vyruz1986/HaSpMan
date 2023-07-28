@@ -21,10 +21,14 @@ public class HaSpManContext : DbContext
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<BankAccount> BankAccounts { get; set; } = null!;
     public DbSet<BankAccountsWithTotals> BankAccountsWithTotals { get; set; } = null!;
-    public DbSet<Transaction> Transactions { get; set; } = null!;
-
+    
+    public DbSet<FinancialYear> FinancialYears { get;set; } = null!;
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-            => optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
+    {
+        optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
+
+    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

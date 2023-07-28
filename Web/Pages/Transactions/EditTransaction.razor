@@ -70,7 +70,7 @@
                 .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.UnsafePath))
                 .ToList());
                 
-        var response = await Mediator.Send(command);
+        await Mediator.Send(command);
         if (memberId.HasValue && expirationDate.HasValue && applyCalculation)
         {
             await Mediator.Send(new ExtendMembershipCommand(memberId.Value, expirationDate.Value));

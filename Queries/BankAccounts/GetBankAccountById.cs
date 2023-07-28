@@ -19,7 +19,7 @@ public class GetBankAccountByIdHandler : IRequestHandler<GetBankAccountByIdQuery
 
     public async Task<BankAccountDetail> Handle(GetBankAccountByIdQuery request, CancellationToken cancellationToken)
     {
-        var context = _contextFactory.CreateDbContext();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
         var bankAccount = await context.BankAccounts.SingleAsync(b => b.Id == request.Id, cancellationToken: cancellationToken);
 
         return _mapper.Map<BankAccountDetail>(bankAccount);
