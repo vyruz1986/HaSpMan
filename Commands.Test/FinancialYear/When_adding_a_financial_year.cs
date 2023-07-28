@@ -24,7 +24,11 @@ public class When_adding_a_financial_year
     {
         _financialYearRepositoryMock = new Mock<IFinancialYearRepository>();
 
-        var financialYearConfigurationOptions = Options.Create(new FinancialYearConfiguration());
+        var financialYearConfigurationOptions = Options.Create(new FinancialYearConfiguration()
+        {
+            StartDate = new DateTimeOffset(new DateTime(2022,9,1)),
+            EndDate = new DateTimeOffset(new DateTime(2023,8,31))
+        });
 
         _haspmanDbContext = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
