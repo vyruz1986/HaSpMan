@@ -22,7 +22,7 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
     {
         var financialYear =
             await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
-            ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+            ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
 
         if (financialYear.StartDate >= request.ReceivedDateTime && 
            financialYear.EndDate <= request.ReceivedDateTime)
@@ -33,7 +33,15 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
         else
         {
             var transaction = financialYear.Transactions.First(x => x.Id == request.Id);
-            financialYear.AddTransaction(transaction);
+
+            var matchingFinancialYear =
+                await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime,
+                    cancellationToken)
+                ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+
+            matchingFinancialYear.AddTransaction(transaction);
+            matchingFinancialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
+                request.ReceivedDateTime, request.TransactionTypeAmounts, request.Description);
             financialYear.Transactions.Remove(transaction);
         }
 
