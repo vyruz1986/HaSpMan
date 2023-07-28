@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(HaSpManContext))]
-    [Migration("20230626190616_AddFinancialYearAsAggregateRoot")]
-    partial class AddFinancialYearAsAggregateRoot
+    [Migration("20230728184205_TransactionsBelongToFinancialYear")]
+    partial class TransactionsBelongToFinancialYear
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

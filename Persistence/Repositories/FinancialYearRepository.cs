@@ -51,7 +51,7 @@ public class FinancialYearRepository : IFinancialYearRepository
 
     public Task<FinancialYear?> GetFinancialYearByDateAsync(DateTimeOffset dateTime, CancellationToken cancellationToken)
     {
-        return _context.FinancialYears.SingleOrDefaultAsync(x => x.StartDate >= dateTime && x.EndDate <= dateTime,
+        return _context.FinancialYears.SingleOrDefaultAsync(x => x.StartDate <= dateTime && x.EndDate >= dateTime,
             cancellationToken);
     }
 }

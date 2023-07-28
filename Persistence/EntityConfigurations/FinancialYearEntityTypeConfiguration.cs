@@ -13,7 +13,7 @@ public class FinancialYearEntityTypeConfiguration : IEntityTypeConfiguration<Fin
         builder.Property(x => x.EndDate).IsRequired();
         builder.Property(x => x.IsClosed).IsRequired();
         // Owned entity types cannot have inheritance hierarchies https://learn.microsoft.com/en-us/ef/core/modeling/owned-entities#current-shortcomings
-        builder.HasMany(x => x.Transactions);
+        builder.HasMany(x => x.Transactions).WithOne();
         builder.Navigation(x => x.Transactions).AutoInclude(); 
     }
 }

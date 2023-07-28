@@ -60,6 +60,10 @@ namespace Persistence.Migrations
                 principalSchema: "HaSpMan",
                 principalTable: "FinancialYears",
                 principalColumn: "Id");
+
+
+            
+            
         }
 
         /// <inheritdoc />
