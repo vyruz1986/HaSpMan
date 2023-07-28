@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Persistence.Repositories;
 

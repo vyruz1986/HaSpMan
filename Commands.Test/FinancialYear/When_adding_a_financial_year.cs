@@ -4,6 +4,7 @@ using Domain;
 using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 using Moq;
 
@@ -18,16 +19,16 @@ public class When_adding_a_financial_year
 {
     private readonly Mock<IFinancialYearRepository> _financialYearRepositoryMock;
     private readonly HaSpManContext _haspmanDbContext;
-    private readonly Mock<IFinancialYearConfigurationRepository> _financialYearConfigurationMock;
 
     public When_adding_a_financial_year()
     {
         _financialYearRepositoryMock = new Mock<IFinancialYearRepository>();
-        _financialYearConfigurationMock = new Mock<IFinancialYearConfigurationRepository>();
-        _haspmanDbContext = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>()
 
+        var financialYearConfigurationOptions = Options.Create(new FinancialYearConfiguration());
+
+        _haspmanDbContext = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-        SUT = new AddFinancialYearHandler(_financialYearRepositoryMock.Object, _financialYearConfigurationMock.Object,
+        SUT = new AddFinancialYearHandler(_financialYearRepositoryMock.Object, financialYearConfigurationOptions,
             _haspmanDbContext);
     }
 
@@ -51,10 +52,7 @@ public class When_adding_a_financial_year
                 .Setup(x =>
                     x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)))
                 .Verifiable();
-
-            _financialYearConfigurationMock.Setup(x => x.Get(It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new FinancialYearConfiguration(new DateTimeOffset(new DateTime(2021, 9, 1))));
-
+            
             await SUT.Handle(new AddFinancialYearCommand(), CancellationToken.None);
 
             _financialYearRepositoryMock
@@ -90,10 +88,7 @@ public class When_adding_a_financial_year
                     .Setup(x =>
                         x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)))
                     .Verifiable();
-
-                _financialYearConfigurationMock.Setup(x => x.Get(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new FinancialYearConfiguration(new DateTimeOffset(new DateTime(2021, 9, 1))));
-
+                
                 await SUT.Handle(new AddFinancialYearCommand(), CancellationToken.None);
 
                 _financialYearRepositoryMock

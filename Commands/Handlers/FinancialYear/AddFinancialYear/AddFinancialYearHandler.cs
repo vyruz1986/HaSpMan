@@ -1,4 +1,7 @@
-﻿using Domain.Interfaces;
+﻿using Domain;
+using Domain.Interfaces;
+
+using Microsoft.Extensions.Options;
 
 using Persistence;
 using Persistence.Repositories;
@@ -8,23 +11,20 @@ namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Domain.FinancialYear>
 {
     private readonly IFinancialYearRepository _financialYearRepository;
-    private readonly IFinancialYearConfigurationRepository _financialYearConfigurationRepository;
+    private readonly FinancialYearConfiguration _financialYearOptions;
 
     private readonly HaSpManContext _haSpManContext;
 
     public AddFinancialYearHandler(IFinancialYearRepository financialYearRepository, 
-        IFinancialYearConfigurationRepository financialYearConfigurationRepository,
+        IOptions<FinancialYearConfiguration> financialYearOptions,
         HaSpManContext haSpManContext)
     {
         _financialYearRepository = financialYearRepository;
-        _financialYearConfigurationRepository = financialYearConfigurationRepository;
+        _financialYearOptions = financialYearOptions.Value;
         _haSpManContext = haSpManContext;
     }
     public async Task<Domain.FinancialYear> Handle(AddFinancialYearCommand request, CancellationToken cancellationToken)
     {
-        var configuration = await _financialYearConfigurationRepository.Get(cancellationToken) 
-            ?? throw new InvalidOperationException("Financial year configuration is missing");
-
         
         var lastFinancialYear = await _financialYearRepository.GetMostRecentAsync(cancellationToken);
 
@@ -32,7 +32,7 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
         // Otherwise, just add a new year
         var year = lastFinancialYear == null ? DateTime.Now.Year : lastFinancialYear.EndDate.Year;
 
-        var startDate = new DateTimeOffset(new DateTime(year, configuration.StartDate.Month, configuration.StartDate.Day));
+        var startDate = new DateTimeOffset(new DateTime(year, _financialYearOptions.StartDate.Month, _financialYearOptions.StartDate.Day));
 
         var financialYear = new Domain.FinancialYear(
             startDate, 

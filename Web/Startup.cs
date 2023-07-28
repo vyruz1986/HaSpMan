@@ -1,6 +1,7 @@
 using Commands.Handlers.Transaction.AddDebitTransaction;
 using Commands.Services;
 
+using Domain;
 using Domain.Interfaces;
 
 using FluentValidation;
@@ -52,11 +53,11 @@ public class Startup
         DbContextExtensions.MigrateHaSpManContext(dbConnectionString);
 
         services.Configure<StorageOptions>(Configuration.GetSection("Storage"));
+        services.Configure<FinancialYearConfiguration>(Configuration.GetSection("FinancialYear"));
 
         services.AddScoped<IMemberRepository, MemberRepository>();
         services.AddScoped<IBankAccountRepository, BankAccountRepository>();
         services.AddScoped<IAttachmentStorage, AttachmentStorage>();
-        services.AddScoped<IFinancialYearConfigurationRepository, FinancialYearConfigurationRepository>();
         services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
         services.AddAutoMapper(
             typeof(MapperProfiles.MemberProfile),

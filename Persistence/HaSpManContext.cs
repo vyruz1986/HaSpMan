@@ -23,9 +23,7 @@ public class HaSpManContext : DbContext
     public DbSet<BankAccountsWithTotals> BankAccountsWithTotals { get; set; } = null!;
     
     public DbSet<FinancialYear> FinancialYears { get;set; } = null!;
-
-    public DbSet<FinancialYearConfiguration> FinancialYearConfigurations { get; set; } = null!;
-
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlServer(x => x.MigrationsHistoryTable("__EFMigrationsHistory", Schema.HaSpMan));
