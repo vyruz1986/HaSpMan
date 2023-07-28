@@ -1,4 +1,5 @@
-﻿using Commands.Handlers.Transaction.AddAttachments;
+﻿using Commands.Handlers.FinancialYear.AddFinancialYear;
+using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain;
 using Domain.Interfaces;
@@ -19,7 +20,7 @@ public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCom
     {
         var financialYear =
             await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
-            ?? throw new ArgumentException($"No financial year found for date {request.ReceivedDateTime}", nameof(request.ReceivedDateTime));
+            ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
         
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new DebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,

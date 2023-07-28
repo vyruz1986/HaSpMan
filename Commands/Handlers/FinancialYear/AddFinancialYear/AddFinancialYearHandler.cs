@@ -5,7 +5,7 @@ using Persistence.Repositories;
 
 namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 
-public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Guid>
+public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Domain.FinancialYear>
 {
     private readonly IFinancialYearRepository _financialYearRepository;
     private readonly IFinancialYearConfigurationRepository _financialYearConfigurationRepository;
@@ -20,7 +20,7 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
         _financialYearConfigurationRepository = financialYearConfigurationRepository;
         _haSpManContext = haSpManContext;
     }
-    public async Task<Guid> Handle(AddFinancialYearCommand request, CancellationToken cancellationToken)
+    public async Task<Domain.FinancialYear> Handle(AddFinancialYearCommand request, CancellationToken cancellationToken)
     {
         var configuration = await _financialYearConfigurationRepository.Get(cancellationToken) 
             ?? throw new InvalidOperationException("Financial year configuration is missing");
@@ -41,6 +41,6 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
         
         _financialYearRepository.Add(financialYear);
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
-        return financialYear.Id;
+        return financialYear;
     }
 }

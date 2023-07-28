@@ -1,4 +1,5 @@
 ﻿
+using Commands.Handlers.FinancialYear.AddFinancialYear;
 using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain;
@@ -23,8 +24,8 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
         
         var financialYear = 
             await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
-            ?? throw new ArgumentException($"No financial year found for date {request.ReceivedDateTime}", nameof(request.ReceivedDateTime));
-        
+            ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new CreditTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
             request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(), request.MemberId,

@@ -1,4 +1,5 @@
-﻿using Commands.Handlers.Transaction.AddAttachments;
+﻿using Commands.Handlers.FinancialYear.AddFinancialYear;
+using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain.Interfaces;
 
@@ -21,9 +22,9 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
     {
         var financialYear =
             await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
-            ?? throw new ArgumentException($"No financial year found for date {request.ReceivedDateTime}", nameof(request.ReceivedDateTime));
-        
-        if(financialYear.StartDate >= request.ReceivedDateTime && 
+            ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+
+        if (financialYear.StartDate >= request.ReceivedDateTime && 
            financialYear.EndDate <= request.ReceivedDateTime)
         {
             financialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
