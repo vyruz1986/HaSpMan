@@ -57,6 +57,6 @@ public class When_editing_a_transaction
                 DateTimeOffset.Now, "Another description", new List<TransactionTypeAmount>(),
                 new List<AttachmentFile>()), CancellationToken.None));
 
-        exception.Message.Should().Be("Financial year is closed");
+        exception.Message.Should().Be("Financial year is already closed");
     }
 }

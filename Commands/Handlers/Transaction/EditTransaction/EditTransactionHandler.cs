@@ -24,8 +24,8 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
             await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
 
-        if (financialYear.StartDate >= request.ReceivedDateTime && 
-           financialYear.EndDate <= request.ReceivedDateTime)
+        if (financialYear.StartDate <= request.ReceivedDateTime && 
+           financialYear.EndDate >= request.ReceivedDateTime)
         {
             financialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
                 request.ReceivedDateTime, request.TransactionTypeAmounts, request.Description);
