@@ -6,7 +6,7 @@ namespace Domain.Test.FinancialYear;
 
 public class When_closing_a_financial_year
 {
-    
+    [Fact]
     public void It_should_mark_the_year_as_closed()
     {
         var startDate = DateTimeOffset.Now;
