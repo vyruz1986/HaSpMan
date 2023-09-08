@@ -17,7 +17,6 @@
        
     </ToolBarContent>
     <HeaderContent>
-        
         <MudTh>
             Start date
         </MudTh>
@@ -83,7 +82,6 @@
 
     private async Task CloseFinancialYear(FinancialYear financialYear)
     {
-
         var options = new DialogOptions { };
         var parameters = new DialogParameters()
         {
@@ -93,11 +91,9 @@
         var dialog = await reference.Result;
         if (!dialog.Canceled)
         {
-
             Snackbar.Clear();
             Snackbar.Add($"Closed financial year {financialYear.StartDateTimeOffset.Year} - {financialYear.EndDateTimeOffset.Year}");
             table?.ReloadServerData();
         }
     }
-
 }
