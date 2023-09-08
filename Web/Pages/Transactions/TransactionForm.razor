@@ -343,8 +343,8 @@
 
     Converter<AutocompleteCounterparty> counterPartyConverter = new()
     {
-        SetFunc = value => value?.Name,
-        GetFunc = text => new AutocompleteCounterparty(text, null)
+        SetFunc = value => value?.Name ?? "",
+        GetFunc = text => new AutocompleteCounterparty(text ?? "", null)
     };
 
     private async Task UploadFiles(InputFileChangeEventArgs e)
