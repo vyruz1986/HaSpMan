@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.Net;
+using System.Net.Mail;
 
 using Commands.Configuration;
 
@@ -58,8 +59,12 @@ public class MailingService : IMailingService
 
     private SmtpClient GetSmtpClient => new SmtpClient(_config.MailServer.Host, _config.MailServer.Port)
     {
+        EnableSsl = _config.MailServer.EnableSsl,
         TargetName = _config.MailServer.Host == "smtp.office365.com"
             ? "STARTTLS/smtp.office365.com"
+            : null,
+        Credentials = _config.MailServer.RequiresAuthentication
+            ? new NetworkCredential(_config.MailServer.Username, _config.MailServer.Password)
             : null
     };
 }

@@ -25,6 +25,8 @@ public class MailingConfiguration
         public string? Password { get; set; }
 
         public bool RequiresAuthentication => !string.IsNullOrWhiteSpace(Username) && !string.IsNullOrWhiteSpace(Password);
+
+        public bool EnableSsl { get; set; } = false;
     }
 
     public class SenderConfiguration
