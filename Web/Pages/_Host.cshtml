@@ -34,23 +34,24 @@
       <a class="dismiss">🗙</a>
    </div>
 
-    <script src="_framework/blazor.server.js"></script>
-    <script>
-        window.triggerFileDownload = (fileName, url) => {
-            const anchorElement = document.createElement('a');
-            anchorElement.href = url;
-            anchorElement.download = fileName ?? '';
-            anchorElement.click();
-            anchorElement.remove();
+   <script src="_framework/blazor.server.js"></script>
+   <script src="_content/TinyMCE.Blazor/tinymce-blazor.js"></script>
+   <scipt>
+      winow.triggerFileDownload = (fileName, url) => {
+         const anchorElement = document.createElement('a');
+         anchorElement.href = url;
+         anchorElement.download = fileName ?? '';
+         anchorElement.click();
+          anchorElement.remove();
+      }
+      winow.downloadFileFromStream = async (fileName, contentStreamReference) => {
+         const arrayBuffer = await contentStreamReference.arrayBuffer();
+         const blob = new Blob([arrayBuffer]);
+         const url = URL.createObjectURL(blob);
+         triggerFileDownload(fileName, url);
+          URL.revokeObjectURL(url);
         }
-        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
-            const arrayBuffer = await contentStreamReference.arrayBuffer();
-            const blob = new Blob([arrayBuffer]);
-            const url = URL.createObjectURL(blob);
-            triggerFileDownload(fileName, url);
-            URL.revokeObjectURL(url);
-        }
-
+   
 </script>
 </body>
 

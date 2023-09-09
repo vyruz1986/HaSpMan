@@ -1,6 +1,8 @@
 ﻿@page "/members"
 @attribute [Authorize]
 
+@using Commands.Handlers.Member.EmailMember;
+@using Commands.Services;
 @using MediatR
 @using Queries.Members.Handlers.SearchMembers
 @using Queries.Members.ViewModels
@@ -10,7 +12,8 @@
 @inject ISnackbar Snackbar
 
 <MudTable Class="mt-10 mw-13" Dense="true" Hover="true" @ref="_table"
-    ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))">
+    ServerData="@(new Func<TableState, Task<TableData<MemberSummary>>>(ServerReload))" MultiSelection="true"
+    @bind-SelectedItems="_selectedMembers">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Members</MudText>
         <MudSpacer />
@@ -20,6 +23,10 @@
         <MudSwitch @bind-Checked="@ShowActive" Label="Active" Color="Color.Success" T="bool" />
         <MudSwitch @bind-Checked="@ShowInactive" Label="Inactive" Color="Color.Error" T="bool" />
         <MudSpacer />
+        <MudButton Class="ma-2" DisableElevation="true" Size="Size.Small" Variant="Variant.Outlined"
+            Disabled="@(!_selectedMembers.Any())" @onclick="OpenSendEmailDialog">
+            Email selected members
+        </MudButton>
         <MudButton Class="ma-2" Color="Color.Primary" DisableElevation="true" Href="/members/new" Size="Size.Small"
             Variant="Variant.Filled">
             Add member
@@ -134,6 +141,8 @@
         }
     }
 
+    private HashSet<MemberSummary> _selectedMembers = new();
+
     private async Task<TableData<MemberSummary>> ServerReload(TableState state)
     {
         StateHasChanged();
@@ -185,4 +194,20 @@
 
     private string GetExpiryDate(MemberSummary member) => member.MembershipExpiryDate?.Date.ToString("dd/MM/yyyy")
     ?? "Never";
+
+    private async Task OpenSendEmailDialog()
+    {
+        var dialog = DialogService.Show<EmailMembersDialog>($"Email {_selectedMembers.Count} selected members");
+        var result = await dialog.Result;
+        if (!result.Canceled && result.Data is Message)
+        {
+            var message = (Message)result.Data;
+            var command = new EmailMembersCommand(_selectedMembers.Select(m => m.Id), message.Subject, message.Body);
+            var errors = await _mediator.Send(command);
+            foreach (var error in errors)
+                Snackbar.Add($"Failed to send email to {error.Email} because: {error.Error}", Severity.Error);
+
+            _selectedMembers = new();
+        }
+    }
 }
