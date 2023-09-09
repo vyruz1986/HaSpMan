@@ -202,10 +202,17 @@
         if (!result.Canceled && result.Data is Message)
         {
             var message = (Message)result.Data;
-            var command = new EmailMembersCommand(_selectedMembers.Select(m => m.Id), message.Subject, message.Body);
+            var memberIds = _selectedMembers
+                .Where(m => !string.IsNullOrWhiteSpace(m.Email))
+                .Select(m => m.Id);
+            var command = new EmailMembersCommand(memberIds, message.Subject, message.Body);
             var errors = await _mediator.Send(command);
             foreach (var error in errors)
                 Snackbar.Add($"Failed to send email to {error.Email} because: {error.Error}", Severity.Error);
+
+            var successfulEmails = command.MemberIds.Count() - errors.Count();
+            if (successfulEmails > 0)
+                Snackbar.Add($"Successfully sent email to {successfulEmails} members");
 
             _selectedMembers = new();
         }
