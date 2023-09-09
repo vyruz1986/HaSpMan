@@ -38,3 +38,9 @@ services:
       - 10002:10002
     volumes:
       - ./.dev/azurite:/data
+
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    ports:
+      - '5203:80'
+      - '5204:25'
