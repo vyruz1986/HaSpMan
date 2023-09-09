@@ -53,6 +53,30 @@ spec:
                 secretKeyRef:
                   name: {{ include "haspman.fullname" . }}
                   key: CLIENT_SECRET
+            - name: Mailing__MailServer__Host
+              value: {{ required "A valid .Values.haspman.mailing.mailServer.host entry is required" .Values.haspman.mailing.mailServer.host | quote}}
+            {{- if .Values.haspman.mailing.mailServer.port }}
+            - name: Mailing__MailServer__Port
+              value: {{ .Values.haspman.mailing.mailServer.port }}
+            {{- end }}
+            - name: Mailing__MailServer__EnableSsl
+              value: {{ .Values.haspman.mailing.mailServer.enableSsl }}
+            - name: Mailing__Sender__Email
+              value: {{ required "A valid .Values.haspman.mailing.sender.email entry is required" .Values.haspman.mailing.sender.email | quote}}
+            - name: Mailing__Sender__Name
+              value: {{ required "A valid .Values.haspman.mailing.sender.name entry is required" .Values.haspman.mailing.sender.name | quote}}
+            {{- if or (.Values.haspman.mailing.mailServer.username) (.Values.haspman.mailing.mailServer.password) }}
+            - name: Mailing__MailServer__Username
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "haspman.fullname" . }}
+                  key: MAILSERVER_USERNAME
+            - name: Mailing__MailServer__Password
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "haspman.fullname" . }}
+                  key: MAILSERVER_PASSWORD
+            {{- end}}
           ports:
             - name: http
               containerPort: 80
