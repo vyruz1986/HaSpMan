@@ -2,13 +2,12 @@
 using Domain.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Persistence.Repositories;
 
 public class FinancialYearRepository : IFinancialYearRepository
 {
-    
+
     private readonly HaSpManContext _context;
 
     public FinancialYearRepository(IDbContextFactory<HaSpManContext> contextFactory)

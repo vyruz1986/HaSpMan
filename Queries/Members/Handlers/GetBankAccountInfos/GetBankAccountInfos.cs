@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace Queries.Members.Handlers.GetBankAccountInfos;
 
 public record GetBankAccountInfos() : IRequest<IReadOnlyList<BankAccountInfo>>;

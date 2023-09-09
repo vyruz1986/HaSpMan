@@ -9,7 +9,6 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 {
     public void Configure(EntityTypeBuilder<Transaction> builder)
     {
-
         builder.ToTable("Transactions");
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<DebitTransaction>(nameof(DebitTransaction))
@@ -19,7 +18,6 @@ public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 
 public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTransaction>
 {
-
     public void Configure(EntityTypeBuilder<CreditTransaction> builder)
     {
         builder.Property(x => x.Amount).IsRequired();
@@ -37,7 +35,6 @@ public class CreditTransactionConfiguration : IEntityTypeConfiguration<CreditTra
             AttachmentConfiguration("Transaction_Attachments"));
         builder.OwnsMany(x => x.TransactionTypeAmounts,
             TransactionTypeAmountConfiguration("Transaction_TransactionTypeAmounts"));
-
     }
 
     private static Action<OwnedNavigationBuilder<CreditTransaction, TransactionTypeAmount>> TransactionTypeAmountConfiguration(string tableName)
@@ -70,7 +67,6 @@ public class DebitTransactionConfiguration : IEntityTypeConfiguration<DebitTrans
 
     public void Configure(EntityTypeBuilder<DebitTransaction> builder)
     {
-
         builder.Property(x => x.Amount).IsRequired();
         builder.Property(x => x.BankAccountId).IsRequired();
         builder.Property(x => x.DateFiled).IsRequired();

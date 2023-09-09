@@ -17,8 +17,8 @@ public partial class TransactionsBelongToFinancialYear : Migration
             "UPDATE HaspMan.Transactions SET FinancialYearId = (select top 1 Id from Haspman.FinancialYears)");
         migrationBuilder.DropIndex("IX_Transactions_FinancialYearId", schema: "HaspMan", table: "Transactions");
         migrationBuilder.AlterColumn<Guid>(
-            "FinancialYearId", 
-            schema:"HaspMan",
+            "FinancialYearId",
+            schema: "HaspMan",
             table: "Transactions",
             nullable: false);
         migrationBuilder.CreateIndex(

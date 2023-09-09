@@ -3,8 +3,6 @@ using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain.Interfaces;
 
-using Persistence.Repositories;
-
 namespace Commands.Handlers.Transaction.EditTransaction;
 
 public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
@@ -24,7 +22,7 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
             await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
             ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request.Id));
 
-        if (financialYear.StartDate <= request.ReceivedDateTime && 
+        if (financialYear.StartDate <= request.ReceivedDateTime &&
            financialYear.EndDate >= request.ReceivedDateTime)
         {
             financialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
@@ -45,10 +43,9 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
             financialYear.Transactions.Remove(transaction);
         }
 
-
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
         await _mediator.Send(new AddAttachmentsCommand(request.Id, request.NewAttachmentFiles), cancellationToken);
-        
+
     }
 }

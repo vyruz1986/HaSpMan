@@ -1,5 +1,3 @@
-using MediatR;
-
 using Queries.Transactions.ViewModels;
 
 namespace Queries.Transactions.Handlers;

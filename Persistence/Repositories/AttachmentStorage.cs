@@ -29,7 +29,7 @@ public class AttachmentStorage : IAttachmentStorage
 
         using var memoryStream = new MemoryStream(bytes);
         await blob.UploadAsync(memoryStream, new BlobHttpHeaders { ContentType = contentType }, cancellationToken: cancellationToken);
-        
+
     }
 
     public async Task<Attachment> GetAsync(string blobUri, CancellationToken cancellationToken)

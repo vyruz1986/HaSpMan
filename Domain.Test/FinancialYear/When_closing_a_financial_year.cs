@@ -11,9 +11,10 @@ public class When_closing_a_financial_year
     {
         var startDate = DateTimeOffset.Now;
         var financialYear = new Domain.FinancialYear(startDate, startDate.AddYears(1).AddDays(-1), new List<Domain.Transaction>());
-        
-;       financialYear.Close();
-        
+
+        ;
+        financialYear.Close();
+
         financialYear.IsClosed.Should().BeTrue();
     }
 }

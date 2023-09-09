@@ -1,7 +1,5 @@
 using System.Linq.Expressions;
 
-using AutoMapper.QueryableExtensions;
-
 using Domain;
 
 using Microsoft.EntityFrameworkCore;

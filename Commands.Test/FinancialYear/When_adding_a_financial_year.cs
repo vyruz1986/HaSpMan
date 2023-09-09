@@ -3,13 +3,9 @@
 using Domain;
 using Domain.Interfaces;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 using Moq;
-
-using Persistence;
-using Persistence.Repositories;
 
 using Xunit;
 
@@ -18,7 +14,6 @@ namespace Commands.Test.FinancialYear;
 public class When_adding_a_financial_year
 {
     private readonly Mock<IFinancialYearRepository> _financialYearRepositoryMock;
-    private readonly HaSpManContext _haspmanDbContext;
 
     public When_adding_a_financial_year()
     {
@@ -26,20 +21,14 @@ public class When_adding_a_financial_year
 
         var financialYearConfigurationOptions = Options.Create(new FinancialYearConfiguration()
         {
-            StartDate = new DateTimeOffset(new DateTime(2022,9,1)),
-            EndDate = new DateTimeOffset(new DateTime(2023,8,31))
+            StartDate = new DateTimeOffset(new DateTime(2022, 9, 1)),
+            EndDate = new DateTimeOffset(new DateTime(2023, 8, 31))
         });
 
-        _haspmanDbContext = new HaSpManContext(new DbContextOptionsBuilder<HaSpManContext>()
-            .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-        SUT = new AddFinancialYearHandler(_financialYearRepositoryMock.Object, financialYearConfigurationOptions,
-            _haspmanDbContext);
+        SUT = new AddFinancialYearHandler(_financialYearRepositoryMock.Object, financialYearConfigurationOptions);
     }
 
     public AddFinancialYearHandler SUT { get; set; }
-
-
-
 
     public class And_no_financial_year_already_exists : When_adding_a_financial_year
     {
@@ -56,7 +45,7 @@ public class When_adding_a_financial_year
                 .Setup(x =>
                     x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)))
                 .Verifiable();
-            
+
             await SUT.Handle(new AddFinancialYearCommand(), CancellationToken.None);
 
             _financialYearRepositoryMock
@@ -67,7 +56,6 @@ public class When_adding_a_financial_year
                     x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)));
 
         }
-
 
         public class And_a_financial_year_already_exists : When_adding_a_financial_year
         {
@@ -82,7 +70,7 @@ public class When_adding_a_financial_year
                     .Setup(x =>
                         x.GetMostRecentAsync(It.IsAny<CancellationToken>()))
                     .ReturnsAsync(new Domain.FinancialYear(new DateTimeOffset(new DateTime(2022, 9, 1)),
-                        new DateTimeOffset(new DateTime(2023,8,31)), new List<Domain.Transaction>()));
+                        new DateTimeOffset(new DateTime(2023, 8, 31)), new List<Domain.Transaction>()));
 
                 _financialYearRepositoryMock
                     .Setup(x =>
@@ -92,7 +80,7 @@ public class When_adding_a_financial_year
                     .Setup(x =>
                         x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)))
                     .Verifiable();
-                
+
                 await SUT.Handle(new AddFinancialYearCommand(), CancellationToken.None);
 
                 _financialYearRepositoryMock

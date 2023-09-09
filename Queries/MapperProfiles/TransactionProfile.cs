@@ -1,6 +1,3 @@
-
-using AutoMapper;
-
 using Domain;
 
 using Queries.Transactions.ViewModels;
@@ -30,7 +27,6 @@ public class TransactionProfile : Profile
             .ForCtorParam(nameof(TransactionDetail.MemberId), o => o.MapFrom(x => x.MemberId))
             .ForCtorParam(nameof(TransactionDetail.ReceivedDateTime), o => o.MapFrom(x => x.ReceivedDateTime));
 
-
         CreateMap<TransactionAttachment, Queries.Transactions.ViewModels.TransactionAttachment>()
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionAttachment.Name), o => o.MapFrom(x => x.Name))
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionAttachment.FullPath), o => o.MapFrom(x => x.FullPath));
@@ -39,6 +35,6 @@ public class TransactionProfile : Profile
                 o => o.MapFrom(x => x.Amount))
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionTypeAmount.TransactionType),
                 o => o.MapFrom(x => x.TransactionType));
-            
+
     }
 }

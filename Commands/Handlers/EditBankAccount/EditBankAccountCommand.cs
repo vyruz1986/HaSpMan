@@ -8,7 +8,6 @@ public record EditBankAccountCommand(
        string AccountNumber
     ) : IRequest<Guid>;
 
-
 public class EditBankAccountValidator : AbstractValidator<EditBankAccountCommand>
 {
     public EditBankAccountValidator()

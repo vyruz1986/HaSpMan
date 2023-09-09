@@ -8,9 +8,8 @@ public class TransactionTypes
 {
     public static IReadOnlyList<TransactionType> GetScopedTransactionTypes(TransactionTypeGroup group)
     {
-        if (group == TransactionTypeGroup.Debit)
-        {
-            return new List<TransactionType>
+        return group == TransactionTypeGroup.Debit
+            ? new List<TransactionType>
             {
                 TransactionType.DebitWorkshopFee,
                 TransactionType.DebitDonation,
@@ -19,9 +18,8 @@ public class TransactionTypes
                 TransactionType.DebitSaleConsumables,
                 TransactionType.DebitSaleGoodsAndServices,
                 TransactionType.DebitRefund
-            }.OrderBy(x => x.GetDescription()).ToList();
-        }
-        return new List<TransactionType>
+            }.OrderBy(x => x.GetDescription()).ToList()
+            : (IReadOnlyList<TransactionType>)new List<TransactionType>
         {
             TransactionType.CreditAcquisitionConsumables,
             TransactionType.CreditAcquisitionGoodsAndServices,

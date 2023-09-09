@@ -1,6 +1,3 @@
-
-using AutoMapper;
-
 using Domain;
 
 using Queries.Members.ViewModels;

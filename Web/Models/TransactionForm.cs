@@ -52,7 +52,6 @@ public class TransactionTypeAmountForm
     [Required, EnumDataType(typeof(TransactionType))]
     public TransactionType? TransactionType { get; set; } = null;
 
-
     [Required]
     [Range(0.01, 10000000)]
     public decimal? Amount { get; set; }
@@ -66,7 +65,6 @@ public class TransactionAttachment
     }
     public string FileName { get; set; }
 }
-
 
 public class NewTransactionAttachment
 {

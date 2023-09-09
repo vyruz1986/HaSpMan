@@ -3,9 +3,6 @@ using Domain.Interfaces;
 
 using Microsoft.Extensions.Options;
 
-using Persistence;
-using Persistence.Repositories;
-
 namespace Commands.Handlers.FinancialYear.AddFinancialYear;
 
 public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, Domain.FinancialYear>
@@ -13,19 +10,15 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
     private readonly IFinancialYearRepository _financialYearRepository;
     private readonly FinancialYearConfiguration _financialYearOptions;
 
-    private readonly HaSpManContext _haSpManContext;
-
-    public AddFinancialYearHandler(IFinancialYearRepository financialYearRepository, 
-        IOptions<FinancialYearConfiguration> financialYearOptions,
-        HaSpManContext haSpManContext)
+    public AddFinancialYearHandler(IFinancialYearRepository financialYearRepository,
+        IOptions<FinancialYearConfiguration> financialYearOptions)
     {
         _financialYearRepository = financialYearRepository;
         _financialYearOptions = financialYearOptions.Value;
-        _haSpManContext = haSpManContext;
     }
     public async Task<Domain.FinancialYear> Handle(AddFinancialYearCommand request, CancellationToken cancellationToken)
     {
-        
+
         var lastFinancialYear = await _financialYearRepository.GetMostRecentAsync(cancellationToken);
 
         // In case this is the first year we create, assume we want it to be this year.
@@ -35,10 +28,10 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
         var startDate = new DateTimeOffset(new DateTime(year, _financialYearOptions.StartDate.Month, _financialYearOptions.StartDate.Day));
 
         var financialYear = new Domain.FinancialYear(
-            startDate, 
+            startDate,
             startDate.AddYears(1).AddDays(-1),
             new List<Domain.Transaction>());
-        
+
         _financialYearRepository.Add(financialYear);
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
         return financialYear;
