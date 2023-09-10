@@ -5,5 +5,4 @@ patch-version-bump-message: "(build|chore|ci|docs|fix|perf|refactor|revert|style
 branches:
   master:
     regex: (^main$|^origin\/main$|^master$|^origin\/master$)
-    increment: none
     is-mainline: true
