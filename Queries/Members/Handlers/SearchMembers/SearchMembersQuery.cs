@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-using Queries.Enums;
+﻿using Queries.Enums;
 using Queries.Members.ViewModels;
 
 namespace Queries.Members.Handlers.SearchMembers;

@@ -1,6 +1,3 @@
-
-using Domain;
-
 using Types;
 
 namespace Queries.Transactions.ViewModels;

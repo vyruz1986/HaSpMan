@@ -1,7 +1,4 @@
-﻿
-using Domain;
-
-namespace Queries.Transactions.ViewModels;
+﻿namespace Queries.Transactions.ViewModels;
 
 public record TransactionSummary(
     Guid Id,

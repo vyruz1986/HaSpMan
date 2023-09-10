@@ -16,7 +16,6 @@ public record EditTransactionCommand(
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
     ICollection<AttachmentFile> NewAttachmentFiles) : IRequest;
 
-
 public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>
 {
     public EditTransactionCommandValidator()

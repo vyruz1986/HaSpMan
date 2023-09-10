@@ -4,7 +4,7 @@ public class StorageOptions
 {
     public StorageOptions()
     {
-        
+
     }
     public StorageOptions(string? storageContainerName, string? connectionString)
     {

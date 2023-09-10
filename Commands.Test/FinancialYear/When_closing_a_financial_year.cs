@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Commands.Handlers.FinancialYear.CloseFinancialYear;
+﻿using Commands.Handlers.FinancialYear.CloseFinancialYear;
 
 using Domain;
 using Domain.Interfaces;
@@ -12,8 +6,6 @@ using Domain.Interfaces;
 using FluentAssertions;
 
 using Moq;
-
-using Persistence.Repositories;
 
 using Xunit;
 
@@ -39,8 +31,9 @@ public class When_closing_a_financial_year
         _financialYearRepositoryMock
             .Setup(x => x.GetByIdAsync(financialYear.Id, CancellationToken.None))
             .ReturnsAsync(financialYear);
-;       await SUT.Handle(new CloseFinancialYearCommand(financialYear.Id), CancellationToken.None);
-        
+        ;
+        await SUT.Handle(new CloseFinancialYearCommand(financialYear.Id), CancellationToken.None);
+
         financialYear.IsClosed.Should().BeTrue();
     }
 

@@ -52,7 +52,6 @@ public class Member
         AuditEvents.AddEvent("Created member", performedBy);
     }
 
-
 #pragma warning disable 8618
     private Member() { } // Make EFCore happy
 #pragma warning restore 8618

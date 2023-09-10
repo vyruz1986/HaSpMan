@@ -7,7 +7,7 @@ public class TransactionAttachment
 #pragma warning restore 8618
     public TransactionAttachment(Guid transactionId, string name)
     {
-        
+
         FullPath = Path.Combine(transactionId.ToString(), name);
 
         if (string.IsNullOrWhiteSpace(name))

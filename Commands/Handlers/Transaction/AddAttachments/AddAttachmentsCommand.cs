@@ -3,8 +3,6 @@ using Domain.Interfaces;
 
 using FluentValidation;
 
-using Persistence.Repositories;
-
 namespace Commands.Handlers.Transaction.AddAttachments;
 
 public record AddAttachmentsCommand(Guid TransactionId, ICollection<AttachmentFile> Attachments) : IRequest<Unit>;
@@ -51,7 +49,7 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
         transaction.AddAttachments(transactionAttachments);
 
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
-        
+
         return Unit.Value;
     }
 
@@ -69,7 +67,7 @@ public class AddAttachmentsHandler : IRequestHandler<AddAttachmentsCommand, Unit
 
             transactionAttachments.Add(transactionAttachment);
         }
-        
+
         return transactionAttachments;
     }
 }

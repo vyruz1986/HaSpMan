@@ -5,8 +5,6 @@ using Commands.Handlers.Transaction.AddAttachments;
 using Domain;
 using Domain.Interfaces;
 
-using Persistence.Repositories;
-
 namespace Commands.Handlers.Transaction.AddCreditTransaction;
 
 public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionCommand, Guid>
@@ -21,8 +19,8 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
     }
     public async Task<Guid> Handle(AddCreditTransactionCommand request, CancellationToken cancellationToken)
     {
-        
-        var financialYear = 
+
+        var financialYear =
             await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
             ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
 
@@ -32,7 +30,7 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
             request.TransactionTypeAmounts);
 
         financialYear.AddTransaction(transaction);
-;
+        ;
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
         await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);

@@ -5,42 +5,28 @@
 
 @inject IMediator _mediator
 
-<MudTable Class="mt-10 mw-9"
-          Dense="true"
-          Hover="true"
-          @ref="table"
-          ServerData="@(new Func<TableState, Task<TableData<BankAccountDetailWithTotal>>>(ServerReload))">
+<MudTable Class="mt-10 mw-9" Dense="true" Hover="true" @ref="table"
+    ServerData="@(new Func<TableState, Task<TableData<BankAccountDetailWithTotal>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Bankaccounts</MudText>
         <MudSpacer />
-        <MudTextField Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Class="mt-0"
-                      IconSize="Size.Medium"
-                      Placeholder="Search"
-                      T="string"
-                      ValueChanged="@(s => OnSearch(s))">
+        <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="mt-0"
+            IconSize="Size.Medium" Placeholder="Search" T="string" ValueChanged="@(s => OnSearch(s))">
         </MudTextField>
         <MudSpacer />
-        <MudButton Class="ma-2"
-                   Color="Color.Primary"
-                   DisableElevation="true"
-                   Link="/bankaccounts/new"
-                   Size="Size.Small"
-                   Variant="Variant.Filled">
+        <MudButton Class="ma-2" Color="Color.Primary" DisableElevation="true" Href="/bankaccounts/new" Size="Size.Small"
+            Variant="Variant.Filled">
             Add bankaccount
         </MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            <MudTableSortLabel SortLabel="name"
-                               T="BankAccountDetail">
+            <MudTableSortLabel SortLabel="name" T="BankAccountDetail">
                 Name
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="accountNumber"
-                               T="BankAccountDetail">
+            <MudTableSortLabel SortLabel="accountNumber" T="BankAccountDetail">
                 Accountnumber
             </MudTableSortLabel>
         </MudTh>
@@ -60,12 +46,11 @@
         <MudTd DataLabel="AccountNumber">@context.TotalAmount</MudTd>
         <MudTd DataLabel="AccountNumber">@context.NumberOfTransactions</MudTd>
         <MudTd>
-            <MudGrid >
+            <MudGrid>
                 <MudItem xs="6">
                     <MudTooltip Text="Edit">
-                        <MudIconButton aria-label="edit"
-                                       Icon="@Icons.Material.Filled.Edit"
-                                       Link="@($"/bankaccounts/{@context.Id}/edit")">
+                        <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
+                            Href="@($"/bankaccounts/{@context.Id}/edit")">
                         </MudIconButton>
 
                     </MudTooltip>
@@ -103,10 +88,10 @@
         var data = await _mediator.Send(query);
 
         return new TableData<BankAccountDetailWithTotal>()
-        {
-            TotalItems = data.Total,
-            Items = data.Items
-        };
+            {
+                TotalItems = data.Total,
+                Items = data.Items
+            };
     }
 
     private void OnSearch(string text)

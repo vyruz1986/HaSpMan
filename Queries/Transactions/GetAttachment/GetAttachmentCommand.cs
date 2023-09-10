@@ -35,6 +35,6 @@ public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachme
             ?? throw new ArgumentException($"No attachment found with name {request.FileName}", nameof(request.FileName));
 
         var file = await _attachmentStorage.GetAsync(attachment.FullPath, cancellationToken);
-        return file;        
+        return file;
     }
 }

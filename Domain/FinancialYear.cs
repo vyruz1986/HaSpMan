@@ -1,11 +1,9 @@
-﻿using Azure.Core;
-
-namespace Domain;
+﻿namespace Domain;
 
 public class FinancialYear
 {
 #pragma warning disable CS8618
-    public FinancialYear(){ } // Make EFCore happy
+    public FinancialYear() { } // Make EFCore happy
 #pragma warning restore CS8618
     public FinancialYear(DateTimeOffset startDate, DateTimeOffset endDate, ICollection<Transaction> transactions)
     {
@@ -16,7 +14,7 @@ public class FinancialYear
 
     public Guid Id { get; private set; }
     public DateTimeOffset StartDate { get; set; }
-    public DateTimeOffset EndDate { get; private set;}
+    public DateTimeOffset EndDate { get; private set; }
 
     public bool IsClosed { get; private set; }
 

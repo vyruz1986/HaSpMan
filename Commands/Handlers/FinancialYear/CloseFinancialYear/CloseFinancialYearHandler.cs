@@ -1,7 +1,5 @@
 ﻿using Domain.Interfaces;
 
-using Persistence.Repositories;
-
 namespace Commands.Handlers.FinancialYear.CloseFinancialYear;
 
 public class CloseFinancialYearHandler : IRequestHandler<CloseFinancialYearCommand>
@@ -19,6 +17,6 @@ public class CloseFinancialYearHandler : IRequestHandler<CloseFinancialYearComma
         financialYear.Close();
 
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
-        
+
     }
 }

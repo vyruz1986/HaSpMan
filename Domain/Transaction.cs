@@ -131,7 +131,7 @@ public abstract class Transaction
             Attachments.Add(attachment);
         }
     }
-    
+
 }
 public class DebitTransaction : Transaction
 {

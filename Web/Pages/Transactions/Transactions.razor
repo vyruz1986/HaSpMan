@@ -8,64 +8,45 @@
 @inject IMediator _mediator
 
 
-<MudTable Class="mt-10"
-          Dense="true"
-          Hover="true"
-          @ref="table"
-          ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))"
-          RowStyleFunc="RowStyleFunc"
-          Loading="@loading">
+<MudTable Class="mt-10" Dense="true" Hover="true" @ref="table"
+    ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" RowStyleFunc="RowStyleFunc"
+    Loading="@loading">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
-        <MudTextField Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
-                      Class="mt-0"
-                      IconSize="Size.Medium"
-                      Placeholder="Search"
-                      T="string"
-                      ValueChanged="@(OnSearch)">
+        <MudTextField Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" Class="mt-0"
+            IconSize="Size.Medium" Placeholder="Search" T="string" ValueChanged="@(OnSearch)">
         </MudTextField>
         <MudSpacer />
-        <MudButton Class="ma-2"
-                   Color="Color.Primary"
-                   DisableElevation="true"
-                   Link="/transactions/new"
-                   Size="Size.Small"
-                   Variant="Variant.Filled"
-                   Disabled="@loading">
+        <MudButton Class="ma-2" Color="Color.Primary" DisableElevation="true" Href="/transactions/new" Size="Size.Small"
+            Variant="Variant.Filled" Disabled="@loading">
             Add transaction
         </MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
-            <MudTableSortLabel SortLabel="from"
-                               T="TransactionSummary">
+            <MudTableSortLabel SortLabel="from" T="TransactionSummary">
                 From
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="amount"
-                               T="TransactionSummary">
+            <MudTableSortLabel SortLabel="amount" T="TransactionSummary">
                 Amount
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel InitialDirection="SortDirection.Descending"
-                               SortLabel="receivedDateTime"
-                               T="TransactionSummary">
+            <MudTableSortLabel InitialDirection="SortDirection.Descending" SortLabel="receivedDateTime"
+                T="TransactionSummary">
                 Transaction date
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="description"
-                               T="TransactionSummary">
+            <MudTableSortLabel SortLabel="description" T="TransactionSummary">
                 Description
             </MudTableSortLabel>
         </MudTh>
         <MudTh>
-            <MudTableSortLabel SortLabel="transactionTypes"
-                               T="TransactionSummary">
+            <MudTableSortLabel SortLabel="transactionTypes" T="TransactionSummary">
                 Transaction types
             </MudTableSortLabel>
         </MudTh>
@@ -86,9 +67,8 @@
         </MudTd>
         <MudTd>
             <MudTooltip Text="Edit">
-                <MudIconButton aria-label="edit"
-                               Icon="@Icons.Material.Filled.Edit"
-                               Link="@($"/transactions/{@context.Id}/edit")">
+                <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
+                    Href="@($"/transactions/{@context.Id}/edit")">
                 </MudIconButton>
             </MudTooltip>
         </MudTd>
@@ -108,7 +88,7 @@
     private MudTable<TransactionSummary>? table;
     private string searchString = "";
 
-    // TODO: Keeping this local variable shouldn't be necessary 
+    // TODO: Keeping this local variable shouldn't be necessary
     // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
     // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
     private bool loading = true;
@@ -124,17 +104,17 @@
             "amount" => TransactionSummaryOrderOption.Amount,
             "receivedDateTime" => TransactionSummaryOrderOption.ReceivedDateTime,
             _ => TransactionSummaryOrderOption.From
-            };
+        };
         var sortDirection = (Queries.Enums.SortDirection)(int)state.SortDirection;
         var query = new GetTransactionQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
         loading = false;
         return new TableData<TransactionSummary>()
-        {
-            TotalItems = data.Total,
-            Items = data.Items
-        };
+            {
+                TotalItems = data.Total,
+                Items = data.Items
+            };
     }
 
     private void OnSearch(string text)
@@ -149,12 +129,12 @@
         if (transactionType == null)
         {
             return string.Empty;
-            
+
         }
         var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
-        return transactionTypeGroup == TransactionTypeGroup.Credit 
-            ? $"background-color: {Colors.Red.Lighten4}" 
-            : $"background-color: {Colors.Green.Lighten4}";
+        return transactionTypeGroup == TransactionTypeGroup.Credit
+        ? $"background-color: {Colors.Red.Lighten4}"
+        : $"background-color: {Colors.Green.Lighten4}";
     }
 
     private string GetPlusOrMinus(ICollection<TransactionTypeAmount> transactionTypeAmounts)

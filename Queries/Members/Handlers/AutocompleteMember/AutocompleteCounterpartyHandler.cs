@@ -1,5 +1,3 @@
-using MediatR;
-
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
@@ -28,7 +26,6 @@ public class AutocompleteCounterpartyHandler : IRequestHandler<AutocompleteCount
                 .ToListAsync(cancellationToken: cancellationToken);
             return new AutocompleteCounterpartyResponse(members);
         }
-
 
         var counterParties = await context.FinancialYears
             .SelectMany(x => x.Transactions)

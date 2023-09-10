@@ -11,7 +11,6 @@ using Web.Models;
 using AttachmentFile = Commands.Handlers.AttachmentFile;
 using TransactionTypeAmount = Domain.TransactionTypeAmount;
 
-
 namespace Web.MapperProfiles;
 
 public class TransactionProfile : Profile

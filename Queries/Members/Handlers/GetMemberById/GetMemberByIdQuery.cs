@@ -1,5 +1,3 @@
-using MediatR;
-
 using Queries.Members.ViewModels;
 
 namespace Queries.Members.Handlers.GetMemberById;

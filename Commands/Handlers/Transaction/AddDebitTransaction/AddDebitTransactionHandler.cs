@@ -21,7 +21,7 @@ public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCom
         var financialYear =
             await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
             ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
-        
+
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);
         var transaction = new DebitTransaction(request.CounterPartyName, request.BankAccountId, totalAmount,
             request.ReceivedDateTime, request.Description, new List<TransactionAttachment>(),
@@ -31,7 +31,6 @@ public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCom
         financialYear.AddTransaction(transaction);
 
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
-
 
         await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
 
