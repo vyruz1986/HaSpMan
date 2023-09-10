@@ -57,10 +57,10 @@ spec:
               value: {{ required "A valid .Values.haspman.mailing.mailServer.host entry is required" .Values.haspman.mailing.mailServer.host | quote}}
             {{- if .Values.haspman.mailing.mailServer.port }}
             - name: Mailing__MailServer__Port
-              value: {{ .Values.haspman.mailing.mailServer.port }}
+              value: {{ .Values.haspman.mailing.mailServer.port | quote }}
             {{- end }}
             - name: Mailing__MailServer__EnableSsl
-              value: {{ .Values.haspman.mailing.mailServer.enableSsl }}
+              value: {{ .Values.haspman.mailing.mailServer.enableSsl | quote }}
             - name: Mailing__Sender__Email
               value: {{ required "A valid .Values.haspman.mailing.sender.email entry is required" .Values.haspman.mailing.sender.email | quote}}
             - name: Mailing__Sender__Name
