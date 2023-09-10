@@ -84,7 +84,7 @@ public class Startup
         });
         services.AddHttpContextAccessor();
         services.AddScoped<IUserAccessor, UserAccessor>();
-
+        services.AddMailingService(Configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

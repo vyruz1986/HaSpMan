@@ -1,0 +1,50 @@
+﻿@using Commands.Services;
+@using System.ComponentModel.DataAnnotations;
+<EditForm Model="@_messageForm" OnValidSubmit="@Submit">
+    <MudDialog>
+        <DialogContent>
+            <MudText>Note: Members without email addresses will be excluded from the mailing</MudText>
+            <DataAnnotationsValidator />
+            <MudTextField @bind-Value="_messageForm.Subject"
+                          For="@(() => _messageForm.Subject)"
+                          Label="Subject"
+                          T="string"
+                          Required="true" />
+            <MudTextField @bind-Value="_messageForm.Message"
+                          For="@(() => _messageForm.Message)"
+                          Label="Message"
+                          T="string"
+                          Required="true"
+                          Lines="10" />
+        </DialogContent>
+        <DialogActions>
+            <MudButton OnClick="Cancel">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Ok</MudButton>
+        </DialogActions>
+    </MudDialog>
+
+</EditForm> 
+
+@code {
+    private MessageForm _messageForm = new();
+
+    [CascadingParameter]
+    MudDialogInstance? MudDialog { get; set; }
+
+    void Submit()
+    {
+
+        MudDialog?.Close(DialogResult.Ok(new Message(_messageForm.Subject, _messageForm.Message)));
+    }
+
+    void Cancel() => MudDialog?.Cancel();
+
+    public class MessageForm
+    {
+        [Required(AllowEmptyStrings = false)]
+        public string Subject { get; set; } = default!;
+
+        [Required(AllowEmptyStrings = false)]
+        public string Message { get; set; } = default!;
+    }
+}
