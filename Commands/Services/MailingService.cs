@@ -63,7 +63,7 @@ public class MailingService : IMailingService
         TargetName = _config.MailServer.Host == "smtp.office365.com"
             ? "STARTTLS/smtp.office365.com"
             : null,
-        Credentials = _config.MailServer.RequiresAuthentication
+        Credentials = _config.MailServer.HaveCredentials
             ? new NetworkCredential(_config.MailServer.Username, _config.MailServer.Password)
             : null
     };
