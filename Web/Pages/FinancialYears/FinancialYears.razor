@@ -35,16 +35,19 @@
         <MudTd DataLabel="AccountNumber">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="AccountNumber">@context.IsCloded</MudTd>
         <MudTd>
-            <MudGrid >
-                <MudItem xs="6">
-                    <MudTooltip Text="Close">
-                        <MudIconButton aria-label="Close"
-                                       Icon="@Icons.Material.Filled.Close" OnClick="() => CloseFinancialYear(context)">
-                        </MudIconButton>
+            @if (!@context.IsCloded)
+            {
+                <MudGrid >
+                    <MudItem xs="6">
+                        <MudTooltip Text="Close">
+                            <MudIconButton aria-label="Close"
+                                           Icon="@Icons.Material.Filled.Close" OnClick="() => CloseFinancialYear(context)">
+                            </MudIconButton>
 
-                    </MudTooltip>
-                </MudItem>
-            </MudGrid>
+                        </MudTooltip>
+                    </MudItem>
+                </MudGrid>
+            }
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

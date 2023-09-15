@@ -66,11 +66,22 @@
             }
         </MudTd>
         <MudTd>
-            <MudTooltip Text="Edit">
-                <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
-                    Href="@($"/transactions/{@context.Id}/edit")">
-                </MudIconButton>
-            </MudTooltip>
+            @if (context.FinancialYearIsClosed)
+            {
+                <MudTooltip Text="Edit">
+                    <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
+                                   Href="@($"/transactions/{@context.Id}/edit")">
+                    </MudIconButton>
+                </MudTooltip>
+                    }
+            else
+            {
+                <MudTooltip Text="View">
+                    <MudIconButton aria-label="view" Icon="@Icons.Material.Filled.Login"
+                                   Href="@($"/transactions/{@context.Id}/edit")">
+                    </MudIconButton>
+                </MudTooltip>
+            }
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>

@@ -162,3 +162,6 @@ public class CreditTransaction : Transaction
     }
 }
 
+
+
+public record Im(bool IsClosed, Transaction Transaction);
