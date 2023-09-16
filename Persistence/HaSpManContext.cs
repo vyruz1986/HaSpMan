@@ -1,9 +1,8 @@
 using Domain;
-
+using Domain.Views;
 using Microsoft.EntityFrameworkCore;
 
 using Persistence.Constants;
-using Persistence.Views;
 
 namespace Persistence;
 

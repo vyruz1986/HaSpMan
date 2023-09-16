@@ -3,8 +3,7 @@ using AutoMapper;
 using Commands.Handlers.BankAccount.AddBankAccount;
 
 using Domain;
-
-using Persistence.Views;
+using Domain.Views;
 
 using Queries.BankAccounts;
 
@@ -21,14 +20,14 @@ public class BankAccountProfile : Profile
             .ForCtorParam(nameof(AddBankAccountCommand.AccountNumber), o => o.MapFrom(src => src.AccountNumber));
 
         CreateMap<BankAccountDetail, BankAccountForm>();
+
         CreateMap<BankAccount, BankAccountDetail>()
             .ForCtorParam(nameof(BankAccountDetail.Id), o => o.MapFrom(src => src.Id))
             .ForCtorParam(nameof(BankAccountDetail.AccountNumber), o => o.MapFrom(src => src.AccountNumber))
             .ForCtorParam(nameof(BankAccountDetail.Name), o => o.MapFrom(src => src.Name));
-        CreateMap<BankAccountsWithTotals, BankAccountDetailWithTotal>()
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.AccountNumber), o => o.MapFrom(src => src.Account.AccountNumber))
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.Id), o => o.MapFrom(src => src.BankAccountId))
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.Name), o => o.MapFrom(src => src.Account.Name))
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.TotalAmount), o => o.MapFrom(src => src.Total));
+
+        CreateMap<BankAccount, BankAccountDetailWithTotal>()
+            .ForCtorParam(nameof(BankAccountDetailWithTotal.TotalAmount), o => o.MapFrom(src => src.Totals.Total))
+            .ForCtorParam(nameof(BankAccountDetailWithTotal.NumberOfTransactions), o => o.MapFrom(src => src.Totals.NumberOfTransactions));
     }
 }

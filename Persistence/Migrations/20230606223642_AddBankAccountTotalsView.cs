@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Domain.Views;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 using Persistence.Constants;
-using Persistence.Views;
 
 #nullable disable
 

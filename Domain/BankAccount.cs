@@ -1,4 +1,5 @@
 using Domain.Extensions;
+using Domain.Views;
 
 using Types;
 
@@ -28,6 +29,7 @@ public class BankAccount
     public Guid Id { get; private set; }
     public string Name { get; private set; }
     public string AccountNumber { get; private set; }
+    public BankAccountsWithTotals Totals {get; set;} = default!;
 
     public ICollection<AuditEvent> AuditEvents { get; private set; }
 
