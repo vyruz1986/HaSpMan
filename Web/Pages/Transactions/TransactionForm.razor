@@ -269,6 +269,9 @@
     public TransactionTypeGroup TransactionTypeGroup { get; set; }
 
     [Parameter]
+    public EventCallback<TransactionTypeGroup> TransactionTypeGroupChanged{ get; set; }
+
+    [Parameter]
     public bool IsNew { get; set; }
 
     public string? FileErrorMessage { get; set; }
@@ -396,17 +399,16 @@
         await CalculateMembershipExpirationDate();
     }
 
-    private Task OnChangeTypeGroup(TransactionTypeGroup typeGroup)
+    private async Task OnChangeTypeGroup(TransactionTypeGroup typeGroup)
     {
         if (TransactionTypeGroup == typeGroup)
-            return Task.CompletedTask;
+            return;
 
         TransactionTypeGroup = typeGroup;
+        await TransactionTypeGroupChanged.InvokeAsync(typeGroup);
         SetTransactionTypes();
         foreach (var transactionTypeAmount in Transaction.TransactionTypeAmounts)
             transactionTypeAmount.TransactionType = null;
-
-        return Task.CompletedTask;
     }
 
     private async Task OnAmountChanged(TransactionTypeAmountForm transactionTypeAmount, decimal? value)
