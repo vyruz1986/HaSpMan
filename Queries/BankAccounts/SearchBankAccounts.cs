@@ -55,7 +55,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);
 
-        var items = await bankAccountsDetailQueryable.ToListAsync(cancellationToken: cancellationToken);
+        var items = await bankAccountsDetailQueryable.ToListAsync(cancellationToken);
 
         return new Paginated<BankAccountDetailWithTotal>
         {

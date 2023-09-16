@@ -3,7 +3,6 @@ using AutoMapper;
 using Commands.Handlers.BankAccount.AddBankAccount;
 
 using Domain;
-using Domain.Views;
 
 using Queries.BankAccounts;
 
@@ -27,7 +26,8 @@ public class BankAccountProfile : Profile
             .ForCtorParam(nameof(BankAccountDetail.Name), o => o.MapFrom(src => src.Name));
 
         CreateMap<BankAccount, BankAccountDetailWithTotal>()
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.TotalAmount), o => o.MapFrom(src => src.Totals.Total))
-            .ForCtorParam(nameof(BankAccountDetailWithTotal.NumberOfTransactions), o => o.MapFrom(src => src.Totals.NumberOfTransactions));
+            .ForCtorParam(nameof(BankAccountDetailWithTotal.TotalAmount), o => o.MapFrom(src => src.Totals == null ? 0 : src.Totals.Amount))
+            .ForCtorParam(nameof(BankAccountDetailWithTotal.NumberOfTransactions), o
+                => o.MapFrom(src => src.Totals == null ? 0 : src.Totals.NumberOfTransactions));
     }
 }

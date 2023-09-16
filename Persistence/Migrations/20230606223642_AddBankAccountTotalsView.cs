@@ -1,4 +1,5 @@
 ﻿using Domain.Views;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 using Persistence.Constants;
@@ -13,7 +14,7 @@ public partial class AddBankAccountTotalsView : Migration
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.Sql($@"CREATE VIEW {Schema.HaSpMan}.{BankAccountsWithTotals.ViewName}
+        migrationBuilder.Sql($@"CREATE VIEW {Schema.HaSpMan}.{BankAccountTotals.ViewName}
                                         WITH SCHEMABINDING
                                         AS
                                             SELECT
@@ -24,13 +25,13 @@ public partial class AddBankAccountTotalsView : Migration
                                                 {Schema.HaSpMan}.Transactions t
                                                 GROUP BY t.BankAccountId");
 
-        migrationBuilder.Sql($@"CREATE UNIQUE CLUSTERED INDEX IX_{BankAccountsWithTotals.ViewName}
-	                                    ON {Schema.HaSpMan}.{BankAccountsWithTotals.ViewName}(BankAccountId)");
+        migrationBuilder.Sql($@"CREATE UNIQUE CLUSTERED INDEX IX_{BankAccountTotals.ViewName}
+	                                    ON {Schema.HaSpMan}.{BankAccountTotals.ViewName}(BankAccountId)");
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.Sql($"DROP VIEW {Schema.HaSpMan}.{BankAccountsWithTotals.ViewName}");
+        migrationBuilder.Sql($"DROP VIEW {Schema.HaSpMan}.{BankAccountTotals.ViewName}");
     }
 }
