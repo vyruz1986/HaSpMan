@@ -18,7 +18,7 @@
     <TransactionForm IsNew="true"
                      IsSearchForMembership="false"
                      Transaction="@_newTransaction"
-                     TransactionTypeGroup="@_selectedTransactionTypeGroup" />
+                     @bind-TransactionTypeGroup="@_selectedTransactionTypeGroup" />
 
     <MudItem Class="d-flex justify-start" xs="12">
         <MudButton ButtonType="ButtonType.Submit"
