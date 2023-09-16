@@ -1,9 +1,9 @@
 using Domain;
+using Domain.Views;
 
 using Microsoft.EntityFrameworkCore;
 
 using Persistence.Constants;
-using Persistence.Views;
 
 namespace Persistence;
 
@@ -20,7 +20,6 @@ public class HaSpManContext : DbContext
 
     public DbSet<Member> Members { get; set; } = null!;
     public DbSet<BankAccount> BankAccounts { get; set; } = null!;
-    public DbSet<BankAccountsWithTotals> BankAccountsWithTotals { get; set; } = null!;
 
     public DbSet<FinancialYear> FinancialYears { get; set; } = null!;
 
