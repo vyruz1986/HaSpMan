@@ -75,7 +75,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
                 MemberSummaryOrderOption.PhoneNumber => memberQueryable
                     .OrderBy(m => m.PhoneNumber),
                 MemberSummaryOrderOption.IsActive => memberQueryable
-                    .OrderBy(m => m.IsActive()),
+                    .OrderBy(Member.IsActiveExpression),
                 MemberSummaryOrderOption.MembershipExpiryDate => memberQueryable
                     .OrderBy(m => m.MembershipExpiryDate),
                 _ => memberQueryable
@@ -101,7 +101,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
                 MemberSummaryOrderOption.PhoneNumber => memberQueryable
                     .OrderByDescending(m => m.PhoneNumber),
                 MemberSummaryOrderOption.IsActive => memberQueryable
-                    .OrderByDescending(m => m.IsActive()),
+                    .OrderByDescending(Member.IsActiveExpression),
                 MemberSummaryOrderOption.MembershipExpiryDate => memberQueryable
                     .OrderByDescending(m => m.MembershipExpiryDate),
                 _ => memberQueryable
