@@ -2,28 +2,19 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile",
-      "options": {
-        "cwd": "${workspaceFolder}/Web",
-        "env": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
-      }
-    },
-    {
       "label": "docker-compose-dev",
       "type": "shell",
-      "command": "docker-compose",
-      "args": ["-f", "docker-compose.dev.yaml", "up", "-d"],
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "command": "docker",
+      "args": [
+        "compose",
+        "-f",
+        "docker-compose.dev.yaml",
+        "up",
+        "-d"
+      ],
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -34,8 +25,21 @@
       }
     },
     {
-      "label": "prepdevenv",
-      "dependsOn": ["build", "docker-compose-dev"]
+      "label": "watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/Web/Web.csproj"
+      ],
+      "problemMatcher": "$msCompile",
+      "options": {
+        "env": {
+          "DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "true"
+        }
+      }
     }
   ]
 }

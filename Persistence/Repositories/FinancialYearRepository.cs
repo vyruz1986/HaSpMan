@@ -40,18 +40,23 @@ public class FinancialYearRepository : IFinancialYearRepository
 
     public Task<FinancialYear?> GetMostRecentAsync(CancellationToken cancellationToken)
     {
-        return _context.FinancialYears.OrderByDescending(x => x.StartDate).FirstOrDefaultAsync(cancellationToken);
+        return _context.FinancialYears
+            .Include(f => f.Transactions)
+            .OrderByDescending(x => x.StartDate)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public Task<FinancialYear?> GetFinancialYearByTransactionId(Guid transactionId, CancellationToken cancellationToken)
     {
         return _context.FinancialYears
+            .Include(f => f.Transactions)
             .SingleOrDefaultAsync(x => x.Transactions.Any(t => t.Id == transactionId), cancellationToken);
     }
 
     public Task<FinancialYear?> GetFinancialYearByDateAsync(DateTimeOffset dateTime, CancellationToken cancellationToken)
     {
-        return _context.FinancialYears.SingleOrDefaultAsync(x => x.StartDate <= dateTime && x.EndDate >= dateTime,
-            cancellationToken);
+        return _context.FinancialYears
+            .Include(f => f.Transactions)
+            .SingleOrDefaultAsync(x => x.StartDate <= dateTime && x.EndDate >= dateTime,cancellationToken);
     }
 }

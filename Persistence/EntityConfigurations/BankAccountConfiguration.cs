@@ -15,6 +15,8 @@ public class BankAccountConfiguration : IEntityTypeConfiguration<BankAccount>
         builder.Property(p => p.AccountNumber).HasColumnType("varchar").HasMaxLength(34);
 
         builder.OwnsMany(p => p.AuditEvents, AuditEventConfiguration("BankAccount_AuditEvents"));
+
+        builder.HasOne(a => a.Totals).WithOne();
     }
 
     private static Action<OwnedNavigationBuilder<BankAccount, AuditEvent>> AuditEventConfiguration(string tableName)
