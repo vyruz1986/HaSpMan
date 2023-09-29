@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 using AutoMapper.QueryableExtensions;
 
@@ -114,6 +114,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
     public static Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
     {
         return t => t.CounterPartyName.ToLower().Contains(searchString) ||
-                    t.Amount.ToString().Contains(searchString);
+                    t.Amount.ToString().Contains(searchString) ||
+                    t.Description.ToLower().Contains(searchString);
     }
 }
