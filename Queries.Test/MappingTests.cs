@@ -15,6 +15,7 @@ public class MappingTests
         var config = new MapperConfiguration(cfg =>
         {
             cfg.AddProfile<MemberProfile>();
+            cfg.AddProfile<TransactionProfile>();
         });
 
         _mapper = new Mapper(config);

@@ -1,4 +1,4 @@
-namespace Domain;
+﻿namespace Domain;
 
 public class FinancialYear
 {
@@ -27,7 +27,11 @@ public class FinancialYear
         {
             throw new InvalidOperationException("Financial year is already closed");
         }
+
         IsClosed = true;
+
+        foreach (var transaction in Transactions)
+            transaction.SetAsReadOnly();
     }
 
     public void AddTransaction(Transaction transaction)

@@ -59,8 +59,11 @@ public abstract class Transaction
 
     public ICollection<TransactionTypeAmount> TransactionTypeAmounts { get; private set; }
 
+    public bool ReadOnly { get; private set; }
+
     public void ChangeCounterParty(string counterPartyName, Guid? memberId)
     {
+        GuardReadOnlyChanges();
         if (memberId == MemberId && counterPartyName == CounterPartyName)
         {
             return;
@@ -72,6 +75,7 @@ public abstract class Transaction
 
     public void ChangeBankAccountId(Guid bankAccountId)
     {
+        GuardReadOnlyChanges();
         if (bankAccountId == BankAccountId)
         {
             return;
@@ -82,6 +86,7 @@ public abstract class Transaction
 
     public void ChangeReceivedDateTime(DateTimeOffset receivedDateTime)
     {
+        GuardReadOnlyChanges();
         if (receivedDateTime > DateTimeOffset.Now)
         {
             throw new ArgumentException($"Received date is set to be in the future: {receivedDateTime}",
@@ -98,6 +103,7 @@ public abstract class Transaction
 
     public void ChangeAmount(decimal amount, ICollection<TransactionTypeAmount> transactionTypeAmounts)
     {
+        GuardReadOnlyChanges();
         var sumOfTransactionTypeAmounts = transactionTypeAmounts.Sum(x => x.Amount);
         if (amount != sumOfTransactionTypeAmounts)
         {
@@ -116,6 +122,7 @@ public abstract class Transaction
 
     public void ChangeDescription(string description)
     {
+        GuardReadOnlyChanges();
         if (description == Description)
         {
             return;
@@ -126,13 +133,22 @@ public abstract class Transaction
 
     public void AddAttachments(ICollection<TransactionAttachment> attachments)
     {
+        GuardReadOnlyChanges();
         foreach (var attachment in attachments)
         {
             Attachments.Add(attachment);
         }
     }
 
+    public void SetAsReadOnly() => ReadOnly = true;
+
+    private void GuardReadOnlyChanges()
+    {
+        if (ReadOnly)
+            throw new InvalidOperationException("Editing read-only transactions is not allowed");
+    }
 }
+
 public class DebitTransaction : Transaction
 {
     private DebitTransaction() : base()
@@ -146,9 +162,9 @@ public class DebitTransaction : Transaction
 
     }
 }
+
 public class CreditTransaction : Transaction
 {
-
     private CreditTransaction() : base()
     {
 
