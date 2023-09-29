@@ -5,7 +5,7 @@ using Persistence;
 namespace Queries.FinancialYears;
 
 public record GetFinancialYearsQuery() : IRequest<IReadOnlyList<FinancialYear>>;
-public record FinancialYear(Guid Id, DateTimeOffset StartDateTimeOffset, DateTimeOffset EndDateTimeOffset, bool IsCloded);
+public record FinancialYear(Guid Id, DateTimeOffset StartDateTimeOffset, DateTimeOffset EndDateTimeOffset, bool IsClosed);
 
 public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, IReadOnlyList<FinancialYear>>
 {
@@ -15,6 +15,7 @@ public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, 
     {
         _contextFactory = contextFactory;
     }
+    
     public async Task<IReadOnlyList<FinancialYear>> Handle(GetFinancialYearsQuery request,
         CancellationToken cancellationToken)
     {
