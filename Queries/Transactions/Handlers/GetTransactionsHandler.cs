@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 using AutoMapper.QueryableExtensions;
 
@@ -23,70 +23,34 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
         _contextFactory = contextFactory;
         _mapper = mapper;
     }
+
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
         var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-        var financialYears = context.FinancialYears
-            .AsNoTracking();
+        var baseQuery = context.FinancialYears
+            .AsNoTracking()
+            .SelectMany(y => y.Transactions)
+            .Where(GetFilterCriteria(request.SearchString));
 
-        // financialYears = request.SortDirection switch
-        // {
-        //     SortDirection.Descending => request.OrderBy switch
-        //     {
-        //         TransactionSummaryOrderOption.From => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.CounterPartyName)),
-        //         TransactionSummaryOrderOption.Amount => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.Amount)),
-        //         _ => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.ReceivedDateTime)),
-        //     },
-        //     _ => request.OrderBy switch
-        //     {
-        //         TransactionSummaryOrderOption.From => financialYears.Include(f => f.Transactions.OrderBy(t => t.CounterPartyName)),
-        //         TransactionSummaryOrderOption.Amount => financialYears.Include(f => f.Transactions.OrderBy(t => t.Amount)),
-        //         _ => financialYears.Include(f => f.Transactions.OrderBy(t => t.ReceivedDateTime)),
-        //     }
-        // };
+        var transactions = GetOrderedQueryable(request, baseQuery);
 
-        var transactions = financialYears
-            .SelectMany(y => y.Transactions.Select(t => new TransactionSummary(
-                t.Id,
-                t.CounterPartyName,
-                t.BankAccountId,
-                t.Amount,
-                t.ReceivedDateTime,
-                t.DateFiled,
-                t.MemberId,
-                t.Description,
-                t.TransactionTypeAmounts.Select(tamt => new ViewModels.TransactionTypeAmount(tamt.TransactionType, tamt.Amount)),
-                y.IsClosed)))
-            .OrderBy(t => t.CounterPartyName);
-
-        // var transactions =
-        //     context.FinancialYears
-        //     .SelectMany(x => x.Transactions)
-        //     .AsNoTracking()
-        //     .Where(GetFilterCriteria(request.SearchString));
-
-        var totalCount = await transactions.CountAsync(cancellationToken);
-
-        // transactions = GetOrderedQueryable(request, transactions);
-
-        var transactionViewModels =
-            transactions
-                // .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
-                .Skip(request.PageIndex * request.PageSize)
-                .Take(request.PageSize);
+        var transactionViewModels = transactions
+            .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
+            .Skip(request.PageIndex * request.PageSize)
+            .Take(request.PageSize);
 
         var items = await transactionViewModels.ToListAsync(cancellationToken);
+        var totalCount = await transactions.CountAsync(cancellationToken);
 
         return new Paginated<TransactionSummary>()
         {
             Items = items,
             Total = totalCount
         };
-
     }
 
-    private static IOrderedEnumerable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IEnumerable<Transaction> transactions)
+    private static IQueryable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IQueryable<Transaction> transactions)
     {
         transactions = request.SortDirection switch
         {
@@ -105,10 +69,10 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
                     x.ReceivedDateTime),
                 _ => transactions.OrderByDescending(x => x.DateFiled)
             },
-            _ => transactions
+            _ => transactions.OrderByDescending(x => x.DateFiled)
         };
 
-        return (IOrderedEnumerable<Transaction>)transactions;
+        return transactions;
     }
 
     public static Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)

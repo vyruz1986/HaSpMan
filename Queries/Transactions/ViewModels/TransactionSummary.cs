@@ -1,4 +1,4 @@
-﻿namespace Queries.Transactions.ViewModels;
+namespace Queries.Transactions.ViewModels;
 
 public record TransactionSummary(
     Guid Id,
@@ -10,4 +10,4 @@ public record TransactionSummary(
     Guid? MemberId,
     string Description,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    bool FinancialYearIsClosed);
+    bool ReadOnly);

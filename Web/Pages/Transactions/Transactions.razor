@@ -9,8 +9,7 @@
 
 
 <MudTable Class="mt-10" Dense="true" Hover="true" @ref="table"
-    ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" RowStyleFunc="RowStyleFunc"
-    Loading="@loading">
+    ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" RowStyleFunc="RowStyleFunc">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
@@ -66,18 +65,18 @@
             }
         </MudTd>
         <MudTd>
-            @if (context.FinancialYearIsClosed)
+            @if (context.ReadOnly)
             {
-                <MudTooltip Text="Edit">
-                    <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
+                <MudTooltip Text="View">
+                    <MudIconButton aria-label="view" Icon="@Icons.Material.Filled.ZoomIn"
                                    Href="@($"/transactions/{@context.Id}/edit")">
                     </MudIconButton>
                 </MudTooltip>
                     }
             else
             {
-                <MudTooltip Text="View">
-                    <MudIconButton aria-label="view" Icon="@Icons.Material.Filled.Login"
+                <MudTooltip Text="Edit">
+                    <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
                                    Href="@($"/transactions/{@context.Id}/edit")">
                     </MudIconButton>
                 </MudTooltip>
@@ -99,16 +98,8 @@
     private MudTable<TransactionSummary>? table;
     private string searchString = "";
 
-    // TODO: Keeping this local variable shouldn't be necessary
-    // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
-    // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
-    private bool loading = true;
-
     private async Task<TableData<TransactionSummary>> ServerReload(TableState state)
     {
-        loading = true;
-        StateHasChanged();
-
         TransactionSummaryOrderOption orderBy = state.SortLabel switch
         {
             "from" => TransactionSummaryOrderOption.From,
