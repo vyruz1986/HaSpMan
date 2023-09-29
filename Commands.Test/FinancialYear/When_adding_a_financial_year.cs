@@ -62,34 +62,37 @@ public class When_adding_a_financial_year
             [Fact]
             public async Task It_should_add_a_new_financial_year_following_the_last_year()
             {
+                var currentYear = DateTime.Now.Year;
+                var mostRecentStartDate = new DateTimeOffset(new DateTime(currentYear, 9, 1));
 
-                var startDate = new DateTimeOffset(new DateTime(2023, 9, 1));
+                var nextYearStartDate = new DateTimeOffset(new DateTime(currentYear + 1, 9, 1));
 
-                var endDate = new DateTimeOffset(new DateTime(2024, 8, 31));
+                var nextYearEndDate = new DateTimeOffset(new DateTime(currentYear + 2, 8, 31));
+
                 _financialYearRepositoryMock
                     .Setup(x =>
                         x.GetMostRecentAsync(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(new Domain.FinancialYear(new DateTimeOffset(new DateTime(2022, 9, 1)),
-                        new DateTimeOffset(new DateTime(2023, 8, 31)), new List<Domain.Transaction>()));
+                    .ReturnsAsync(new Domain.FinancialYear(mostRecentStartDate));
 
                 _financialYearRepositoryMock
                     .Setup(x =>
-                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.StartDate == startDate)))
+                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.StartDate == nextYearStartDate)))
                     .Verifiable();
+
                 _financialYearRepositoryMock
                     .Setup(x =>
-                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)))
+                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == nextYearEndDate)))
                     .Verifiable();
 
                 await SUT.Handle(new AddFinancialYearCommand(), CancellationToken.None);
 
                 _financialYearRepositoryMock
                     .Verify(x =>
-                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.StartDate == startDate)));
+                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.StartDate == nextYearStartDate)));
+
                 _financialYearRepositoryMock
                     .Verify(x =>
-                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == endDate)));
-
+                        x.Add(It.Is<Domain.FinancialYear>(financialYear => financialYear.EndDate == nextYearEndDate)));
             }
         }
     }

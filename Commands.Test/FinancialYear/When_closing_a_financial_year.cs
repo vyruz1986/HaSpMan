@@ -2,6 +2,7 @@
 
 using Domain;
 using Domain.Interfaces;
+using Domain.Test.FakerGenerators;
 
 using FluentAssertions;
 
@@ -27,7 +28,7 @@ public class When_closing_a_financial_year
     public async Task It_should_mark_the_year_as_closed()
     {
         var startDate = DateTimeOffset.Now;
-        var financialYear = new Domain.FinancialYear(startDate, startDate.AddYears(1).AddDays(-1), new List<Domain.Transaction>());
+        var financialYear = FakerGenerator.FinancialYear.Generate();
         _financialYearRepositoryMock
             .Setup(x => x.GetByIdAsync(financialYear.Id, CancellationToken.None))
             .ReturnsAsync(financialYear);
@@ -41,10 +42,10 @@ public class When_closing_a_financial_year
     public async Task It_should_mark_all_related_transactions_as_as_locked()
     {
         var startDate = DateTimeOffset.Now;
-        var financialYear = new Domain.FinancialYear(startDate, startDate.AddYears(1).AddDays(-1), new List<Domain.Transaction>()
-            {
-                new CreditTransaction("Random counter party", Guid.NewGuid(), 20,DateTimeOffset.Now, "A description", new List<TransactionAttachment>(), null, new List<TransactionTypeAmount>())
-            });
+        var financialYear = FakerGenerator.FinancialYear.Generate();
+        financialYear.AddTransaction(
+            new CreditTransaction("Random counter party", Guid.NewGuid(), 20, DateTimeOffset.Now, "A description", new List<TransactionAttachment>(), null, new List<TransactionTypeAmount>()));
+
         _financialYearRepositoryMock
             .Setup(x => x.GetByIdAsync(financialYear.Id, CancellationToken.None))
             .ReturnsAsync(financialYear);

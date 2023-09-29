@@ -1,15 +1,16 @@
-﻿namespace Domain;
+namespace Domain;
 
 public class FinancialYear
 {
 #pragma warning disable CS8618
     public FinancialYear() { } // Make EFCore happy
 #pragma warning restore CS8618
-    public FinancialYear(DateTimeOffset startDate, DateTimeOffset endDate, ICollection<Transaction> transactions)
+
+    public FinancialYear(DateTimeOffset startDate)
     {
         StartDate = startDate;
-        EndDate = endDate;
-        Transactions = transactions;
+        EndDate = StartDate.AddYears(1).AddDays(-1);
+        Transactions = new List<Transaction>();
     }
 
     public Guid Id { get; private set; }
