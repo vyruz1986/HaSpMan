@@ -11,6 +11,8 @@ public class TransactionProfile : Profile
 {
     public TransactionProfile()
     {
+        CreateMap<Transaction, TransactionSummary>();
+
         CreateMap<Transaction, TransactionDetail>()
             .ForCtorParam(nameof(TransactionDetail.TransactionTypeAmounts),
                 o => o.MapFrom(x => x.TransactionTypeAmounts))

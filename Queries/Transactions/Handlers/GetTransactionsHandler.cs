@@ -26,19 +26,53 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
         var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var transactions =
-            context.FinancialYears
-            .SelectMany(x => x.Transactions)
-            .AsNoTracking()
-            .Where(GetFilterCriteria(request.SearchString));
+
+        var financialYears = context.FinancialYears
+            .AsNoTracking();
+
+        // financialYears = request.SortDirection switch
+        // {
+        //     SortDirection.Descending => request.OrderBy switch
+        //     {
+        //         TransactionSummaryOrderOption.From => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.CounterPartyName)),
+        //         TransactionSummaryOrderOption.Amount => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.Amount)),
+        //         _ => financialYears.Include(f => f.Transactions.OrderByDescending(t => t.ReceivedDateTime)),
+        //     },
+        //     _ => request.OrderBy switch
+        //     {
+        //         TransactionSummaryOrderOption.From => financialYears.Include(f => f.Transactions.OrderBy(t => t.CounterPartyName)),
+        //         TransactionSummaryOrderOption.Amount => financialYears.Include(f => f.Transactions.OrderBy(t => t.Amount)),
+        //         _ => financialYears.Include(f => f.Transactions.OrderBy(t => t.ReceivedDateTime)),
+        //     }
+        // };
+
+        var transactions = financialYears
+            .SelectMany(y => y.Transactions.Select(t => new TransactionSummary(
+                t.Id,
+                t.CounterPartyName,
+                t.BankAccountId,
+                t.Amount,
+                t.ReceivedDateTime,
+                t.DateFiled,
+                t.MemberId,
+                t.Description,
+                t.TransactionTypeAmounts.Select(tamt => new ViewModels.TransactionTypeAmount(tamt.TransactionType, tamt.Amount)),
+                y.IsClosed)))
+            .OrderBy(t => t.CounterPartyName);
+
+        // var transactions =
+        //     context.FinancialYears
+        //     .SelectMany(x => x.Transactions)
+        //     .AsNoTracking()
+        //     .Where(GetFilterCriteria(request.SearchString));
 
         var totalCount = await transactions.CountAsync(cancellationToken);
 
-        transactions = GetOrderedQueryable(request, transactions);
+        // transactions = GetOrderedQueryable(request, transactions);
 
         var transactionViewModels =
             transactions
-                .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
+                // .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
                 .Skip(request.PageIndex * request.PageSize)
                 .Take(request.PageSize);
 
@@ -52,7 +86,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
 
     }
 
-    private static IQueryable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IQueryable<Transaction> transactions)
+    private static IOrderedEnumerable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IEnumerable<Transaction> transactions)
     {
         transactions = request.SortDirection switch
         {
@@ -74,7 +108,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
             _ => transactions
         };
 
-        return transactions;
+        return (IOrderedEnumerable<Transaction>)transactions;
     }
 
     public static Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
