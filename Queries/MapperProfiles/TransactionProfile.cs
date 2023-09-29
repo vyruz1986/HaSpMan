@@ -11,7 +11,10 @@ public class TransactionProfile : Profile
 {
     public TransactionProfile()
     {
-        CreateMap<Transaction, TransactionSummary>();
+        CreateMap<Transaction, TransactionSummary>()
+            .ForCtorParam(nameof(TransactionSummary.TransactionType), o => o.MapFrom(src => src is CreditTransaction
+                ? TransactionType.Credit
+                : TransactionType.Debit));
 
         CreateMap<Transaction, TransactionDetail>()
             .ForCtorParam(nameof(TransactionDetail.TransactionTypeAmounts),
@@ -25,12 +28,16 @@ public class TransactionProfile : Profile
             .ForCtorParam(nameof(TransactionDetail.CounterPartyName), o => o.MapFrom(x => x.CounterPartyName))
             .ForCtorParam(nameof(TransactionDetail.Description), o => o.MapFrom(x => x.Description))
             .ForCtorParam(nameof(TransactionDetail.MemberId), o => o.MapFrom(x => x.MemberId))
-            .ForCtorParam(nameof(TransactionDetail.ReceivedDateTime), o => o.MapFrom(x => x.ReceivedDateTime));
+            .ForCtorParam(nameof(TransactionDetail.ReceivedDateTime), o => o.MapFrom(x => x.ReceivedDateTime))
+            .ForCtorParam(nameof(TransactionSummary.TransactionType), o => o.MapFrom(src => src is CreditTransaction
+                ? TransactionType.Credit
+                : TransactionType.Debit));
 
-        CreateMap<TransactionAttachment, Queries.Transactions.ViewModels.TransactionAttachment>()
+        CreateMap<TransactionAttachment, Transactions.ViewModels.TransactionAttachment>()
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionAttachment.Name), o => o.MapFrom(x => x.Name))
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionAttachment.FullPath), o => o.MapFrom(x => x.FullPath));
-        CreateMap<TransactionTypeAmount, Queries.Transactions.ViewModels.TransactionTypeAmount>()
+
+        CreateMap<TransactionTypeAmount, Transactions.ViewModels.TransactionTypeAmount>()
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionTypeAmount.Amount),
                 o => o.MapFrom(x => x.Amount))
             .ForCtorParam(nameof(Transactions.ViewModels.TransactionTypeAmount.TransactionType),

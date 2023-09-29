@@ -12,7 +12,8 @@ public record TransactionDetail(
     DateTimeOffset ReceivedDateTime,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
     ICollection<TransactionAttachment> TransactionAttachments,
+    TransactionType TransactionType,
     bool ReadOnly);
 
-public record TransactionTypeAmount(TransactionType TransactionType, decimal Amount);
+public record TransactionTypeAmount(Types.TransactionType TransactionType, decimal Amount);
 public record TransactionAttachment(string Name, string FullPath);

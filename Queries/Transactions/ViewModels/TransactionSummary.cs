@@ -1,4 +1,4 @@
-namespace Queries.Transactions.ViewModels;
+﻿namespace Queries.Transactions.ViewModels;
 
 public record TransactionSummary(
     Guid Id,
@@ -10,4 +10,11 @@ public record TransactionSummary(
     Guid? MemberId,
     string Description,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    bool ReadOnly);
+    bool ReadOnly,
+    TransactionType TransactionType);
+
+public enum TransactionType
+{
+    Credit,
+    Debit
+}
