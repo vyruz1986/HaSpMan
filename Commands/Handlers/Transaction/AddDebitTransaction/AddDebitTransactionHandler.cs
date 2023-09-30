@@ -19,7 +19,7 @@ public class AddDebitTransactionHandler : IRequestHandler<AddDebitTransactionCom
     public async Task<Guid> Handle(AddDebitTransactionCommand request, CancellationToken cancellationToken)
     {
         var financialYear =
-            await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
+            await _financialYearRepository.GetFinancialYearByTransactionId(request.FinancialYearId, cancellationToken)
             ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
 
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);

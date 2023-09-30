@@ -2,11 +2,11 @@
 
 using Web.Pages.Transactions;
 
-namespace Web;
+namespace Web.Extensions;
 
-public class TransactionTypes
+public static class TransactionTypeGroupExtensions
 {
-    public static IReadOnlyList<TransactionType> GetScopedTransactionTypes(TransactionTypeGroup group)
+    public static IReadOnlyList<TransactionType> GetScopedTransactionTypes(this TransactionTypeGroup group)
     {
         return group == TransactionTypeGroup.Debit
             ? new List<TransactionType>

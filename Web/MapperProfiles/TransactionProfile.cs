@@ -48,7 +48,8 @@ public class TransactionProfile : Profile
             .ForMember(x => x.TransactionAttachments, o => o.MapFrom(x => x.TransactionAttachments))
             .ForMember(x => x.NewMembershipExpirationDate, o => o.Ignore())
             .ForMember(x => x.ApplyMembershipCalculation, o => o.Ignore())
-            .ForMember(x => x.NewTransactionAttachments, o => o.Ignore());
+            .ForMember(x => x.NewTransactionAttachments, o => o.Ignore())
+            .ForMember(m => m.FinancialYearId, o => o.Ignore());
 
         CreateMap<TransactionTypeAmount, TransactionTypeAmountForm>();
 

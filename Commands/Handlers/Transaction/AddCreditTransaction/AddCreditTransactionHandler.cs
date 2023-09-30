@@ -21,7 +21,7 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
     {
 
         var financialYear =
-            await _financialYearRepository.GetFinancialYearByDateAsync(request.ReceivedDateTime, cancellationToken)
+            await _financialYearRepository.GetFinancialYearByTransactionId(request.FinancialYearId, cancellationToken)
             ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
 
         var totalAmount = request.TransactionTypeAmounts.Sum(x => x.Amount);

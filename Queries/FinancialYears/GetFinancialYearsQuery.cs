@@ -5,7 +5,6 @@ using Persistence;
 namespace Queries.FinancialYears;
 
 public record GetFinancialYearsQuery() : IRequest<IReadOnlyList<FinancialYear>>;
-public record FinancialYear(Guid Id, DateTimeOffset StartDateTimeOffset, DateTimeOffset EndDateTimeOffset, bool IsClosed);
 
 public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, IReadOnlyList<FinancialYear>>
 {
@@ -23,7 +22,7 @@ public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, 
 
         return financialYears
             .OrderByDescending(x => x.StartDate)
-            .Select(x => new FinancialYear(x.Id, x.StartDate, x.EndDate, x.IsClosed))
+            .Select(x => new FinancialYear(x.Id, x.StartDate, x.EndDate, x.IsClosed, x.Name))
             .ToList();
     }
 }
