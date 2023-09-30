@@ -33,9 +33,9 @@
     <RowTemplate>
         <MudTd DataLabel="Name">@context.StartDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="AccountNumber">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
-        <MudTd DataLabel="AccountNumber">@context.IsCloded</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.IsClosed</MudTd>
         <MudTd>
-            @if (!@context.IsCloded)
+            @if (!@context.IsClosed)
             {
                 <MudGrid >
                     <MudItem xs="6">
