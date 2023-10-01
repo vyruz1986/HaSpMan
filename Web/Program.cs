@@ -9,6 +9,7 @@ public class Program
         .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: true)
         .AddEnvironmentVariables()
         .Build();
+        
     public static void Main(string[] args)
     {
         CreateHostBuilder(args).Build().Run();

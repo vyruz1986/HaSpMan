@@ -14,7 +14,6 @@
           ServerData="@(new Func<TableState, Task<TableData<FinancialYear>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Financial years</MudText>
-       
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
@@ -30,7 +29,7 @@
             Is closed
         </MudTh>
         <MudTh>
-            
+            Actions
         </MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -39,7 +38,7 @@
         <MudTd DataLabel="EndDate">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="IsClosed">@context.IsClosed</MudTd>
         <MudTd>
-            @if (!@context.IsClosed)
+        @if (!@context.IsClosed)
             {
                 <MudGrid >
                     <MudItem xs="6">

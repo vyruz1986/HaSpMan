@@ -17,9 +17,9 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
         _financialYearRepository = financialYearRepository;
         _mediator = mediator;
     }
+    
     public async Task<Guid> Handle(AddCreditTransactionCommand request, CancellationToken cancellationToken)
     {
-
         var financialYear =
             await _financialYearRepository.GetFinancialYearByTransactionId(request.FinancialYearId, cancellationToken)
             ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
@@ -30,7 +30,7 @@ public class AddCreditTransactionHandler : IRequestHandler<AddCreditTransactionC
             request.TransactionTypeAmounts);
 
         financialYear.AddTransaction(transaction);
-        ;
+
         await _financialYearRepository.SaveChangesAsync(cancellationToken);
 
         await _mediator.Send(new AddAttachmentsCommand(transaction.Id, request.NewAttachmentFiles), cancellationToken);
