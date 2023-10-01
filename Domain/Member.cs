@@ -1,4 +1,6 @@
-﻿using Domain.Extensions;
+﻿using System.Linq.Expressions;
+
+using Domain.Extensions;
 
 using Types;
 
@@ -147,4 +149,8 @@ public class Member
         return MembershipExpiryDate == null
             || MembershipExpiryDate.Value.Date >= DateTimeOffset.Now.Date;
     }
+
+    public static Expression<Func<Member, bool>> IsActiveExpression => e =>
+        e.MembershipExpiryDate == null
+        || e.MembershipExpiryDate.Value.Date >= DateTimeOffset.Now.Date;
 }
