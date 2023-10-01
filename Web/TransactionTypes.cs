@@ -20,27 +20,12 @@ public class TransactionTypes
                 TransactionType.DebitRefund
             }.OrderBy(x => x.GetDescription()).ToList()
             : (IReadOnlyList<TransactionType>)new List<TransactionType>
-        {
-            TransactionType.CreditAcquisitionConsumables,
-            TransactionType.CreditAcquisitionGoodsAndServices,
-            TransactionType.CreditBankCosts,
-            TransactionType.CreditFixedCosts,
-            TransactionType.InternalBank
-        }.OrderBy(x => x.GetDescription()).ToList();
+            {
+                TransactionType.CreditAcquisitionConsumables,
+                TransactionType.CreditAcquisitionGoodsAndServices,
+                TransactionType.CreditBankCosts,
+                TransactionType.CreditFixedCosts,
+                TransactionType.InternalBank
+            }.OrderBy(x => x.GetDescription()).ToList();
     }
-
-    public static TransactionTypeGroup GetTransactionTypeGroup(TransactionType transactionType)
-    {
-        return new List<TransactionType>
-        {
-            TransactionType.DebitWorkshopFee,
-            TransactionType.DebitDonation,
-            TransactionType.DebitMemberFee,
-            TransactionType.InternalBank,
-            TransactionType.DebitSaleConsumables,
-            TransactionType.DebitSaleGoodsAndServices,
-            TransactionType.DebitRefund
-        }.Contains(transactionType) ? TransactionTypeGroup.Debit : TransactionTypeGroup.Credit;
-    }
-
 }

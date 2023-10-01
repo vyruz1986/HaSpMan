@@ -23,33 +23,31 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
         _contextFactory = contextFactory;
         _mapper = mapper;
     }
+
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
         var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var transactions =
-            context.FinancialYears
-            .SelectMany(x => x.Transactions)
+
+        var baseQuery = context.FinancialYears
             .AsNoTracking()
+            .SelectMany(y => y.Transactions)
             .Where(GetFilterCriteria(request.SearchString));
 
-        var totalCount = await transactions.CountAsync(cancellationToken);
+        var transactions = GetOrderedQueryable(request, baseQuery);
 
-        transactions = GetOrderedQueryable(request, transactions);
-
-        var transactionViewModels =
-            transactions
-                .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
-                .Skip(request.PageIndex * request.PageSize)
-                .Take(request.PageSize);
+        var transactionViewModels = transactions
+            .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
+            .Skip(request.PageIndex * request.PageSize)
+            .Take(request.PageSize);
 
         var items = await transactionViewModels.ToListAsync(cancellationToken);
+        var totalCount = await transactions.CountAsync(cancellationToken);
 
         return new Paginated<TransactionSummary>()
         {
             Items = items,
             Total = totalCount
         };
-
     }
 
     private static IQueryable<Transaction> GetOrderedQueryable(GetTransactionQuery request, IQueryable<Transaction> transactions)
@@ -71,7 +69,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
                     x.ReceivedDateTime),
                 _ => transactions.OrderByDescending(x => x.DateFiled)
             },
-            _ => transactions
+            _ => transactions.OrderByDescending(x => x.DateFiled)
         };
 
         return transactions;
@@ -80,6 +78,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
     public static Expression<Func<Transaction, bool>> GetFilterCriteria(string searchString)
     {
         return t => t.CounterPartyName.ToLower().Contains(searchString) ||
-                    t.Amount.ToString().Contains(searchString);
+                    t.Amount.ToString().Contains(searchString) ||
+                    t.Description.ToLower().Contains(searchString);
     }
 }

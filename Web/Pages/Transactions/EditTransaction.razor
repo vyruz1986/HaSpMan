@@ -5,6 +5,8 @@
 @using Domain
 @using Queries.Transactions.Handlers
 @using AttachmentFile = Commands.Handlers.AttachmentFile
+@using Web.Extensions
+
 @inject IMediator Mediator
 @inject IMapper Mapper
 @inject ISnackbar Snackbar
@@ -12,23 +14,27 @@
 
 <h1 class="my-6">Edit transaction</h1>
 
-<EditForm Model="@Transaction"
-          OnInvalidSubmit="@ShowError"
-          OnValidSubmit="@SubmitTransaction">
+@if (ReadOnly)
+{
+    <MudAlert Severity="Severity.Info">This transaction is read-only, no changes can be made</MudAlert>
+}
+
+<EditForm Model="@Transaction" OnInvalidSubmit="@ShowError" OnValidSubmit="@SubmitTransaction">
     <DataAnnotationsValidator />
 
     <TransactionForm IsNew="false"
-                     IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue"
-                     Transaction="@Transaction"
-                     TransactionTypeGroup="_transactionTypeGroup" />
+        IsSearchForMembership="Transaction.Counterparty.MemberId.HasValue"
+        Transaction="@Transaction"
+        TransactionTypeGroup="_transactionTypeGroup" />
 
     <MudItem Class="d-flex justify-start" xs="12">
         <MudButton ButtonType="ButtonType.Submit"
-                   Class="my-8"
-                   Color="Color.Primary"
-                   DisableElevation="true"
-                   Size="Size.Large"
-                   Variant="Variant.Filled">
+            Class="my-8"
+            Color="Color.Primary"
+            DisableElevation="true"
+            Size="Size.Large"
+            Variant="Variant.Filled"
+            Disabled="@ReadOnly">
             Save transaction
         </MudButton>
     </MudItem>
@@ -43,12 +49,15 @@
 
     private TransactionTypeGroup _transactionTypeGroup;
 
+    private bool ReadOnly { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         var query = new GetTransactionByIdQuery(TransactionId);
         var transactionDetail = await Mediator.Send(query);
         Transaction = Mapper.Map<Models.TransactionForm>(transactionDetail);
-        _transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(Transaction.TransactionTypeAmounts.First().TransactionType!.Value);
+        _transactionTypeGroup = transactionDetail.GetTransactionTypeGroup();
+        ReadOnly = transactionDetail.ReadOnly;
     }
 
     private async Task SubmitTransaction()
@@ -57,19 +66,19 @@
         var expirationDate = Transaction.NewMembershipExpirationDate;
         var applyCalculation = Transaction.ApplyMembershipCalculation;
         var command = new EditTransactionCommand(
-            Id: TransactionId,
-            CounterPartyName: Transaction.Counterparty.Name!,
-            MemberId: Transaction.Counterparty.MemberId,
-            BankAccountId: Transaction.BankAccountId.GetValueOrDefault(),
-            ReceivedDateTime: new DateTimeOffset(Transaction.ReceivedDateTime!.Value),
-            Description: Transaction.Description!,
-            TransactionTypeAmounts: Transaction.TransactionTypeAmounts
-                .Select(x => new TransactionTypeAmount(x.TransactionType!.Value, x.Amount!.Value))
-                .ToList(),
-            NewAttachmentFiles: Transaction.NewTransactionAttachments
-                .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.UnsafePath))
-                .ToList());
-                
+        Id: TransactionId,
+        CounterPartyName: Transaction.Counterparty.Name!,
+        MemberId: Transaction.Counterparty.MemberId,
+        BankAccountId: Transaction.BankAccountId.GetValueOrDefault(),
+        ReceivedDateTime: new DateTimeOffset(Transaction.ReceivedDateTime!.Value),
+        Description: Transaction.Description!,
+        TransactionTypeAmounts: Transaction.TransactionTypeAmounts
+        .Select(x => new TransactionTypeAmount(x.TransactionType!.Value, x.Amount!.Value))
+        .ToList(),
+        NewAttachmentFiles: Transaction.NewTransactionAttachments
+        .Select(x => new AttachmentFile(x.FileName, x.ContentType, x.UnsafePath))
+        .ToList());
+
         await Mediator.Send(command);
         if (memberId.HasValue && expirationDate.HasValue && applyCalculation)
         {

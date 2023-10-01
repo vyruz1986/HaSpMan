@@ -6,6 +6,15 @@ public record TransactionSummary(
     Guid BankAccountId,
     decimal Amount,
     DateTimeOffset ReceivedDateTime,
+    DateTimeOffset DateFiled,
     Guid? MemberId,
     string Description,
-    ICollection<TransactionTypeAmount> TransactionTypeAmounts);
+    ICollection<TransactionTypeAmount> TransactionTypeAmounts,
+    bool ReadOnly,
+    TransactionType TransactionType);
+
+public enum TransactionType
+{
+    Credit,
+    Debit
+}

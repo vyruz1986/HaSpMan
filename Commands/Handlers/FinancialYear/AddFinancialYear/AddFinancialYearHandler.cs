@@ -27,10 +27,7 @@ public class AddFinancialYearHandler : IRequestHandler<AddFinancialYearCommand, 
 
         var startDate = new DateTimeOffset(new DateTime(year, _financialYearOptions.StartDate.Month, _financialYearOptions.StartDate.Day));
 
-        var financialYear = new Domain.FinancialYear(
-            startDate,
-            startDate.AddYears(1).AddDays(-1),
-            new List<Domain.Transaction>());
+        var financialYear = new Domain.FinancialYear(startDate);
 
         _financialYearRepository.Add(financialYear);
         await _financialYearRepository.SaveChangesAsync(cancellationToken);

@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Commands\Commands.csproj" />
+    <ProjectReference Include="..\Domain.Test\Domain.Test.csproj" />
   </ItemGroup>
 
 </Project>

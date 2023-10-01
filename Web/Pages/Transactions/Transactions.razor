@@ -4,13 +4,12 @@
 @using Queries.Transactions.ViewModels
 @using Types
 @using TransactionTypeAmount = Queries.Transactions.ViewModels.TransactionTypeAmount
+@using Web.Extensions
 
 @inject IMediator _mediator
 
-
 <MudTable Class="mt-10" Dense="true" Hover="true" @ref="table"
-    ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" RowStyleFunc="RowStyleFunc"
-    Loading="@loading">
+    ServerData="@(new Func<TableState, Task<TableData<TransactionSummary>>>(ServerReload))" RowStyleFunc="RowStyleFunc">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Transactions</MudText>
         <MudSpacer />
@@ -19,7 +18,7 @@
         </MudTextField>
         <MudSpacer />
         <MudButton Class="ma-2" Color="Color.Primary" DisableElevation="true" Href="/transactions/new" Size="Size.Small"
-            Variant="Variant.Filled" Disabled="@loading">
+            Variant="Variant.Filled">
             Add transaction
         </MudButton>
     </ToolBarContent>
@@ -55,10 +54,18 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="From">@context.CounterPartyName</MudTd>
-        <MudTd DataLabel="Amount">@GetPlusOrMinus(context.TransactionTypeAmounts) €@context.Amount</MudTd>
-        <MudTd DataLabel="ReceivedDateTime">@context.ReceivedDateTime.ToString("dd-MM-yyyy")</MudTd>
-        <MudTd DataLabel="Description">@context.Description</MudTd>
+        <MudTd DataLabel="From">
+            @context.CounterPartyName
+        </MudTd>
+        <MudTd DataLabel="Amount">
+            @GetAmount(context).ToString("C")
+        </MudTd>
+        <MudTd DataLabel="ReceivedDateTime">
+            @context.ReceivedDateTime.ToString("dd-MM-yyyy")
+        </MudTd>
+        <MudTd DataLabel="Description">
+            @context.Description
+        </MudTd>
         <MudTd DataLabel="Transaction types">
             @foreach (var type in context.TransactionTypeAmounts)
             {
@@ -66,11 +73,22 @@
             }
         </MudTd>
         <MudTd>
-            <MudTooltip Text="Edit">
-                <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
-                    Href="@($"/transactions/{@context.Id}/edit")">
-                </MudIconButton>
-            </MudTooltip>
+            @if (context.ReadOnly)
+            {
+                <MudTooltip Text="View">
+                    <MudIconButton aria-label="view" Icon="@Icons.Material.Filled.ZoomIn"
+                        Href="@($"/transactions/{@context.Id}/edit")">
+                    </MudIconButton>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudTooltip Text="Edit">
+                    <MudIconButton aria-label="edit" Icon="@Icons.Material.Filled.Edit"
+                        Href="@($"/transactions/{@context.Id}/edit")">
+                    </MudIconButton>
+                </MudTooltip>
+            }
         </MudTd>
     </RowTemplate>
     <NoRecordsContent>
@@ -88,16 +106,8 @@
     private MudTable<TransactionSummary>? table;
     private string searchString = "";
 
-    // TODO: Keeping this local variable shouldn't be necessary
-    // because the MudTable ServerData feature should take care of displaying the loading bar appropriately
-    // However due to https://github.com/MudBlazor/MudBlazor/issues/4662 this doesn't currently work
-    private bool loading = true;
-
     private async Task<TableData<TransactionSummary>> ServerReload(TableState state)
     {
-        loading = true;
-        StateHasChanged();
-
         TransactionSummaryOrderOption orderBy = state.SortLabel switch
         {
             "from" => TransactionSummaryOrderOption.From,
@@ -109,7 +119,6 @@
         var query = new GetTransactionQuery(searchString, state.Page, state.PageSize, orderBy, sortDirection);
         var data = await _mediator.Send(query);
 
-        loading = false;
         return new TableData<TransactionSummary>()
             {
                 TotalItems = data.Total,
@@ -125,27 +134,18 @@
 
     private string RowStyleFunc(TransactionSummary transactionSummary, int index)
     {
-        var transactionType = transactionSummary.TransactionTypeAmounts.FirstOrDefault();
-        if (transactionType == null)
-        {
-            return string.Empty;
-
-        }
-        var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
+        var transactionTypeGroup = transactionSummary.GetTransactionTypeGroup();
         return transactionTypeGroup == TransactionTypeGroup.Credit
         ? $"background-color: {Colors.Red.Lighten4}"
         : $"background-color: {Colors.Green.Lighten4}";
     }
 
-    private string GetPlusOrMinus(ICollection<TransactionTypeAmount> transactionTypeAmounts)
+    private decimal GetAmount(TransactionSummary transaction)
     {
-        var transactionType = transactionTypeAmounts.FirstOrDefault();
-        if (transactionType == null)
+        return transaction.TransactionType switch
         {
-            return string.Empty;
-        }
-        var transactionTypeGroup = TransactionTypes.GetTransactionTypeGroup(transactionType.TransactionType);
-        return transactionTypeGroup == TransactionTypeGroup.Credit ? "-" : "+";
+            Queries.Transactions.ViewModels.TransactionType.Credit => transaction.Amount * -1,
+            _ => transaction.Amount
+        };
     }
-
 }
