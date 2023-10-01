@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   haspman:
   - apiVersion: v2
+    created: "2023-10-01T12:04:40.131702696Z"
+    description: A Helm chart for deploying the HaSpMan project to Kubernetes
+    digest: b41fdafc627c302193c01caa4e4017ef2d69562518a2de7cf9b0a070a4864907
+    name: haspman
+    type: application
+    urls:
+    - https://github.com/Brixel/HaSpMan/releases/download/haspman-0.37.9/haspman-0.37.9.tgz
+    version: 0.37.9
+  - apiVersion: v2
     created: "2023-10-01T12:00:39.744306611Z"
     description: A Helm chart for deploying the HaSpMan project to Kubernetes
     digest: ab073440470f764de446c4ccb37b7ca1d6959a3bd39d4e7a237e7ca1a922df67
@@ -991,4 +1000,4 @@ entries:
     urls:
     - https://github.com/Brixel/HaSpMan/releases/download/haspman-0.19.0-helm-chart.5/haspman-0.19.0-helm-chart.5.tgz
     version: 0.19.0-helm-chart.5
-generated: "2023-10-01T12:00:39.744764917Z"
+generated: "2023-10-01T12:04:40.132374502Z"
