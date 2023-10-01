@@ -15,6 +15,7 @@ public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, 
     {
         _contextFactory = contextFactory;
     }
+    
     public async Task<IReadOnlyList<FinancialYear>> Handle(GetFinancialYearsQuery request,
         CancellationToken cancellationToken)
     {
