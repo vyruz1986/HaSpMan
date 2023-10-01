@@ -14,7 +14,6 @@
           ServerData="@(new Func<TableState, Task<TableData<FinancialYear>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Financial years</MudText>
-       
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
@@ -27,21 +26,21 @@
             Is closed
         </MudTh>
         <MudTh>
-            
+            Actions
         </MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.StartDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
         <MudTd DataLabel="AccountNumber">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
-        <MudTd DataLabel="AccountNumber">@context.IsCloded</MudTd>
+        <MudTd DataLabel="AccountNumber">@context.IsClosed</MudTd>
         <MudTd>
             <MudGrid >
                 <MudItem xs="6">
                     <MudTooltip Text="Close">
                         <MudIconButton aria-label="Close"
-                                       Icon="@Icons.Material.Filled.Close" OnClick="() => CloseFinancialYear(context)">
+                                       Icon="@Icons.Material.Filled.Lock" OnClick="() => CloseFinancialYear(context)"
+                                       Disabled="@context.IsClosed">
                         </MudIconButton>
-
                     </MudTooltip>
                 </MudItem>
             </MudGrid>
