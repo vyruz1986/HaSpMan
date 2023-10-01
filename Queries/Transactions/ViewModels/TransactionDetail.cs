@@ -1,5 +1,3 @@
-using Types;
-
 namespace Queries.Transactions.ViewModels;
 
 public record TransactionDetail(

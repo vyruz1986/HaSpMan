@@ -14,7 +14,8 @@ public record EditTransactionCommand(
     DateTimeOffset ReceivedDateTime,
     string Description,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest;
+    ICollection<AttachmentFile> NewAttachmentFiles,
+    Guid FinancialYearId) : IRequest;
 
 public class EditTransactionCommandValidator : AbstractValidator<EditTransactionCommand>
 {
@@ -50,6 +51,8 @@ public class EditTransactionCommandValidator : AbstractValidator<EditTransaction
         RuleForEach(x => x.NewAttachmentFiles)
             .SetValidator(new AttachmentValidator());
 
+        RuleFor(x => x.FinancialYearId)
+            .NotEmpty();
     }
 }
 

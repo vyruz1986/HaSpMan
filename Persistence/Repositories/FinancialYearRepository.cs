@@ -52,11 +52,4 @@ public class FinancialYearRepository : IFinancialYearRepository
             .Include(f => f.Transactions)
             .SingleOrDefaultAsync(x => x.Transactions.Any(t => t.Id == transactionId), cancellationToken);
     }
-
-    public Task<FinancialYear?> GetFinancialYearByDateAsync(DateTimeOffset dateTime, CancellationToken cancellationToken)
-    {
-        return _context.FinancialYears
-            .Include(f => f.Transactions)
-            .SingleOrDefaultAsync(x => x.StartDate <= dateTime && x.EndDate >= dateTime,cancellationToken);
-    }
 }

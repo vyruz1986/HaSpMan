@@ -8,5 +8,4 @@ public interface IFinancialYearRepository
     Task<FinancialYear?> GetMostRecentAsync(CancellationToken cancellationToken);
 
     Task<FinancialYear?> GetFinancialYearByTransactionId(Guid transactionId, CancellationToken cancellationToken);
-    Task<FinancialYear?> GetFinancialYearByDateAsync(DateTimeOffset dateTime, CancellationToken cancellationToken);
 }

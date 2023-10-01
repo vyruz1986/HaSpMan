@@ -13,7 +13,8 @@ public record AddDebitTransactionCommand(
     string Description,
     Guid? MemberId,
     ICollection<TransactionTypeAmount> TransactionTypeAmounts,
-    ICollection<AttachmentFile> NewAttachmentFiles) : IRequest<Guid>;
+    ICollection<AttachmentFile> NewAttachmentFiles,
+    Guid FinancialYearId) : IRequest<Guid>;
 
 public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTransactionCommand>
 {
@@ -45,5 +46,8 @@ public class AddDebitTransactionCommandValidator : AbstractValidator<AddDebitTra
 
         RuleForEach(x => x.NewAttachmentFiles)
             .SetValidator(new AttachmentValidator());
+
+        RuleFor(x => x.FinancialYearId)
+            .NotEmpty();
     }
 }

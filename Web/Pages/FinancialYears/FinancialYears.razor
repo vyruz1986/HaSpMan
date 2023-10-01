@@ -17,6 +17,9 @@
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
+            Name
+        </MudTh>
+        <MudTh>
             Start date
         </MudTh>
         <MudTh>
@@ -30,9 +33,10 @@
         </MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Name">@context.StartDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
-        <MudTd DataLabel="AccountNumber">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
-        <MudTd DataLabel="AccountNumber">@context.IsClosed</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="StartDate">@context.StartDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
+        <MudTd DataLabel="EndDate">@context.EndDateTimeOffset.Date.ToString("dd-MM-yyyy")</MudTd>
+        <MudTd DataLabel="IsClosed">@context.IsClosed</MudTd>
         <MudTd>
         @if (!@context.IsClosed)
             {

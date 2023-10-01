@@ -33,6 +33,9 @@ public class TransactionForm
     [Required(AllowEmptyStrings = false), StringLength(1000)]
     public string? Description { get; set; }
 
+    [Required]
+    public Guid? FinancialYearId { get; set; }
+
     [ValidateComplexType]
     public ICollection<TransactionTypeAmountForm> TransactionTypeAmounts { get; set; }
 

@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using AutoMapper.QueryableExtensions;
 
 using Domain;
-using Domain.Views;
 
 using Microsoft.EntityFrameworkCore;
 

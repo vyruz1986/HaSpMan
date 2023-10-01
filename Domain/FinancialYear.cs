@@ -21,6 +21,8 @@ public class FinancialYear
 
     public ICollection<Transaction> Transactions { get; private set; }
 
+    public string Name => $"{StartDate.Year} - {EndDate.Year}";
+
     public void Close()
     {
         if (IsClosed)
