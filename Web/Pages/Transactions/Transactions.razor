@@ -5,6 +5,7 @@
 @using Types
 @using TransactionTypeAmount = Queries.Transactions.ViewModels.TransactionTypeAmount
 @using Web.Extensions
+@using System.Globalization
 
 @inject IMediator _mediator
 
@@ -58,7 +59,7 @@
             @context.CounterPartyName
         </MudTd>
         <MudTd DataLabel="Amount">
-            @GetAmount(context).ToString("C")
+            @GetAmount(context).ToString("C", CultureInfo.CreateSpecificCulture("be-NL"))
         </MudTd>
         <MudTd DataLabel="ReceivedDateTime">
             @context.ReceivedDateTime.ToString("dd-MM-yyyy")
