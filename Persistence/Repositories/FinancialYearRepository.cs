@@ -18,7 +18,9 @@ public class FinancialYearRepository : IFinancialYearRepository
 
     public Task<FinancialYear?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _context.FinancialYears.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        return _context.FinancialYears
+            .Include(x => x.Transactions)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
     }
 
     public Task<FinancialYear?> GetTransactionAsync(Guid transactionId, CancellationToken cancellationToken)
