@@ -1,5 +1,6 @@
 @page "/financialyears"
 @attribute [Authorize]
+@using Commands.Handlers.FinancialYear.AddFinancialYear;
 @using Queries.FinancialYears
 @using Commands.Handlers.FinancialYear.CloseFinancialYear
 
@@ -14,6 +15,11 @@
           ServerData="@(new Func<TableState, Task<TableData<FinancialYear>>>(ServerReload))">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Financial years</MudText>
+        <MudSpacer />
+        <MudButton Class="ma-2" Color="Color.Primary" DisableElevation="true" OnClick="@AddFinancialYear" Size="Size.Small"
+                   Variant="Variant.Filled">
+            Add Financial Year
+        </MudButton>
     </ToolBarContent>
     <HeaderContent>
         <MudTh>
@@ -67,7 +73,7 @@
     private async Task<TableData<FinancialYear>> ServerReload(TableState state)
     {
         StateHasChanged();
-        
+
         var query = new GetFinancialYearsQuery();
         var data = await _mediator.Send(query);
 
@@ -98,5 +104,11 @@
             Snackbar.Add($"Closed financial year {financialYear.StartDateTimeOffset.Year} - {financialYear.EndDateTimeOffset.Year}");
             table?.ReloadServerData();
         }
+    }
+
+    private async Task AddFinancialYear()
+    {
+        await _mediator.Send(new AddFinancialYearCommand());
+        table?.ReloadServerData();
     }
 }
