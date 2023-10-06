@@ -13,9 +13,7 @@ WORKDIR /src/Web
 RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-ENV LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8 \
-    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0
 WORKDIR /app
 COPY --from=build /app .
 
