@@ -1,4 +1,5 @@
-﻿@using Types
+﻿@using System.Globalization;
+@using Types
 @using Queries.Members.Handlers.AutocompleteMember
 
 <div class="d-flex flex-column justify-start align-start mw-13">
@@ -145,7 +146,7 @@
                 {
                     <MudItem xs="6">
                         <MudNumericField Value="transactionType.Amount"
-                                         ValueChanged="value => OnAmountChanged(transactionType, value)" Label="Amount (€)" Min="0"
+                                         ValueChanged="value => OnAmountChanged(transactionType, value)" Label="@($"Amount ({CultureInfo.CurrentUICulture.NumberFormat.CurrencySymbol})")" Min="0"
                                          For="@(() => transactionType.Amount)" T="decimal?">
                         </MudNumericField>
                     </MudItem>
@@ -165,14 +166,14 @@
             </MudGrid>
             <MudDivider Class="my-2"></MudDivider>
             <MudText>
-                Sum of all types: <strong>€@Transaction.TransactionTypeAmounts.Sum(x => x.Amount)</strong>.
+                Sum of all types: <strong>@((Transaction.TransactionTypeAmounts.Sum(x => x.Amount) ?? 0).ToString("C", CultureInfo.CurrentUICulture))</strong>.
                 This value should match the total amount of the transaction
             </MudText>
             @if (CanExtendMembership && SelectedMember != null)
             {
                 <MudCheckBox Color="Color.Secondary" @bind-Checked="Transaction.ApplyMembershipCalculation">
                     Extend
-                    membership for @SelectedMember.FirstName: €@SelectedMember.MembershipFee. This gives @AmountOfMonths
+                    membership for @SelectedMember.FirstName: @SelectedMember.MembershipFee.ToString("C", CultureInfo.CurrentUICulture). This gives @AmountOfMonths
                     more month(s) of membership
                 </MudCheckBox>
 
