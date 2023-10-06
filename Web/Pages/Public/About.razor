@@ -2,6 +2,7 @@
 @using System.Security.Claims
 @using System.Reflection
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Globalization
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
@@ -30,9 +31,15 @@
     }
 </p>
 
+<h2>Culture info</h2>
+<p>Current UI culture: @CultureInfo.CurrentUICulture.DisplayName</p>
+<p>Amount test: @TestAmount.ToString("C", CultureInfo.CurrentUICulture)</p>
+
 @code {
     private string? authMessage;
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private decimal TestAmount = 123.56M;
 
     private string _version
     {
