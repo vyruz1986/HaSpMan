@@ -13,8 +13,9 @@ WORKDIR /src/Web
 RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-RUN apk add --no-cache icu-libs icu-data-full
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 WORKDIR /app
 COPY --from=build /app .
 
