@@ -85,6 +85,8 @@ public class Startup
         services.AddHttpContextAccessor();
         services.AddScoped<IUserAccessor, UserAccessor>();
         services.AddMailingService(Configuration);
+
+        services.AddLocalizationAndConfiguration();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,5 +117,7 @@ public class Startup
             endpoints.MapBlazorHub();
             endpoints.MapFallbackToPage("/_Host");
         });
+
+        app.UseRequestLocalizationWithSupportedCultures();
     }
 }
