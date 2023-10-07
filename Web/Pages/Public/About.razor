@@ -2,6 +2,7 @@
 @using System.Security.Claims
 @using System.Reflection
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Globalization
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
@@ -30,9 +31,27 @@
     }
 </p>
 
+<h2>Culture info</h2>
+
+<p>Available cultures:</p>
+<select T="System.Globalization.CultureInfo" @bind="Culture" AnchorOrigin="Origin.BottomCenter">
+    @foreach (var culture in _supportedCultures)
+    {
+        <option Value="@culture">@culture.DisplayName</option>
+    }
+</select>
+<p>Amount test: @TestAmount.ToString("C", Culture)</p>
+
+<p>Current UI culture: @CultureInfo.CurrentUICulture.DisplayName</p>
+<p>Amount test: @TestAmount.ToString("C", CultureInfo.CurrentUICulture)</p>
+
 @code {
     private string? authMessage;
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+
+    private decimal TestAmount = 123.56M;
+    private CultureInfo[] _supportedCultures = Array.Empty<CultureInfo>();
+    private CultureInfo Culture { get; set; } = default!;
 
     private string _version
     {
@@ -59,5 +78,11 @@
         {
             authMessage = "The user is NOT authenticated.";
         }
+
+        _supportedCultures = CultureInfo.GetCultures(CultureTypes.AllCultures & ~CultureTypes.NeutralCultures)
+        .Where(cul => !string.IsNullOrEmpty(cul.Name))
+        .ToArray();
+
+        Culture = CultureInfo.CurrentUICulture;
     }
 }
