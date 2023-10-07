@@ -1,5 +1,4 @@
-﻿using Commands.Handlers.FinancialYear.AddFinancialYear;
-using Commands.Handlers.Transaction.AddAttachments;
+﻿using Commands.Handlers.Transaction.AddAttachments;
 
 using Domain.Interfaces;
 
@@ -18,9 +17,8 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
 
     public async Task Handle(EditTransactionCommand request, CancellationToken cancellationToken)
     {
-        var financialYear =
-            await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
-            ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request));
+        var financialYear = await _financialYearRepository.GetFinancialYearByTransactionId(request.Id, cancellationToken)
+                ?? throw new ArgumentException($"No transaction found for Id {request.Id}", nameof(request));
 
         if (financialYear.StartDate <= request.ReceivedDateTime &&
            financialYear.EndDate >= request.ReceivedDateTime)
@@ -33,9 +31,8 @@ public class EditTransactionHandler : IRequestHandler<EditTransactionCommand>
             var transaction = financialYear.Transactions.First(x => x.Id == request.Id);
 
             var matchingFinancialYear =
-                await _financialYearRepository.GetFinancialYearByTransactionId(request.FinancialYearId,
-                    cancellationToken)
-                ?? await _mediator.Send(new AddFinancialYearCommand(), cancellationToken);
+                await _financialYearRepository.GetByIdAsync(request.FinancialYearId, cancellationToken)
+                    ?? throw new Exception("Could not get financial year specified in AddTransaction command");
 
             matchingFinancialYear.AddTransaction(transaction);
             matchingFinancialYear.ChangeTransaction(request.Id, request.CounterPartyName, request.MemberId, request.BankAccountId,
