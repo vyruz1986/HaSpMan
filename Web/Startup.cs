@@ -109,6 +109,7 @@ public class Startup
         app.UseStaticFiles();
 
         app.UseRouting();
+        app.UseRequestLocalizationWithSupportedCultures();
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -117,7 +118,5 @@ public class Startup
             endpoints.MapBlazorHub();
             endpoints.MapFallbackToPage("/_Host");
         });
-
-        app.UseRequestLocalizationWithSupportedCultures();
     }
 }
