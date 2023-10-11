@@ -22,9 +22,9 @@ public class MemberExistsByNameAndAddress : IRequestHandler<MemberExistsByNameAn
 {
     private readonly HaSpManContext _dbContext;
 
-    public MemberExistsByNameAndAddress(IDbContextFactory<HaSpManContext> dbContextFactory)
+    public MemberExistsByNameAndAddress(HaSpManContext dbContext)
     {
-        _dbContext = dbContextFactory.CreateDbContext();
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public Task<bool> Handle(MemberExistsByNameAndAddressQuery request, CancellationToken cancellationToken)

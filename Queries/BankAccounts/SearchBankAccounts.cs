@@ -28,19 +28,18 @@ public enum BankAccountDetailOrderOption
 
 public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery, Paginated<BankAccountDetailWithTotal>>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _context;
     private readonly IMapper _mapper;
 
-    public SearchBankAccountsHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
+    public SearchBankAccountsHandler(HaSpManContext context, IMapper mapper)
     {
-        _contextFactory = contextFactory;
-        _mapper = mapper;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<Paginated<BankAccountDetailWithTotal>> Handle(SearchBankAccountsQuery request, CancellationToken cancellationToken)
     {
-        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var bankAccountsQueryable = context.BankAccounts
+        var bankAccountsQueryable = _context.BankAccounts
             .AsNoTracking()
             .Where(GetFilterCriteria(request.SearchString));
 

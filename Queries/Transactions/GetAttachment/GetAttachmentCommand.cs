@@ -12,20 +12,19 @@ public record GetAttachmentQuery(Guid TransactionId, string FileName) : IRequest
 
 public class GetAttachmentHandler : IRequestHandler<GetAttachmentQuery, Attachment>
 {
-    private readonly IDbContextFactory<HaSpManContext> _dbContextFactory;
+    private readonly HaSpManContext _dbContext;
     private readonly IAttachmentStorage _attachmentStorage;
 
-    public GetAttachmentHandler(IDbContextFactory<HaSpManContext> dbContextFactory, IAttachmentStorage attachmentStorage)
+    public GetAttachmentHandler(HaSpManContext dbContext, IAttachmentStorage attachmentStorage)
     {
-        _dbContextFactory = dbContextFactory;
-        _attachmentStorage = attachmentStorage;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _attachmentStorage = attachmentStorage ?? throw new ArgumentNullException(nameof(attachmentStorage));
     }
     public async Task<Attachment> Handle(GetAttachmentQuery request, CancellationToken cancellationToken)
     {
-        var context = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
         var transactionId = request.TransactionId;
         var transaction =
-            await context.FinancialYears
+            await _dbContext.FinancialYears
                 .SelectMany(x => x.Transactions)
                 .AsNoTracking()
                 .SingleOrDefaultAsync(x => x.Id == transactionId, cancellationToken)

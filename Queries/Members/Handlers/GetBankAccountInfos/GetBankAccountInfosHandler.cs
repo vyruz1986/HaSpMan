@@ -6,20 +6,16 @@ namespace Queries.Members.Handlers.GetBankAccountInfos;
 
 public class GetBankAccountInfosHandler : IRequestHandler<GetBankAccountInfos, IReadOnlyList<BankAccountInfo>>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _context;
 
-    public GetBankAccountInfosHandler(IDbContextFactory<HaSpManContext> contextFactory)
+    public GetBankAccountInfosHandler(HaSpManContext context)
     {
-        _contextFactory = contextFactory;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<IReadOnlyList<BankAccountInfo>> Handle(GetBankAccountInfos request, CancellationToken cancellationToken)
-    {
-        await using var context = _contextFactory.CreateDbContext();
-        return await context.BankAccounts
+        => await _context.BankAccounts
             .AsNoTracking()
             .Select(x => new BankAccountInfo(x.Id, x.Name))
             .ToListAsync(cancellationToken);
-
-    }
 }

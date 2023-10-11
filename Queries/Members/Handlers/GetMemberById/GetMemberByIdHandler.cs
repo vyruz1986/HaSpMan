@@ -1,3 +1,5 @@
+using AutoMapper.QueryableExtensions;
+
 using Microsoft.EntityFrameworkCore;
 
 using Persistence;
@@ -9,19 +11,17 @@ namespace Queries.Members.Handlers.GetMemberById;
 public class GetMemberByIdHandler : IRequestHandler<GetMemberByIdQuery, MemberDetail>
 {
     private readonly IMapper _mapper;
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _context;
 
-    public GetMemberByIdHandler(IMapper mapper, IDbContextFactory<HaSpManContext> contextFactory)
+    public GetMemberByIdHandler(IMapper mapper, HaSpManContext context)
     {
-        _mapper = mapper;
-        _contextFactory = contextFactory;
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
-    {
-        var context = _contextFactory.CreateDbContext();
-        var member = await context.Members.SingleAsync(m => m.Id == request.Id, cancellationToken: cancellationToken);
-
-        return _mapper.Map<MemberDetail>(member);
-    }
+    public Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
+        => _context.Members
+            .Where(m => m.Id == request.Id)
+            .ProjectTo<MemberDetail>(_mapper.ConfigurationProvider)
+            .SingleAsync(cancellationToken);
 }
