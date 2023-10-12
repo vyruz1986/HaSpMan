@@ -15,10 +15,12 @@ public static class DbContextExtensions
             throw new ArgumentException("The value cannot be empty or whitespace.", nameof(connectionString));
         }
 
-        serviceCollection.AddDbContextFactory<HaSpManContext>(options =>
-                    options.UseSqlServer(connectionString, b => b
+        serviceCollection.AddDbContext<HaSpManContext>(
+            options => options.UseSqlServer(connectionString, b => b
                         .MigrationsAssembly("Persistence")
-                        .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan")));
+                        .MigrationsHistoryTable("__EFMigrationsHistory", "HaSpMan")),
+            ServiceLifetime.Transient);
+
         return serviceCollection;
     }
 

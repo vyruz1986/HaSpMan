@@ -15,20 +15,18 @@ namespace Queries.Transactions.Handlers;
 
 public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Paginated<TransactionSummary>>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetTransactionsHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
+    public GetTransactionsHandler(HaSpManContext dbContext, IMapper mapper)
     {
-        _contextFactory = contextFactory;
-        _mapper = mapper;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<Paginated<TransactionSummary>> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
     {
-        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-
-        var baseQuery = context.FinancialYears
+        var baseQuery = _dbContext.FinancialYears
             .AsNoTracking()
             .SelectMany(y => y.Transactions)
             .Where(GetFilterCriteria(request.SearchString));

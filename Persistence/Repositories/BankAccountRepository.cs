@@ -9,9 +9,9 @@ public class BankAccountRepository : IBankAccountRepository
 {
     private readonly HaSpManContext _context;
 
-    public BankAccountRepository(IDbContextFactory<HaSpManContext> contextFactory)
+    public BankAccountRepository(HaSpManContext context)
     {
-        _context = contextFactory.CreateDbContext();
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public void Add(BankAccount account)

@@ -243,6 +243,7 @@ public partial class TransactionForm : ComponentBase
             ?? throw new Exception($"Couldn't get financial year id for transaction with id {Transaction.Id}");
 
         Transaction.FinancialYearId = financialYear.Id;
+        await Task.Delay(1000);
     }
 
     private async Task SetFinancialYears()

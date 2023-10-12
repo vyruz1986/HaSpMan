@@ -8,22 +8,19 @@ public record GetFinancialYearsQuery() : IRequest<IReadOnlyList<FinancialYear>>;
 
 public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, IReadOnlyList<FinancialYear>>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _context;
 
-    public GetFinancialYearsHandler(IDbContextFactory<HaSpManContext> contextFactory)
+    public GetFinancialYearsHandler(HaSpManContext context)
     {
-        _contextFactory = contextFactory;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
-    
+
     public async Task<IReadOnlyList<FinancialYear>> Handle(GetFinancialYearsQuery request,
         CancellationToken cancellationToken)
     {
-        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var financialYears = await context.FinancialYears.ToListAsync(cancellationToken);
-
-        return financialYears
+        return await _context.FinancialYears
             .OrderByDescending(x => x.StartDate)
             .Select(x => new FinancialYear(x.Id, x.StartDate, x.EndDate, x.IsClosed, x.Name))
-            .ToList();
+            .ToListAsync(cancellationToken);
     }
 }

@@ -9,10 +9,10 @@ public class MemberRepository : IMemberRepository
 {
     private readonly HaSpManContext _context;
 
-    public MemberRepository(IDbContextFactory<HaSpManContext> contextFactory)
+    public MemberRepository(HaSpManContext context)
     {
 
-        _context = contextFactory.CreateDbContext();
+        _context = context;
     }
     public void Add(Member member)
     {

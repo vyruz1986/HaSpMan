@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
+
+using Microsoft.EntityFrameworkCore;
 
 using Persistence;
 
@@ -8,21 +10,18 @@ namespace Queries.Transactions.Handlers;
 
 public class GetTransactionByIdHandler : IRequestHandler<GetTransactionByIdQuery, TransactionDetail>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _dbContext;
     private readonly IMapper _mapper;
 
-    public GetTransactionByIdHandler(IDbContextFactory<HaSpManContext> contextFactory, IMapper mapper)
+    public GetTransactionByIdHandler(HaSpManContext dbContext, IMapper mapper)
     {
-        _contextFactory = contextFactory;
-        _mapper = mapper;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
-    public async Task<TransactionDetail> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
-    {
-        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var transaction = await context.FinancialYears
+    public Task<TransactionDetail> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
+        => _dbContext.FinancialYears
             .SelectMany(x => x.Transactions)
-            .AsNoTracking().SingleAsync(x => x.Id == request.Id, cancellationToken);
-
-        return _mapper.Map<TransactionDetail>(transaction);
-    }
+            .Where(x => x.Id == request.Id)
+            .ProjectTo<TransactionDetail>(_mapper.ConfigurationProvider)
+            .SingleAsync(cancellationToken);
 }

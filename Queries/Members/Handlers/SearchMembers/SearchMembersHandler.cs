@@ -13,18 +13,16 @@ namespace Queries.Members.Handlers.SearchMembers;
 
 public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginated<MemberSummary>>
 {
-    private readonly IDbContextFactory<HaSpManContext> _contextFactory;
+    private readonly HaSpManContext _context;
 
-    public SearchMembersHandler(IDbContextFactory<HaSpManContext> contextFactory)
+    public SearchMembersHandler(HaSpManContext context)
     {
-        _contextFactory = contextFactory;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public async Task<Paginated<MemberSummary>> Handle(SearchMembersQuery request, CancellationToken cancellationToken)
     {
-        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-        var memberQueryable = context.Members
-
+        var memberQueryable = _context.Members
             .AsNoTracking()
             .Where(GetTextFilterCriteria(request.SearchString));
 

@@ -10,10 +10,10 @@ public class FinancialYearRepository : IFinancialYearRepository
 
     private readonly HaSpManContext _context;
 
-    public FinancialYearRepository(IDbContextFactory<HaSpManContext> contextFactory)
+    public FinancialYearRepository(HaSpManContext context)
     {
 
-        _context = contextFactory.CreateDbContext();
+        _context = context;
     }
 
     public Task<FinancialYear?> GetByIdAsync(Guid id, CancellationToken cancellationToken)

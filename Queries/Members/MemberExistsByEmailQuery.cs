@@ -12,18 +12,16 @@ public record MemberExistsByEmailQuery(string EmailAddress, Guid? ExcludeId = nu
 
 public class MemberExistsByEmail : IRequestHandler<MemberExistsByEmailQuery, bool>
 {
-    private readonly HaSpManContext _dbContext;
+    private readonly HaSpManContext _context;
 
-    public MemberExistsByEmail(IDbContextFactory<HaSpManContext> dbContextFactory)
+    public MemberExistsByEmail(HaSpManContext context)
     {
-        _dbContext = dbContextFactory.CreateDbContext();
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     public Task<bool> Handle(MemberExistsByEmailQuery request, CancellationToken cancellationToken)
     {
-        return _dbContext.Members
-            .AsNoTracking()
-            .AnyAsync(BuildQueryPredicate(request), cancellationToken);
+        return _context.Members.AnyAsync(BuildQueryPredicate(request), cancellationToken);
     }
 
     private static Expression<Func<Member, bool>> BuildQueryPredicate(MemberExistsByEmailQuery request) => request.ExcludeId is null
