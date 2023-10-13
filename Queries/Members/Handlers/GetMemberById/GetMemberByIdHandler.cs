@@ -21,6 +21,7 @@ public class GetMemberByIdHandler : IRequestHandler<GetMemberByIdQuery, MemberDe
 
     public Task<MemberDetail> Handle(GetMemberByIdQuery request, CancellationToken cancellationToken)
         => _context.Members
+            .AsNoTracking()
             .Where(m => m.Id == request.Id)
             .ProjectTo<MemberDetail>(_mapper.ConfigurationProvider)
             .SingleAsync(cancellationToken);

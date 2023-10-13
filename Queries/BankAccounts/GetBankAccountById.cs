@@ -21,6 +21,7 @@ public class GetBankAccountByIdHandler : IRequestHandler<GetBankAccountByIdQuery
 
     public Task<BankAccountDetail> Handle(GetBankAccountByIdQuery request, CancellationToken cancellationToken)
         => _context.BankAccounts
+            .AsNoTracking()
             .Where(b => b.Id == request.Id)
             .ProjectTo<BankAccountDetail>(_mapper.ConfigurationProvider)
             .SingleAsync(cancellationToken);

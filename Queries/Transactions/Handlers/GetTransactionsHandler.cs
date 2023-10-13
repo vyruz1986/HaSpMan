@@ -34,6 +34,7 @@ public class GetTransactionsHandler : IRequestHandler<GetTransactionQuery, Pagin
         var transactions = GetOrderedQueryable(request, baseQuery);
 
         var transactionViewModels = transactions
+            .AsNoTracking()
             .ProjectTo<TransactionSummary>(_mapper.ConfigurationProvider)
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);
