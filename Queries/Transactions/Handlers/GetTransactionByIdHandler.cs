@@ -20,6 +20,7 @@ public class GetTransactionByIdHandler : IRequestHandler<GetTransactionByIdQuery
     }
     public Task<TransactionDetail> Handle(GetTransactionByIdQuery request, CancellationToken cancellationToken)
         => _dbContext.FinancialYears
+            .AsNoTracking()
             .SelectMany(x => x.Transactions)
             .Where(x => x.Id == request.Id)
             .ProjectTo<TransactionDetail>(_mapper.ConfigurationProvider)

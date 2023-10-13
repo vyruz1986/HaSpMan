@@ -19,6 +19,7 @@ public class GetFinancialYearsHandler : IRequestHandler<GetFinancialYearsQuery, 
         CancellationToken cancellationToken)
     {
         return await _context.FinancialYears
+            .AsNoTracking()
             .OrderByDescending(x => x.StartDate)
             .Select(x => new FinancialYear(x.Id, x.StartDate, x.EndDate, x.IsClosed, x.Name))
             .ToListAsync(cancellationToken);

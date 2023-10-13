@@ -41,6 +41,7 @@ public class SearchMembersHandler : IRequestHandler<SearchMembersQuery, Paginate
         var orderedQueryable = GetOrderedQueryable(request, memberQueryable);
 
         var memberSummaryQueryable = orderedQueryable
+            .AsNoTracking()
             .Select(x => new MemberSummary(x.Id, x.Name, x.Address.ToString(), x.Email!, x.PhoneNumber!, x.IsActive(), x.MembershipExpiryDate))
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);

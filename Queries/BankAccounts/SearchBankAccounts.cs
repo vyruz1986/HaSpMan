@@ -48,6 +48,7 @@ public class SearchBankAccountsHandler : IRequestHandler<SearchBankAccountsQuery
         bankAccountsQueryable = GetOrderedQueryable(request, bankAccountsQueryable);
 
         var bankAccountsDetailQueryable = bankAccountsQueryable
+            .AsNoTracking()
             .ProjectTo<BankAccountDetailWithTotal>(_mapper.ConfigurationProvider)
             .Skip(request.PageIndex * request.PageSize)
             .Take(request.PageSize);

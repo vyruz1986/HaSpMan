@@ -17,6 +17,7 @@ public class AutocompleteCounterpartyHandler : IRequestHandler<AutocompleteCount
         if (request.IsMemberSearch)
         {
             var members = await _context.Members
+                .AsNoTracking()
                 .Where(x =>
                     x.FirstName.ToLower().Contains(request.SearchString.ToLower()) ||
                     x.LastName.ToLower().Contains(request.SearchString.ToLower()))
